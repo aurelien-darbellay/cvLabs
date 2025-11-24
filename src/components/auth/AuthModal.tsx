@@ -42,76 +42,66 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
     return (
         <div
-            style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                zIndex: 1001,
-            }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[1001]"
             onClick={onClose}
         >
             <div
-                style={{
-                    backgroundColor: "white",
-                    padding: "2rem",
-                    borderRadius: "8px",
-                    width: "300px",
-                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                }}
+                className="bg-white p-8 rounded-lg w-80 shadow-lg"
                 onClick={(e) => e.stopPropagation()}
             >
-                <h2 style={{ marginTop: 0 }}>{isRegistering ? "Register" : "Login"}</h2>
+                <h2 className="mt-0 text-2xl font-bold mb-4">{isRegistering ? "Register" : "Login"}</h2>
 
                 {error && (
-                    <div style={{ color: "red", marginBottom: "1rem", fontSize: "0.9rem" }}>
+                    <div className="text-red-600 mb-4 text-sm">
                         {error}
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <div>
-                        <label style={{ display: "block", marginBottom: "0.5rem" }}>Email</label>
+                        <label className="block mb-2">Email</label>
                         <input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
-                            style={{ width: "100%", padding: "0.5rem", boxSizing: "border-box" }}
+                            className="w-full p-2 border border-gray-300 rounded"
                         />
                     </div>
                     <div>
-                        <label style={{ display: "block", marginBottom: "0.5rem" }}>Password</label>
+                        <label className="block mb-2">Password</label>
                         <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
-                            style={{ width: "100%", padding: "0.5rem", boxSizing: "border-box" }}
+                            className="w-full p-2 border border-gray-300 rounded"
                         />
                     </div>
 
-                    <button type="submit" disabled={loading} style={{ padding: "0.5rem", cursor: "pointer" }}>
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="p-2 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    >
                         {loading ? "Processing..." : isRegistering ? "Register" : "Login"}
                     </button>
                 </form>
 
-                <div style={{ marginTop: "1rem", textAlign: "center", fontSize: "0.9rem" }}>
+                <div className="mt-4 text-center text-sm">
                     <button
                         onClick={() => setIsRegistering(!isRegistering)}
-                        style={{ background: "none", border: "none", color: "blue", textDecoration: "underline", cursor: "pointer" }}
+                        className="bg-transparent border-none text-blue-600 underline cursor-pointer hover:text-blue-800"
                     >
                         {isRegistering ? "Already have an account? Login" : "Need an account? Register"}
                     </button>
                 </div>
 
-                <div style={{ marginTop: "0.5rem", textAlign: "center" }}>
-                    <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#666" }}>
+                <div className="mt-2 text-center">
+                    <button
+                        onClick={onClose}
+                        className="bg-transparent border-none cursor-pointer text-gray-600 hover:text-gray-800"
+                    >
                         Cancel
                     </button>
                 </div>

@@ -7,9 +7,7 @@ import { Language } from "@/domain/Language";
 import { SoftSkill } from "@/domain/SoftSkill";
 import { TechSkill } from "@/domain/TechSkill";
 import { userService } from "@/services/user/UserService";
-import { cvService } from "@/services/cv/CvService";
-import { languageService } from "@/services/skills/LanguageService";
-import { techSkillService } from "@/services/skills/TechSkillService";
+import { supabase } from "@/lib/supabaseClient";
 import { StandardLayout, TwoColumnLayout, IALayout, CvData, LayoutLabels } from "./Layouts";
 import { translationService } from "@/services/cv/TranslationService";
 
@@ -48,17 +46,16 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
     const [loading, setLoading] = useState(true);
     const [layout, setLayout] = useState<"standard" | "two-column" | "ia">("standard");
     const [currentLang, setCurrentLang] = useState("en");
-    const [availableLangs, setAvailableLangs] = useState<Language[]>([]);
-    console.log(availableLangs)
+    const [availableLangs, setAvailableLangs] = useState<string[]>([]);
 
     useEffect(() => {
-        // Fetch available languages for this user (based on CVs or just hardcoded for now)
-        // Ideally we check what translations exist, but for now let's assume if they have a CV in that lang, they might have translations
-        // Or better, just fetch distinct languages from the translations tables? 
-        // For simplicity, let's use the languages from the user's CVs list as a proxy for "available languages"
+        // Fetch available languages for this user
         const fetchLangs = async () => {
-            const langs = await languageService.list();
-            setAvailableLangs(langs);
+            const { data } = await supabase.from("cvs").select("lang_code").eq("user_id", cv.userId);
+            if (data) {
+                const langs = Array.from(new Set(data.map(d => d.lang_code)));
+                setAvailableLangs(langs);
+            }
         };
         fetchLangs();
     }, [cv.userId]);
@@ -72,15 +69,17 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
                 if (!user) throw new Error("User not found");
 
                 // 2. Fetch Translated Data
-                console.log("Fetching translated data for lang:", currentLang);
                 const summary = await translationService.getSummaryForCv(cv.id, currentLang);
                 const experience = await translationService.getTranslatedExperience(cv.userId, currentLang);
                 const education = await translationService.getTranslatedEducation(cv.userId, currentLang);
                 const softSkills = await translationService.getTranslatedSoftSkills(cv.userId, currentLang);
 
                 // 3. Fetch Global Data
-                const languages = await languageService.list();
-                const techSkills = await techSkillService.list();
+                const { data: langData } = await supabase.from("languages").select("*");
+                const languages = (langData || []).map(Language.fromRow);
+
+                const { data: techData } = await supabase.from("tech_skills").select("*");
+                const techSkills = (techData || []).map(TechSkill.fromRow);
 
                 setData({
                     user,
@@ -101,27 +100,25 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
         fetchData();
     }, [cv.userId, currentLang]);
 
-    if (loading) return <div style={{ padding: "2rem", textAlign: "center" }}>Loading CV...</div>;
-    if (!data) return <div style={{ padding: "2rem", textAlign: "center" }}>Error loading data</div>;
-
-    // Inject translated titles into data or pass them to layout?
-    // For now, let's pass a "labels" object to the layout if we were refactoring layouts, 
-    // but since layouts are hardcoded, we might need to wrap them or pass the lang code.
-    // Let's modify the Layouts component to accept labels or lang code.
-    // For this iteration, I will just pass the data. The layouts currently have hardcoded English headers.
-    // I should update Layouts.tsx to accept labels.
+    if (loading) return <div className="p-8 text-center">Loading CV...</div>;
+    if (!data) return <div className="p-8 text-center">Error loading data</div>;
 
     const labels = SECTION_TITLES[currentLang] || SECTION_TITLES["en"];
 
     return (
-        <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "white", zIndex: 2000, overflowY: "auto" }}>
-            <div style={{ position: "fixed", top: "1rem", left: "1rem", display: "flex", gap: "1rem", zIndex: 2001, backgroundColor: "rgba(255,255,255,0.9)", padding: "0.5rem", borderRadius: "4px" }}>
-                <button onClick={onClose} style={{ padding: "0.5rem 1rem", cursor: "pointer" }}>Back</button>
+        <div className="bg-white min-h-screen">
+            <div className="sticky top-0 bg-white bg-opacity-95 shadow-md p-4 z-10 flex gap-4">
+                <button
+                    onClick={onClose}
+                    className="px-4 py-2 cursor-pointer bg-gray-200 hover:bg-gray-300 rounded"
+                >
+                    Back
+                </button>
 
                 <select
                     value={layout}
                     onChange={(e) => setLayout(e.target.value as any)}
-                    style={{ padding: "0.5rem" }}
+                    className="p-2 border border-gray-300 rounded"
                 >
                     <option value="standard">Standard Layout</option>
                     <option value="two-column">Two Column Layout</option>
@@ -131,16 +128,15 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
                 <select
                     value={currentLang}
                     onChange={(e) => setCurrentLang(e.target.value)}
-                    style={{ padding: "0.5rem" }}
+                    className="p-2 border border-gray-300 rounded"
                 >
                     {availableLangs.map(lang => (
-                        <option key={lang.id} value={lang.code}>{lang.name}</option>
+                        <option key={lang} value={lang}>{lang.toUpperCase()}</option>
                     ))}
                 </select>
             </div>
 
-            <div style={{ marginTop: "4rem" }}>
-                {/* We need to pass labels to layouts. I'll update Layouts.tsx next. */}
+            <div>
                 {layout === "standard" && <StandardLayout data={data} labels={labels} />}
                 {layout === "two-column" && <TwoColumnLayout data={data} labels={labels} />}
                 {layout === "ia" && <IALayout data={data} labels={labels} />}

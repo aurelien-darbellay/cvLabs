@@ -33,19 +33,8 @@ export const AuthButton: React.FC = () => {
         <>
             <button
                 onClick={handleClick}
-                style={{
-                    position: "fixed",
-                    top: "10px",
-                    right: "10px",
-                    zIndex: 1000,
-                    padding: "0.5rem 1rem",
-                    backgroundColor: user ? "#ff4444" : "#4444ff",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
-                }}
+                className={`fixed top-2.5 right-2.5 z-[1000] px-4 py-2 text-white border-none rounded cursor-pointer shadow-md ${user ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'
+                    }`}
             >
                 {user ? "Logout" : "Login / Register"}
             </button>
