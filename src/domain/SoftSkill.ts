@@ -4,10 +4,7 @@ export interface SoftSkillRow {
 }
 
 export class SoftSkill {
-  constructor(
-    public id: number,
-    public key: string
-  ) {}
+  constructor(public id: number, public key: string) {}
 
   static fromRow(row: SoftSkillRow): SoftSkill {
     return new SoftSkill(row.id, row.softskill_key);

@@ -14,12 +14,12 @@ export class CrudService<
   constructor(
     protected readonly tableName: string,
     private readonly mapRow: (row: TRow) => TDomain
-  ) { }
+  ) {}
 
   async list(): Promise<TDomain[]> {
     const { data, error } = await supabase.from(this.tableName).select("*");
     if (error) throw error;
-    return (data as TRow[] | null ?? []).map(this.mapRow);
+    return ((data as TRow[] | null) ?? []).map(this.mapRow);
   }
 
   async getById(id: number | string): Promise<TDomain | null> {
@@ -60,10 +60,7 @@ export class CrudService<
   }
 
   async delete(id: number | string): Promise<void> {
-    const { error } = await supabase
-      .from(this.tableName)
-      .delete()
-      .eq("id", id);
+    const { error } = await supabase.from(this.tableName).delete().eq("id", id);
 
     if (error) throw error;
   }
