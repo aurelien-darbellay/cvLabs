@@ -55,6 +55,7 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
   );
   const [currentLang, setCurrentLang] = useState("en");
   const [languages, setLanguages] = useState<Language[]>([]);
+  console.log(languages);
 
   useEffect(() => {
     // Fetch available languages
