@@ -31,15 +31,8 @@ function normalizeColours(doc: Document) {
 
 function normalizeBadges(doc: Document) {
   doc.querySelectorAll<HTMLElement>("[data-badge]").forEach((el) => {
-    el.style.display = "inline-flex";
-    el.style.alignItems = "center";
-    el.style.justifyContent = "center";
-    el.style.verticalAlign = "middle";
-    el.style.lineHeight = "1.2";
-    el.style.boxSizing = "border-box";
-    el.style.fontSize = "12px";
-    el.style.padding = "4px 10px";
-    el.style.minHeight = "18px";
+    console.log("Normalizing badge", el.computedStyleMap());
+    el.textContent = "changed";
   });
 }
 
@@ -57,7 +50,7 @@ export async function exportElementToPdf(
   // });
   // console.time("html2canvas render");
   const canvas = await html2canvas(element, {
-    scale: 4,
+    scale: 8,
     useCORS: true,
     backgroundColor: "#ffffff",
     logging: false,
