@@ -1,10 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Cv } from "@/domain/Cv";
 import { Language } from "@/domain/Language";
 import { SoftSkill } from "@/domain/SoftSkill";
 import { TechSkill } from "@/domain/TechSkill";
 import { userService } from "@/services/user/UserService";
-import { supabase } from "@/lib/supabaseClient";
 import {
   StandardLayout,
   TwoColumnLayout,
@@ -14,7 +13,6 @@ import {
 } from "./layouts";
 import { translationService } from "@/services/cv/TranslationService";
 import { languageService } from "@/services/skills/LanguageService";
-import { cvService } from "@/services/cv/CvService";
 import { cvRelationsService } from "@/services/cv/CvRelationsService";
 
 interface CvViewerProps {
@@ -55,7 +53,8 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
   );
   const [currentLang, setCurrentLang] = useState("en");
   const [languages, setLanguages] = useState<Language[]>([]);
-  console.log(languages);
+  const [downloading, setDownloading] = useState(false);
+  const cvRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Fetch available languages
@@ -70,6 +69,20 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
     () => languages.map((lang) => lang.code),
     [languages]
   );
+
+  const handleDownloadPdf = async () => {
+    if (!cvRef.current) return;
+    try {
+      setDownloading(true);
+      const { exportElementToPdf } = await import("@/utils/pdf");
+      const safeName = data?.user.fullName || "cv";
+      await exportElementToPdf(cvRef.current, `${safeName}-${currentLang}.pdf`);
+    } catch (error) {
+      console.error("Error exporting CV PDF:", error);
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -117,7 +130,7 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
     };
 
     fetchData();
-  }, [cv.userId, currentLang]);
+  }, [cv.userId, cv.id, currentLang, languages]);
 
   if (loading) return <div className="p-8 text-center">Loading CV...</div>;
   if (!data) return <div className="p-8 text-center">Error loading data</div>;
@@ -155,16 +168,26 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
             </option>
           ))}
         </select>
+
+        <button
+          onClick={handleDownloadPdf}
+          disabled={downloading}
+          className="px-4 py-2 cursor-pointer bg-blue-600 text-white hover:bg-blue-700 rounded disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          {downloading ? "Exporting..." : "Download PDF"}
+        </button>
       </div>
 
-      <div>
+      <div className="min-h-screen bg-gray-100 p-10">
         {layout === "standard" && (
-          <StandardLayout data={data} labels={labels} />
+          <StandardLayout data={data} labels={labels} ref={cvRef} />
         )}
         {layout === "two-column" && (
-          <TwoColumnLayout data={data} labels={labels} />
+          <TwoColumnLayout data={data} labels={labels} ref={cvRef} />
         )}
-        {layout === "ia" && <IALayout data={data} labels={labels} />}
+        {layout === "ia" && (
+          <IALayout data={data} labels={labels} ref={cvRef} />
+        )}
       </div>
     </div>
   );

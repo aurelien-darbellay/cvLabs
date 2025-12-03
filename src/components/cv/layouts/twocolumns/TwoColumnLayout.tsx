@@ -2,11 +2,14 @@ import React from "react";
 import { LayoutProps } from "../types";
 import { LinkWithIcon } from "./LinkWithIcon";
 
-export const TwoColumnLayout: React.FC<LayoutProps> = ({ data, labels }) => {
-  console.log(data.softSkills);
-  return (
-    <div className="bg-gray-100 py-8">
-      <div className="w-[70vw] max-w-5xl mx-auto bg-white shadow-lg">
+export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
+  ({ data, labels }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className="mx-auto bg-white shadow-lg"
+        style={{ width: "210mm", minHeight: "297mm" }}
+      >
         {/* Top bar with name */}
         <header className="relative bg-slate-800 text-white px-10 py-14 flex items-center">
           {data.user.profileImageUrl && (
@@ -16,10 +19,7 @@ export const TwoColumnLayout: React.FC<LayoutProps> = ({ data, labels }) => {
               className="absolute top-6 w-50 h-50 rounded-full object-cover shadow-lg z-10"
             />
           )}
-          <div
-            className="pl-70
-          "
-          >
+          <div className="pl-70">
             <h1 className="text-5xl font-bold tracking-tight uppercase">
               {data.user.fullName}
             </h1>
@@ -126,6 +126,7 @@ export const TwoColumnLayout: React.FC<LayoutProps> = ({ data, labels }) => {
                 {data.techSkills.map((s) => (
                   <span
                     key={s.id}
+                    data-badge="tech-skill"
                     className="px-2.5 py-0.5 bg-slate-600 text-white text-xs rounded"
                   >
                     {s.name}
@@ -160,9 +161,7 @@ export const TwoColumnLayout: React.FC<LayoutProps> = ({ data, labels }) => {
                     <span className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
                     <span>{l.name}</span>
                     {l.level && (
-                      <span className="text-slate-300 text-xs">
-                        ({l.level})
-                      </span>
+                      <span className="text-slate-300 text-xs">({l.level})</span>
                     )}
                   </li>
                 ))}
@@ -219,6 +218,7 @@ export const TwoColumnLayout: React.FC<LayoutProps> = ({ data, labels }) => {
                         {exp.technologies.map((tech, idx) => (
                           <span
                             key={idx}
+                            data-badge="experience-tech"
                             className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded border border-gray-200"
                           >
                             {tech}
@@ -264,6 +264,8 @@ export const TwoColumnLayout: React.FC<LayoutProps> = ({ data, labels }) => {
           </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+);
+
+TwoColumnLayout.displayName = "TwoColumnLayout";

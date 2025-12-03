@@ -7,28 +7,29 @@ import { SoftSkill } from "@/domain/SoftSkill";
 import { TechSkill } from "@/domain/TechSkill";
 
 export interface CvData {
-    user: User;
-    summary: Summary | null;
-    experience: Experience[];
-    education: Education[];
-    languages: Language[];
-    softSkills: SoftSkill[];
-    techSkills: TechSkill[];
+  user: User;
+  summary: Summary | null;
+  experience: Experience[];
+  education: Education[];
+  languages: Language[];
+  softSkills: SoftSkill[];
+  techSkills: TechSkill[];
 }
 
 export interface LayoutLabels {
-    summary: string;
-    experience: string;
-    education: string;
-    skills: string;
-    tech: string;
-    soft: string;
-    languages: string;
-    contact: string;
-    profile: string;
+  summary: string;
+  experience: string;
+  education: string;
+  skills: string;
+  tech: string;
+  soft: string;
+  languages: string;
+  contact: string;
+  profile: string;
 }
 
 export interface LayoutProps {
-    data: CvData;
-    labels: LayoutLabels;
+  data: CvData;
+  labels: LayoutLabels;
+  ref: React.Ref<HTMLDivElement>;
 }
