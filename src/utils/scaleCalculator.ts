@@ -1,8 +1,10 @@
 export const MIN_SCALE = 0.6;
 export const MAX_SCALE = 1.0;
 const A4_HEIGHT = 1122; // 297mm at 96dpi
-const SCALE_STEP = 0.01; // Reduce scale by this amount per iteration
+const SCALE_STEP = 0.001; // Reduce scale by this amount per iteration
 const HEIGHT_THRESHOLD = 5; // Consider heights equal if within 5px
+
+import { adjustScale } from "./adjustScale";
 
 export interface ScaleResult {
   scaleFactor: number;
@@ -11,13 +13,12 @@ export interface ScaleResult {
 
 /**
  * Calculates the optimal scale factor to fit content on a single A4 page.
- * Uses an iterative approach: reduces scale by 0.01 increments and checks
- * the resulting height, continuing until content fits within A4_HEIGHT or
- * reaches MIN_SCALE.
+ * Uses an iterative approach: adjusts scale and checks the resulting height,
+ * continuing until content fits optimally within A4_HEIGHT or reaches scale limits.
  *
  * @param currentHeight The current rendered height in pixels
  * @param previousScale The previous scale factor (starting point)
- * @param element The DOM element to measure (optional, for future virtual height calculation)
+ * @param element The DOM element to measure (optional, for accurate height calculation)
  * @returns Object with new scale factor and warning flag
  */
 export function calculateOptimalScale(
@@ -25,68 +26,35 @@ export function calculateOptimalScale(
   previousScale: number,
   element?: HTMLElement
 ): ScaleResult {
-  // If content already fits on one page, no scaling needed
-  if (currentHeight <= A4_HEIGHT) {
+  // Determine if we need to scale down (too tall) or scale up (too short)
+  const isTooTall = currentHeight > A4_HEIGHT;
+  const direction = isTooTall ? -1 : 1;
+  const scaleLimit = isTooTall ? MIN_SCALE : MAX_SCALE;
+  console.log(
+    `Calculating optimal scale: currentHeight=${currentHeight}, previousScale=${previousScale}, isTooTall=${isTooTall}`
+  );
+  // Attempt to find optimal scale
+  const optimalScale = adjustScale(
+    element,
+    currentHeight,
+    previousScale,
+    direction as 1 | -1,
+    scaleLimit,
+    SCALE_STEP
+  );
+
+  if (optimalScale !== undefined) {
     return {
-      scaleFactor: previousScale,
+      scaleFactor: optimalScale,
       showWarning: false,
     };
   }
 
-  // Start from previous scale and iteratively reduce until content fits
-  let testScale = previousScale;
-  let iterations = 0;
-  const maxIterations =
-    Math.round((previousScale - MIN_SCALE) / SCALE_STEP) + 5;
-
-  // Iteratively reduce scale and measure actual resulting height
-  while (testScale >= MIN_SCALE && iterations < maxIterations) {
-    // Apply the scale factor via CSS variable and measure actual rendered height
-    if (element) {
-      // Store original style
-      const originalStyle = element.getAttribute("style");
-
-      // Apply scale via CSS variable
-      element.style.setProperty("--scale-factor", testScale.toString());
-
-      // Measure the actual height with this scale applied
-      const measuredHeight = element.scrollHeight;
-
-      // Restore original style
-      if (originalStyle) {
-        element.setAttribute("style", originalStyle);
-      } else {
-        element.removeAttribute("style");
-      }
-
-      // Check if this scale would fit the content on A4
-      if (measuredHeight <= A4_HEIGHT + HEIGHT_THRESHOLD) {
-        return {
-          scaleFactor: testScale,
-          showWarning: false,
-        };
-      }
-    } else {
-      // Fallback to linear estimation if element not provided
-      const estimatedHeight = currentHeight * testScale;
-      if (estimatedHeight <= A4_HEIGHT + HEIGHT_THRESHOLD) {
-        return {
-          scaleFactor: testScale,
-          showWarning: false,
-        };
-      }
-    }
-
-    // Not fit yet, reduce scale further
-    testScale = Math.max(MIN_SCALE, testScale - SCALE_STEP);
-    iterations++;
-  }
-
-  // Reached minimum scale without fitting
-  const showWarning = testScale === MIN_SCALE;
+  // No optimal scale found, use the limit
+  const showWarning = isTooTall && scaleLimit === MIN_SCALE;
 
   return {
-    scaleFactor: MIN_SCALE,
+    scaleFactor: scaleLimit,
     showWarning,
   };
 }

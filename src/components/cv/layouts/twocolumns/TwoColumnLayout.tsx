@@ -8,7 +8,7 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
       <div
         ref={ref}
         className="mx-auto bg-white shadow-lg two-column-layout"
-        style={{ width: "210mm", minHeight: "297mm" }}
+        style={{ width: "210mm" }}
       >
         <style>{`
           .two-column-layout {

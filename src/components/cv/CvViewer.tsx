@@ -54,7 +54,7 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
   const [currentLang, setCurrentLang] = useState("en");
   const [languages, setLanguages] = useState<Language[]>([]);
   const [downloading, setDownloading] = useState(false);
-  const [scaleFactor, setScaleFactor] = useState(1.0);
+  const [scaleFactor, setScaleFactor] = useState(0.6);
   const [showWarning, setShowWarning] = useState(false);
   const cvRef = useRef<HTMLDivElement>(null);
 
@@ -136,8 +136,9 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
 
   // Auto-adjust scale to fit A4 height
   useEffect(() => {
+    console.log("Adjusting scale...");
     if (!cvRef.current || !data) return;
-
+    console.log("Current CV height:", cvRef.current.scrollHeight);
     const adjustScale = () => {
       const currentHeight = cvRef.current!.scrollHeight;
       const result = calculateOptimalScale(
@@ -153,7 +154,7 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
     // Debounce to avoid excessive recalculations
     const timer = setTimeout(adjustScale, 300);
     return () => clearTimeout(timer);
-  }, [data, layout, currentLang]);
+  }, [data, layout, currentLang, cvRef.current]);
 
   if (loading) return <div className="p-8 text-center">Loading CV...</div>;
   if (!data) return <div className="p-8 text-center">Error loading data</div>;
