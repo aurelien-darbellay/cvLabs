@@ -34,7 +34,7 @@ export async function exportElementToPdf(
   filename = "cv.pdf"
 ) {
   const canvas = await html2canvas(element, {
-    scale: 5,
+    scale: 8,
     useCORS: true,
     backgroundColor: "#ffffff",
     logging: false,
