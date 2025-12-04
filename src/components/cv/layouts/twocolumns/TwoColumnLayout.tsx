@@ -7,9 +7,136 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
     return (
       <div
         ref={ref}
-        className="mx-auto bg-white shadow-lg"
+        className="mx-auto bg-white shadow-lg two-column-layout"
         style={{ width: "210mm", minHeight: "297mm" }}
       >
+        <style>{`
+          .two-column-layout {
+            font-size: calc(16px * var(--scale-factor, 1));
+          }
+          .two-column-layout h1 {
+            font-size: calc(3rem * var(--scale-factor, 1));
+          }
+          .two-column-layout h2 {
+            font-size: calc(1.25rem * var(--scale-factor, 1));
+          }
+          .two-column-layout h3 {
+            font-size: calc(1.125rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .text-xs {
+            font-size: calc(0.75rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .text-sm {
+            font-size: calc(0.875rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .text-lg {
+            font-size: calc(1.125rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .text-xl {
+            font-size: calc(1.25rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .text-5xl {
+            font-size: calc(3rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .px-2 {
+            padding-left: calc(0.5rem * var(--scale-factor, 1));
+            padding-right: calc(0.5rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .px-2\\.5 {
+            padding-left: calc(0.625rem * var(--scale-factor, 1));
+            padding-right: calc(0.625rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .py-0\\.5 {
+            padding-top: calc(0.125rem * var(--scale-factor, 1));
+            padding-bottom: calc(0.125rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .px-5 {
+            padding-left: calc(1.25rem * var(--scale-factor, 1));
+            padding-right: calc(1.25rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .px-10 {
+            padding-left: calc(2.5rem * var(--scale-factor, 1));
+            padding-right: calc(2.5rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .py-14 {
+            padding-top: calc(3.5rem * var(--scale-factor, 1));
+            padding-bottom: calc(3.5rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .pt-12 {
+            padding-top: calc(3rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .pb-8 {
+            padding-bottom: calc(2rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .p-5 {
+            padding: calc(1.25rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .mb-3 {
+            margin-bottom: calc(0.75rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .mb-4 {
+            margin-bottom: calc(1rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .mb-6 {
+            margin-bottom: calc(1.5rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .mt-1 {
+            margin-top: calc(0.25rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .mt-2 {
+            margin-top: calc(0.5rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .gap-1\\.5 {
+            gap: calc(0.375rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .gap-2 {
+            gap: calc(0.5rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .gap-6 {
+            gap: calc(1.5rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .space-y-1\\.5 > * + * {
+            margin-top: calc(0.375rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .w-1\\.5 {
+            width: calc(0.375rem * var(--scale-factor, 1));
+            height: calc(0.375rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .h-1\\.5 {
+            height: calc(0.375rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .tracking-\\[0\\.2em\\] {
+            letter-spacing: calc(0.2em * var(--scale-factor, 1));
+          }
+          .two-column-layout .space-y-3 > * + * {
+            margin-top: calc(0.75rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .space-y-5 > * + * {
+            margin-top: calc(1.25rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .pl-4 {
+            padding-left: calc(1rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .pl-70 {
+            padding-left: calc(17.5rem * var(--scale-factor, 1));
+          }
+          .two-column-layout img.w-50 {
+            width: calc(12.5rem * var(--scale-factor, 1));
+            height: calc(12.5rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .w-10 {
+            width: calc(2.5rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .h-10 {
+            height: calc(2.5rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .w-\\[30px\\] {
+            width: calc(30px * var(--scale-factor, 1));
+          }
+          .two-column-layout .h-\\[30px\\] {
+            height: calc(30px * var(--scale-factor, 1));
+          }
+        `}</style>
         {/* Top bar with name */}
         <header className="relative bg-slate-800 text-white px-10 py-14 flex items-center">
           {data.user.profileImageUrl && (
@@ -33,7 +160,7 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
 
         <div className="flex">
           {/* Sidebar */}
-          <div className="relative w-[275px] bg-slate-700 text-white px-5 pt-24 pb-8 flex flex-col gap-10">
+          <div className="relative w-[275px] bg-slate-700 text-white px-5 pt-12 pb-8 flex flex-col gap-6">
             {/* Contact */}
             <div>
               <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-300 mb-3 pb-2 border-b border-slate-500">

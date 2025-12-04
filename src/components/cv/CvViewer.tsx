@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Cv } from "@/domain/Cv";
 import { Language } from "@/domain/Language";
-import { SoftSkill } from "@/domain/SoftSkill";
 import { TechSkill } from "@/domain/TechSkill";
 import { userService } from "@/services/user/UserService";
 import {
@@ -14,6 +13,7 @@ import {
 import { translationService } from "@/services/cv/TranslationService";
 import { languageService } from "@/services/skills/LanguageService";
 import { cvRelationsService } from "@/services/cv/CvRelationsService";
+import { calculateOptimalScale } from "@/utils/scaleCalculator";
 
 interface CvViewerProps {
   cv: Cv;
@@ -54,6 +54,8 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
   const [currentLang, setCurrentLang] = useState("en");
   const [languages, setLanguages] = useState<Language[]>([]);
   const [downloading, setDownloading] = useState(false);
+  const [scaleFactor, setScaleFactor] = useState(1.0);
+  const [showWarning, setShowWarning] = useState(false);
   const cvRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -132,6 +134,27 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
     fetchData();
   }, [cv.userId, cv.id, currentLang, languages]);
 
+  // Auto-adjust scale to fit A4 height
+  useEffect(() => {
+    if (!cvRef.current || !data) return;
+
+    const adjustScale = () => {
+      const currentHeight = cvRef.current!.scrollHeight;
+      const result = calculateOptimalScale(
+        currentHeight,
+        scaleFactor,
+        cvRef.current!
+      );
+
+      setScaleFactor(result.scaleFactor);
+      setShowWarning(result.showWarning);
+    };
+
+    // Debounce to avoid excessive recalculations
+    const timer = setTimeout(adjustScale, 300);
+    return () => clearTimeout(timer);
+  }, [data, layout, currentLang]);
+
   if (loading) return <div className="p-8 text-center">Loading CV...</div>;
   if (!data) return <div className="p-8 text-center">Error loading data</div>;
 
@@ -179,15 +202,23 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
       </div>
 
       <div className="min-h-screen bg-gray-100 p-10">
-        {layout === "standard" && (
-          <StandardLayout data={data} labels={labels} ref={cvRef} />
+        {showWarning && (
+          <div className="mb-4 p-3 bg-yellow-100 border border-yellow-400 text-yellow-800 rounded">
+            ⚠️ Content is too large to fit on one A4 page. Please reduce content
+            or adjust layout.
+          </div>
         )}
-        {layout === "two-column" && (
-          <TwoColumnLayout data={data} labels={labels} ref={cvRef} />
-        )}
-        {layout === "ia" && (
-          <IALayout data={data} labels={labels} ref={cvRef} />
-        )}
+        <div style={{ "--scale-factor": scaleFactor } as React.CSSProperties}>
+          {layout === "standard" && (
+            <StandardLayout data={data} labels={labels} ref={cvRef} />
+          )}
+          {layout === "two-column" && (
+            <TwoColumnLayout data={data} labels={labels} ref={cvRef} />
+          )}
+          {layout === "ia" && (
+            <IALayout data={data} labels={labels} ref={cvRef} />
+          )}
+        </div>
       </div>
     </div>
   );

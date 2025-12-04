@@ -4,7 +4,138 @@ import { LayoutProps } from "./types";
 export const StandardLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
   ({ data, labels }, ref) => {
     return (
-      <div ref={ref} className="min-h-screen bg-gray-100 py-6">
+      <div ref={ref} className="min-h-screen bg-gray-100 py-6 standard-layout">
+        <style>{`
+          .standard-layout {
+            font-size: calc(16px * var(--scale-factor, 1));
+          }
+          .standard-layout h1 {
+            font-size: calc(3rem * var(--scale-factor, 1));
+          }
+          .standard-layout h2 {
+            font-size: calc(1.5rem * var(--scale-factor, 1));
+          }
+          .standard-layout h3 {
+            font-size: calc(1.25rem * var(--scale-factor, 1));
+          }
+          .standard-layout .text-xs {
+            font-size: calc(0.75rem * var(--scale-factor, 1));
+          }
+          .standard-layout .text-sm {
+            font-size: calc(0.875rem * var(--scale-factor, 1));
+          }
+          .standard-layout .text-base {
+            font-size: calc(1rem * var(--scale-factor, 1));
+          }
+          .standard-layout .text-lg {
+            font-size: calc(1.125rem * var(--scale-factor, 1));
+          }
+          .standard-layout .text-xl {
+            font-size: calc(1.25rem * var(--scale-factor, 1));
+          }
+          .standard-layout .text-2xl {
+            font-size: calc(1.5rem * var(--scale-factor, 1));
+          }
+          .standard-layout .text-5xl {
+            font-size: calc(3rem * var(--scale-factor, 1));
+          }
+          .standard-layout .px-3 {
+            padding-left: calc(0.75rem * var(--scale-factor, 1));
+            padding-right: calc(0.75rem * var(--scale-factor, 1));
+          }
+          .standard-layout .px-8 {
+            padding-left: calc(2rem * var(--scale-factor, 1));
+            padding-right: calc(2rem * var(--scale-factor, 1));
+          }
+          .standard-layout .py-1 {
+            padding-top: calc(0.25rem * var(--scale-factor, 1));
+            padding-bottom: calc(0.25rem * var(--scale-factor, 1));
+          }
+          .standard-layout .py-2 {
+            padding-top: calc(0.5rem * var(--scale-factor, 1));
+            padding-bottom: calc(0.5rem * var(--scale-factor, 1));
+          }
+          .standard-layout .py-4 {
+            padding-top: calc(1rem * var(--scale-factor, 1));
+            padding-bottom: calc(1rem * var(--scale-factor, 1));
+          }
+          .standard-layout .py-6 {
+            padding-top: calc(1.5rem * var(--scale-factor, 1));
+            padding-bottom: calc(1.5rem * var(--scale-factor, 1));
+          }
+          .standard-layout .py-12 {
+            padding-top: calc(3rem * var(--scale-factor, 1));
+            padding-bottom: calc(3rem * var(--scale-factor, 1));
+          }
+          .standard-layout .pb-8 {
+            padding-bottom: calc(2rem * var(--scale-factor, 1));
+          }
+          .standard-layout .mt-1 {
+            margin-top: calc(0.25rem * var(--scale-factor, 1));
+          }
+          .standard-layout .ml-4 {
+            margin-left: calc(1rem * var(--scale-factor, 1));
+          }
+          .standard-layout .mb-1 {
+            margin-bottom: calc(0.25rem * var(--scale-factor, 1));
+          }
+          .standard-layout .mb-2 {
+            margin-bottom: calc(0.5rem * var(--scale-factor, 1));
+          }
+          .standard-layout .mb-3 {
+            margin-bottom: calc(0.75rem * var(--scale-factor, 1));
+          }
+          .standard-layout .mb-4 {
+            margin-bottom: calc(1rem * var(--scale-factor, 1));
+          }
+          .standard-layout .mb-6 {
+            margin-bottom: calc(1.5rem * var(--scale-factor, 1));
+          }
+          .standard-layout .mb-10 {
+            margin-bottom: calc(2.5rem * var(--scale-factor, 1));
+          }
+          .standard-layout .mb-12 {
+            margin-bottom: calc(3rem * var(--scale-factor, 1));
+          }
+          .standard-layout .gap-2 {
+            gap: calc(0.5rem * var(--scale-factor, 1));
+          }
+          .standard-layout .gap-4 {
+            gap: calc(1rem * var(--scale-factor, 1));
+          }
+          .standard-layout .gap-6 {
+            gap: calc(1.5rem * var(--scale-factor, 1));
+          }
+          .standard-layout .space-y-4 > * + * {
+            margin-top: calc(1rem * var(--scale-factor, 1));
+          }
+          .standard-layout .space-y-6 > * + * {
+            margin-top: calc(1.5rem * var(--scale-factor, 1));
+          }
+          .standard-layout .w-4 {
+            width: calc(1rem * var(--scale-factor, 1));
+            height: calc(1rem * var(--scale-factor, 1));
+          }
+          .standard-layout .w-1\\.5 {
+            width: calc(0.375rem * var(--scale-factor, 1));
+            height: calc(0.375rem * var(--scale-factor, 1));
+          }
+          .standard-layout .h-1\\.5 {
+            height: calc(0.375rem * var(--scale-factor, 1));
+          }
+          .standard-layout .tracking-\\[0\\.2em\\] {
+            letter-spacing: calc(0.2em * var(--scale-factor, 1));
+          }
+          .standard-layout .tracking-wider {
+            letter-spacing: calc(0.05em * var(--scale-factor, 1));
+          }
+          .standard-layout .tracking-widest {
+            letter-spacing: calc(0.1em * var(--scale-factor, 1));
+          }
+          .standard-layout .tracking-wide {
+            letter-spacing: calc(0.025em * var(--scale-factor, 1));
+          }
+        `}</style>
         <div
           className="bg-white mx-auto px-8 py-12 shadow-sm"
           style={{ width: "210mm", minHeight: "297mm" }}
@@ -99,7 +230,10 @@ export const StandardLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
             </h2>
             <div className="space-y-6">
               {data.experience.map((exp) => (
-                <div key={exp.id} className="border-l-4 border-blue-500 pl-6 py-2">
+                <div
+                  key={exp.id}
+                  className="border-l-4 border-blue-500 pl-6 py-2"
+                >
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="text-xl font-semibold text-gray-900">
                       {exp.company}
@@ -141,7 +275,10 @@ export const StandardLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
             </h2>
             <div className="space-y-4">
               {data.education.map((edu) => (
-                <div key={edu.id} className="border-l-4 border-green-500 pl-6 py-2">
+                <div
+                  key={edu.id}
+                  className="border-l-4 border-green-500 pl-6 py-2"
+                >
                   <div className="flex justify-between items-start mb-1">
                     <h3 className="text-lg font-semibold text-gray-900">
                       {edu.institution}
@@ -154,7 +291,9 @@ export const StandardLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
                     <p className="text-gray-700 font-medium">{edu.title}</p>
                   )}
                   {edu.description && (
-                    <p className="text-gray-600 text-sm mt-1">{edu.description}</p>
+                    <p className="text-gray-600 text-sm mt-1">
+                      {edu.description}
+                    </p>
                   )}
                 </div>
               ))}
