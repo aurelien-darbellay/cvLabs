@@ -160,9 +160,6 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
                   <li key={l.id} className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
                     <span>{l.name}</span>
-                    {l.level && (
-                      <span className="text-slate-300 text-xs">({l.level})</span>
-                    )}
                   </li>
                 ))}
               </ul>

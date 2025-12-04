@@ -34,7 +34,7 @@ export async function exportElementToPdf(
   filename = "cv.pdf"
 ) {
   const canvas = await html2canvas(element, {
-    scale: 8,
+    scale: 5,
     useCORS: true,
     backgroundColor: "#ffffff",
     logging: false,
@@ -45,8 +45,21 @@ export async function exportElementToPdf(
     },
   });
 
-  const imgData = canvas.toDataURL("image/png");
-  const pdf = new jsPDF("p", "mm", "a4");
+  // Preview canvas in new tab
+  /* canvas.toBlob((blob) => {
+    if (blob) {
+      const previewUrl = URL.createObjectURL(blob);
+      window.open(previewUrl, "_blank");
+    }
+  }, "image/png"); */
+
+  const imgData = canvas.toDataURL("image/jpeg", 0.8);
+  const pdf = new jsPDF({
+    orientation: "p",
+    unit: "mm",
+    format: "a4",
+    compress: true,
+  });
   const imgProps = pdf.getImageProperties(imgData);
 
   const margin = 0;
@@ -58,14 +71,14 @@ export async function exportElementToPdf(
   let position = margin;
 
   let pageIndex = 1;
-  pdf.addImage(imgData, "PNG", margin, position, printableWidth, imgHeight);
+  pdf.addImage(imgData, "JPEG", margin, position, printableWidth, imgHeight);
   heightLeft -= PDF_PAGE_HEIGHT;
 
   while (heightLeft > 0) {
     position = heightLeft - imgHeight + margin;
     pageIndex += 1;
     pdf.addPage();
-    pdf.addImage(imgData, "PNG", margin, position, printableWidth, imgHeight);
+    pdf.addImage(imgData, "JPEG", margin, position, printableWidth, imgHeight);
     heightLeft -= PDF_PAGE_HEIGHT;
   }
 
