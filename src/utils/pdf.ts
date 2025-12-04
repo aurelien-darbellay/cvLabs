@@ -29,26 +29,10 @@ function normalizeColours(doc: Document) {
   });
 }
 
-function normalizeBadges(doc: Document) {
-  doc.querySelectorAll<HTMLElement>("[data-badge]").forEach((el) => {
-    console.log("Normalizing badge", el.computedStyleMap());
-    el.textContent = "changed";
-  });
-}
-
 export async function exportElementToPdf(
   element: HTMLElement,
   filename = "cv.pdf"
 ) {
-  // console.log("Starting PDF export...");
-  const { width, height } = element.getBoundingClientRect();
-  // console.log("Element dimensions", {
-  //   width,
-  //   height,
-  //   scrollWidth: element.scrollWidth,
-  //   scrollHeight: element.scrollHeight,
-  // });
-  // console.time("html2canvas render");
   const canvas = await html2canvas(element, {
     scale: 8,
     useCORS: true,
@@ -57,50 +41,33 @@ export async function exportElementToPdf(
     windowWidth: element.scrollWidth,
     windowHeight: element.scrollHeight,
     onclone: (doc) => {
-      // console.log("Cloned document", doc.documentElement.outerHTML);
       normalizeColours(doc);
-      normalizeBadges(doc);
     },
   });
-  // console.timeEnd("html2canvas render");
-  // console.log("Canvas ready", { width: canvas.width, height: canvas.height });
 
   const imgData = canvas.toDataURL("image/png");
   const pdf = new jsPDF("p", "mm", "a4");
   const imgProps = pdf.getImageProperties(imgData);
-  // console.log("Image properties", {
-  //   width: imgProps.width,
-  //   height: imgProps.height,
-  //   colorSpace: imgProps.colorSpace,
-  // });
 
   const margin = 0;
   const printableWidth = PDF_PAGE_WIDTH;
   const imgHeight = (imgProps.height * printableWidth) / imgProps.width;
   const totalPages = Math.max(1, Math.ceil(imgHeight / PDF_PAGE_HEIGHT));
-  // console.log("Preparing PDF layout", {
-  //   printableWidth,
-  //   imgHeight,
-  //   totalPages,
-  // });
 
   let heightLeft = imgHeight;
   let position = margin;
 
   let pageIndex = 1;
-  // console.log("Adding page", { pageIndex, position, heightLeft });
   pdf.addImage(imgData, "PNG", margin, position, printableWidth, imgHeight);
   heightLeft -= PDF_PAGE_HEIGHT;
 
   while (heightLeft > 0) {
     position = heightLeft - imgHeight + margin;
     pageIndex += 1;
-    // console.log("Adding page", { pageIndex, position, heightLeft });
     pdf.addPage();
     pdf.addImage(imgData, "PNG", margin, position, printableWidth, imgHeight);
     heightLeft -= PDF_PAGE_HEIGHT;
   }
 
-  // console.log(`Saving PDF as ${filename}`);
   pdf.save(filename);
 }
