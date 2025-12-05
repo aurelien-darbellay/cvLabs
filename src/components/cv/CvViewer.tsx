@@ -56,6 +56,7 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
   const [downloading, setDownloading] = useState(false);
   const [scaleFactor, setScaleFactor] = useState(0.6);
   const [showWarning, setShowWarning] = useState(false);
+  const [singlePageMode, setSinglePageMode] = useState(true);
   const cvRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -136,9 +137,14 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
 
   // Auto-adjust scale to fit A4 height
   useEffect(() => {
-    console.log("Adjusting scale...");
+    if (!singlePageMode) {
+      setScaleFactor(1);
+      setShowWarning(false);
+      return;
+    }
+
     if (!cvRef.current || !data) return;
-    console.log("Current CV height:", cvRef.current.scrollHeight);
+
     const adjustScale = () => {
       const currentHeight = cvRef.current!.scrollHeight;
       const result = calculateOptimalScale(
@@ -154,7 +160,7 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
     // Debounce to avoid excessive recalculations
     const timer = setTimeout(adjustScale, 300);
     return () => clearTimeout(timer);
-  }, [data, layout, currentLang, cvRef.current]);
+  }, [data, layout, currentLang, cvRef.current, singlePageMode]);
 
   if (loading) return <div className="p-8 text-center">Loading CV...</div>;
   if (!data) return <div className="p-8 text-center">Error loading data</div>;
@@ -192,6 +198,16 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
             </option>
           ))}
         </select>
+
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={singlePageMode}
+            onChange={(e) => setSinglePageMode(e.target.checked)}
+            className="cursor-pointer"
+          />
+          Single page fit
+        </label>
 
         <button
           onClick={handleDownloadPdf}

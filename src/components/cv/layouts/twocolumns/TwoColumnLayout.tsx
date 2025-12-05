@@ -36,7 +36,7 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
             font-size: calc(1.25rem * var(--scale-factor, 1));
           }
           .two-column-layout .text-5xl {
-            font-size: calc(3rem * var(--scale-factor, 1));
+            font-size: calc(2.5rem * var(--scale-factor, 1));
           }
           .two-column-layout .px-2 {
             padding-left: calc(0.5rem * var(--scale-factor, 1));
@@ -118,11 +118,11 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
             padding-left: calc(1rem * var(--scale-factor, 1));
           }
           .two-column-layout .pl-70 {
-            padding-left: calc(17.5rem * var(--scale-factor, 1));
+            padding-left: calc(17rem * var(--scale-factor, 1));
           }
           .two-column-layout img.w-50 {
-            width: calc(12.5rem * var(--scale-factor, 1));
-            height: calc(12.5rem * var(--scale-factor, 1));
+            width: calc(14rem * var(--scale-factor, 1));
+            height: calc(14rem * var(--scale-factor, 1));
           }
           .two-column-layout .w-10 {
             width: calc(2.5rem * var(--scale-factor, 1));
@@ -143,11 +143,12 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
             <img
               src={data.user.profileImageUrl}
               alt={data.user.fullName}
-              className="absolute top-6 w-50 h-50 rounded-full object-cover shadow-lg z-10"
+              className="absolute top-6 left-10 w-50 h-50 rounded-full object-cover shadow-lg z-10"
             />
           )}
-          <div className="pl-70">
-            <h1 className="text-5xl font-bold tracking-tight uppercase">
+          <div className="relative w-[275px]"></div>
+          <div>
+            <h1 className="text-5xl font-bold tracking-tight uppercase text-nowrap">
               {data.user.fullName}
             </h1>
             {data.user.title && (
@@ -160,7 +161,7 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
 
         <div className="flex">
           {/* Sidebar */}
-          <div className="relative w-[275px] bg-slate-700 text-white px-5 pt-12 pb-8 flex flex-col gap-6">
+          <div className="relative w-[275px] bg-slate-700 text-white px-5 pt-24 pb-8 flex flex-col gap-6">
             {/* Contact */}
             <div>
               <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-300 mb-3 pb-2 border-b border-slate-500">

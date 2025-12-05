@@ -4,14 +4,18 @@ import { useExperienceList } from "@/hooks/useExperience";
 import { useLanguages, useSoftSkills, useTechSkills } from "@/hooks/useSkills";
 import { AuthButton } from "@/components/auth/AuthButton";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function HomePage() {
-  const { cvs, loading: loadingCvs, error: errorCvs } = useCvs();
-  const { education } = useEducationList();
-  const { experience } = useExperienceList();
-  const { languages } = useLanguages();
-  const { softSkills } = useSoftSkills();
-  const { techSkills } = useTechSkills();
+  const { user } = useAuth();
+  const deps = [user?.id];
+
+  const { cvs, loading: loadingCvs, error: errorCvs } = useCvs(deps);
+  const { education } = useEducationList(deps);
+  const { experience } = useExperienceList(deps);
+  const { languages } = useLanguages(deps);
+  const { softSkills } = useSoftSkills(deps);
+  const { techSkills } = useTechSkills(deps);
 
   return (
     <div className="font-sans p-6">

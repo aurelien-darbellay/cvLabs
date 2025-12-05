@@ -6,29 +6,38 @@ import type { TechSkill } from "@/domain/TechSkill";
 import type { SoftSkill } from "@/domain/SoftSkill";
 import type { Language } from "@/domain/Language";
 
-export function useTechSkills() {
-  const { data, loading, error } = useAsync<TechSkill[]>(() => techSkillService.list(), []);
+export function useTechSkills(deps: any[] = []) {
+  const { data, loading, error } = useAsync<TechSkill[]>(
+    () => techSkillService.list(),
+    deps
+  );
   return {
     techSkills: data ?? [],
     loading,
-    error
+    error,
   };
 }
 
-export function useSoftSkills() {
-  const { data, loading, error } = useAsync<SoftSkill[]>(() => softSkillService.list(), []);
+export function useSoftSkills(deps: any[] = []) {
+  const { data, loading, error } = useAsync<SoftSkill[]>(
+    () => softSkillService.list(),
+    deps
+  );
   return {
     softSkills: data ?? [],
     loading,
-    error
+    error,
   };
 }
 
-export function useLanguages() {
-  const { data, loading, error } = useAsync<Language[]>(() => languageService.list(), []);
+export function useLanguages(deps: any[] = []) {
+  const { data, loading, error } = useAsync<Language[]>(
+    () => languageService.list(),
+    deps
+  );
   return {
     languages: data ?? [],
     loading,
-    error
+    error,
   };
 }
