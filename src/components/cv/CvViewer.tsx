@@ -95,6 +95,15 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
         const user = await userService.getById(cv.userId);
         if (!user) throw new Error("User not found");
 
+        const profession = await translationService.getProfessionForCv(
+          cv.id,
+          currentLang
+        );
+        if (profession) {
+          console.log("Fetched profession:", profession);
+          user.title = profession.title ?? "";
+        }
+
         // 2. Fetch Translated Data
         const summary = await translationService.getSummaryForCv(
           cv.id,
