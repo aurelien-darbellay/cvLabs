@@ -100,8 +100,7 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
           currentLang
         );
         if (profession) {
-          console.log("Fetched profession:", profession);
-          user.title = profession.title ?? "";
+          user.profession = profession;
         }
 
         // 2. Fetch Translated Data
@@ -109,12 +108,12 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
           cv.id,
           currentLang
         );
-        const experience = await translationService.getTranslatedExperience(
-          cv.userId,
+        const experience = await translationService.getExperienceForCv(
+          cv.id,
           currentLang
         );
-        const education = await translationService.getTranslatedEducation(
-          cv.userId,
+        const education = await translationService.getEducationForCv(
+          cv.id,
           currentLang
         );
         const softSkills = await translationService.getTranslatedSoftSkills(

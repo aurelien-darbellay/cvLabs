@@ -6,81 +6,150 @@ import { SoftSkill } from "@/domain/SoftSkill";
 import { Profession } from "@/domain/Profession";
 
 export class TranslationService {
-  async getTranslatedExperience(
-    userId: string,
+  async getExperienceForCv(
+    cvId: number,
     langCode: string
   ): Promise<Experience[]> {
-    // Fetch experiences and join with translations
-    const { data, error } = await supabase
-      .from("experience")
-      .select(
-        `*, experience_translations!inner (job_title, description, skills)`
-      )
-      .eq("user_id", userId)
-      .eq("experience_translations.lang_code", langCode)
-      .order("start_date", { ascending: false });
+    // First, get all experience_ids from cv_experiences
+    const { data: cvExperiencesData, error: cvExperiencesError } =
+      await supabase
+        .from("cv_experience")
+        .select(
+          "experience_id, experience(id, owner_id, company, start_date, end_date, is_current, technologies, clients, created_at)"
+        )
+        .eq("cv_id", cvId)
+        .eq("visible", true);
 
-    if (error) {
-      console.error("Error fetching translated experience:", error);
+    if (cvExperiencesError || !cvExperiencesData) {
+      console.error("Error fetching cv_experiences:", cvExperiencesError);
       return [];
     }
 
-    return data.map((row: any) => {
-      const translation = row.experience_translations[0];
-      return new Experience(
-        row.id,
-        row.owner_id,
-        row.user_id,
-        row.company,
-        row.start_date ? new Date(row.start_date) : null,
-        row.end_date ? new Date(row.end_date) : null,
-        row.is_current,
-        translation?.skills || row.technologies || [],
-        row.clients || [],
-        new Date(row.created_at),
-        translation?.job_title,
-        translation?.description
+    // Then, for each experience, get the translation
+    const experiences: Experience[] = [];
+    for (const cvExp of cvExperiencesData) {
+      const experienceId = cvExp.experience_id;
+      const experienceBase = cvExp.experience as any;
+
+      const { data: translationData, error: translationError } = await supabase
+        .from("experience_translations")
+        .select("job_title, description, skills")
+        .eq("experience_id", experienceId)
+        .eq("lang_code", langCode)
+        .single();
+
+      if (translationError) {
+        console.error(
+          "Error fetching experience translation:",
+          translationError
+        );
+        // Add experience without translation
+        experiences.push(
+          new Experience(
+            experienceBase.id,
+            experienceBase.owner_id,
+            experienceBase.user_id,
+            experienceBase.company,
+            experienceBase.start_date
+              ? new Date(experienceBase.start_date)
+              : null,
+            experienceBase.end_date ? new Date(experienceBase.end_date) : null,
+            experienceBase.is_current,
+            [],
+            experienceBase.clients || [],
+            new Date(experienceBase.created_at)
+          )
+        );
+        continue;
+      }
+
+      experiences.push(
+        new Experience(
+          experienceBase.id,
+          experienceBase.owner_id,
+          experienceBase.user_id,
+          experienceBase.company,
+          experienceBase.start_date
+            ? new Date(experienceBase.start_date)
+            : null,
+          experienceBase.end_date ? new Date(experienceBase.end_date) : null,
+          experienceBase.is_current,
+          translationData?.skills || experienceBase.technologies || [],
+          experienceBase.clients || [],
+          new Date(experienceBase.created_at),
+          translationData?.job_title,
+          translationData?.description
+        )
       );
-    });
+    }
+
+    return experiences;
   }
 
-  async getTranslatedEducation(
-    userId: string,
+  async getEducationForCv(
+    cvId: number,
     langCode: string
   ): Promise<Education[]> {
-    const { data, error } = await supabase
-      .from("education")
+    // First, get all education_ids from cv_education
+    const { data: cvEducationData, error: cvEducationError } = await supabase
+      .from("cv_education")
       .select(
-        `
-        *,
-        education_translations!inner (
-          title,
-          description
-        )
-      `
+        "education_id, education(id, owner_id, institution, start_year, end_year)"
       )
-      .eq("user_id", userId)
-      .eq("education_translations.lang_code", langCode)
-      .order("start_year", { ascending: false });
+      .eq("cv_id", cvId)
+      .eq("visible", true);
 
-    if (error) {
-      console.error("Error fetching translated education:", error);
+    if (cvEducationError || !cvEducationData) {
+      console.error("Error fetching cv_education:", cvEducationError);
       return [];
     }
 
-    return data.map((row: any) => {
-      const translation = row.education_translations[0];
-      return new Education(
-        row.id,
-        row.owner_id,
-        row.user_id,
-        row.institution,
-        row.start_year,
-        row.end_year,
-        translation?.title,
-        translation?.description
+    // Then, for each education, get the translation
+    const educations: Education[] = [];
+    for (const cvEdu of cvEducationData) {
+      const educationId = cvEdu.education_id;
+      const educationBase = cvEdu.education as any;
+
+      const { data: translationData, error: translationError } = await supabase
+        .from("education_translations")
+        .select("title, description")
+        .eq("education_id", educationId)
+        .eq("lang_code", langCode)
+        .single();
+
+      if (translationError) {
+        console.error(
+          "Error fetching education translation:",
+          translationError
+        );
+        // Add education without translation
+        educations.push(
+          new Education(
+            educationBase.id,
+            educationBase.owner_id,
+            educationBase.user_id,
+            educationBase.institution,
+            educationBase.start_year,
+            educationBase.end_year
+          )
+        );
+        continue;
+      }
+
+      educations.push(
+        new Education(
+          educationBase.id,
+          educationBase.owner_id,
+          educationBase.user_id,
+          educationBase.institution,
+          educationBase.start_year,
+          educationBase.end_year,
+          translationData?.title,
+          translationData?.description
+        )
       );
-    });
+    }
+    return educations;
   }
 
   async getSummaryForCv(
@@ -161,9 +230,9 @@ export class TranslationService {
     cvId: number,
     langCode: string
   ): Promise<Profession | null> {
-    // First, get the profession_id from cv_professions
+    // First, get the profession_id from cv_profession
     const { data: cvProfessionData, error: cvProfessionError } = await supabase
-      .from("cv_professions")
+      .from("cv_profession")
       .select("profession_id, professions(id, owner_id)")
       .eq("cv_id", cvId)
       .eq("visible", true)

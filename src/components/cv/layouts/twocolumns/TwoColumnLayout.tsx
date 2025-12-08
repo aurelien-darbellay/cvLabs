@@ -24,16 +24,19 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
             font-size: calc(1.125rem * var(--scale-factor, 1));
           }
           .two-column-layout .text-xs {
-            font-size: calc(0.75rem * var(--scale-factor, 1));
+            font-size: calc(0.875rem * var(--scale-factor, 1));
           }
           .two-column-layout .text-sm {
-            font-size: calc(0.875rem * var(--scale-factor, 1));
+            font-size: calc(1rem * var(--scale-factor, 1));
           }
           .two-column-layout .text-lg {
             font-size: calc(1.125rem * var(--scale-factor, 1));
           }
           .two-column-layout .text-xl {
             font-size: calc(1.25rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .text-2xl {
+            font-size: calc(1.8rem * var(--scale-factor, 1));
           }
           .two-column-layout .text-5xl {
             font-size: calc(2.5rem * var(--scale-factor, 1));
@@ -70,6 +73,12 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
           }
           .two-column-layout .p-5 {
             padding: calc(1.25rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .pb-2 {
+            padding-bottom: calc(0.5rem * var(--scale-factor, 1));
+          }
+          .two-column-layout .mb-2 {
+            margin-bottom: calc(0.3rem * var(--scale-factor, 1));
           }
           .two-column-layout .mb-3 {
             margin-bottom: calc(0.75rem * var(--scale-factor, 1));
@@ -111,8 +120,8 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
           .two-column-layout .space-y-3 > * + * {
             margin-top: calc(0.75rem * var(--scale-factor, 1));
           }
-          .two-column-layout .space-y-5 > * + * {
-            margin-top: calc(1.25rem * var(--scale-factor, 1));
+          .two-column-layout .space-y-2 > * + * {
+            margin-top: calc(0.55rem * var(--scale-factor, 1));
           }
           .two-column-layout .pl-4 {
             padding-left: calc(1rem * var(--scale-factor, 1));
@@ -121,8 +130,8 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
             padding-left: calc(17rem * var(--scale-factor, 1));
           }
           .two-column-layout img.w-50 {
-            width: calc(14rem * var(--scale-factor, 1));
-            height: calc(14rem * var(--scale-factor, 1));
+            width: calc(14rem * sqrt(var(--scale-factor, 1)));
+            height: calc(14rem * sqrt(var(--scale-factor, 1)));
           }
           .two-column-layout .w-10 {
             width: calc(2.5rem * var(--scale-factor, 1));
@@ -143,18 +152,24 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
             <img
               src={data.user.profileImageUrl}
               alt={data.user.fullName}
-              className="absolute top-6 left-10 w-50 h-50 rounded-full object-cover shadow-lg z-10"
+              className="absolute top-10 left-10 w-50 h-50 rounded-full object-cover shadow-lg z-10"
             />
           )}
           <div className="relative w-[275px]"></div>
           <div>
-            <h1 className="text-5xl font-bold tracking-tight uppercase text-nowrap">
+            <h1 className="text-7xl font-bold tracking-tight uppercase text-nowrap">
               {data.user.fullName}
             </h1>
-            {data.user.title && (
-              <p className="text-sm uppercase tracking-widest text-slate-200">
-                {data.user.title}
-              </p>
+            {data.user.profession && (
+              <div>
+                <hr className="border-t border-white my-3 mx-4" />
+                <p className="text-2xl uppercase tracking-widest text-center text-slate-200">
+                  {data.user.profession.title}
+                </p>
+                <p className="text-xl uppercase tracking-widest text-center text-slate-400">
+                  {data.user.profession.description}
+                </p>
+              </div>
             )}
           </div>
         </header>
@@ -163,8 +178,8 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
           {/* Sidebar */}
           <div className="relative w-[275px] bg-slate-700 text-white px-5 pt-24 pb-8 flex flex-col gap-6">
             {/* Contact */}
-            <div>
-              <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-300 mb-3 pb-2 border-b border-slate-500">
+            <div className="pb-2">
+              <h3 className="text-lg font-bold uppercase tracking-[0.2em] text-slate-300 mb-3 pb-2 border-b border-slate-500">
                 {labels.contact}
               </h3>
               <div className="flex flex-col gap-2 text-sm leading-relaxed">
@@ -184,10 +199,8 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
                       />
                     </svg>
                   }
-                  textClassName="break-all"
+                  textClassName="text-sm"
                   href={`mailto:${data.user.contactEmail}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
                 >
                   {data.user.contactEmail}
                 </LinkWithIcon>
@@ -246,8 +259,8 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
             </div>
 
             {/* Tech Skills */}
-            <div>
-              <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-300 mb-3 pb-2 border-b border-slate-500">
+            <div className="pb-2">
+              <h3 className="text-lg font-bold uppercase tracking-[0.2em] text-slate-300 mb-3 pb-2 border-b border-slate-500">
                 {labels.tech}
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -255,7 +268,7 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
                   <span
                     key={s.id}
                     data-badge="tech-skill"
-                    className="px-2.5 py-0.5 bg-slate-600 text-white text-xs rounded"
+                    className="text-sm px-2.5 py-0.5 bg-slate-600 text-white rounded"
                   >
                     {s.name}
                   </span>
@@ -264,8 +277,8 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
             </div>
 
             {/* Soft Skills */}
-            <div>
-              <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-300 mb-3 pb-2 border-b border-slate-500">
+            <div className="pb-2">
+              <h3 className="text-lg font-bold uppercase tracking-[0.2em] text-slate-300 mb-3 pb-2 border-b border-slate-500">
                 {labels.soft}
               </h3>
               <ul className="space-y-1.5 text-sm">
@@ -279,8 +292,8 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
             </div>
 
             {/* Languages */}
-            <div>
-              <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-300 mb-3 pb-2 border-b border-slate-500">
+            <div className="pb-2">
+              <h3 className="text-lg font-bold uppercase tracking-[0.2em] text-slate-300 mb-3 pb-2 border-b border-slate-500">
                 {labels.languages}
               </h3>
               <ul className="space-y-1.5 text-sm">
@@ -307,7 +320,7 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
 
             {/* Experience */}
             <section className="mb-6">
-              <h2 className="text-xl font-bold uppercase tracking-widest text-slate-800 mb-4">
+              <h2 className="text-2xl font-bold uppercase tracking-widest text-slate-800 mb-2">
                 {labels.experience}
               </h2>
               <div className="space-y-3">
@@ -358,10 +371,10 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
 
             {/* Education */}
             <section>
-              <h2 className="text-xl font-bold uppercase tracking-widest text-slate-800 mb-4">
+              <h2 className="text-2xl font-bold uppercase tracking-widest text-slate-800 mb-2">
                 {labels.education}
               </h2>
-              <div className="space-y-5">
+              <div className="space-y-2">
                 {data.education.map((edu) => (
                   <div key={edu.id} className="pl-4">
                     <div className="flex justify-between items-start">

@@ -30,9 +30,7 @@ export function calculateOptimalScale(
   const isTooTall = currentHeight > A4_HEIGHT;
   const direction = isTooTall ? -1 : 1;
   const scaleLimit = isTooTall ? MIN_SCALE : MAX_SCALE;
-  console.log(
-    `Calculating optimal scale: currentHeight=${currentHeight}, previousScale=${previousScale}, isTooTall=${isTooTall}`
-  );
+
   // Attempt to find optimal scale
   const optimalScale = adjustScale(
     element,

@@ -1,6 +1,8 @@
+import { Profession } from "./Profession";
+
 export interface UserRow {
   id: string;
-  title: string;
+  profession: Profession | null;
   full_name: string;
   profile_image_url: string | null;
   contact_email: string | null;
@@ -14,7 +16,7 @@ export interface UserRow {
 export class User {
   constructor(
     public id: string,
-    public title: string,
+    public profession: Profession | null,
     public fullName: string,
     public profileImageUrl: string | null,
     public contactEmail: string | null,
@@ -28,7 +30,7 @@ export class User {
   static fromRow(row: UserRow): User {
     return new User(
       row.id,
-      row.title,
+      row.profession,
       row.full_name,
       row.profile_image_url,
       row.contact_email,
