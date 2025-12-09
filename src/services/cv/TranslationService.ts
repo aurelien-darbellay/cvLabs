@@ -4,6 +4,7 @@ import { Education } from "@/domain/Education";
 import { Summary } from "@/domain/Summary";
 import { SoftSkill } from "@/domain/SoftSkill";
 import { Profession } from "@/domain/Profession";
+import { CvLanguage } from "@/domain/CvLanguage";
 
 export class TranslationService {
   async getExperienceForCv(
@@ -271,6 +272,63 @@ export class TranslationService {
       translationData?.title ?? null,
       translationData?.description ?? null
     );
+  }
+
+  async getLanguagesForCv(
+    cvId: number,
+    langCode: string
+  ): Promise<CvLanguage[] | null> {
+    // First, get the profession_id from cv_profession
+    const { data: languageData, error: languageError } = await supabase
+      .from("cv_languages")
+      .select("language_id,level")
+      .eq("cv_id", cvId)
+      .eq("visible", true);
+
+    if (languageError || !languageData) {
+      console.error("Error fetching cv_languages:", languageError);
+      return null;
+    }
+
+    const languages: CvLanguage[] = [];
+    for (const cvLang of languageData) {
+      const languageId = cvLang.language_id;
+      const level = cvLang.level as any;
+
+      const { data: translatedName, error: nameError } = await supabase
+        .from("languages_translations")
+        .select("name")
+        .eq("language_id", languageId)
+        .eq("lang_code", langCode)
+        .single();
+
+      const { data: translatedLevel, error: levelError } = await supabase
+        .from("languages_level_translations")
+        .select("name")
+        .eq("level_code", level)
+        .eq("lang_code", langCode)
+        .single();
+
+      if (nameError || levelError) {
+        console.error(
+          "Error fetching language or level translation:",
+          nameError || levelError
+        );
+        // Add education without translation
+        languages.push(new CvLanguage(languageId, "Unknown", level, level));
+        continue;
+      }
+
+      languages.push(
+        new CvLanguage(
+          languageId,
+          translatedName?.name ?? "Unknown",
+          level,
+          translatedLevel?.name ?? level
+        )
+      );
+    }
+    return languages;
   }
 }
 

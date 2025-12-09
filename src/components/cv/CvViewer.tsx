@@ -121,6 +121,12 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
           currentLang
         );
 
+        const languagesForCv = await translationService.getLanguagesForCv(
+          cv.id,
+          currentLang
+        );
+        console.log("Fetched languages for CV:", languagesForCv);
+
         const techData = await cvRelationsService.getTechSkillsForCv(cv.id);
         const techSkills = (techData || []).map(TechSkill.fromRow);
 
@@ -129,7 +135,7 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
           summary,
           experience,
           education,
-          languages,
+          languages: languagesForCv ?? [],
           softSkills,
           techSkills,
         });

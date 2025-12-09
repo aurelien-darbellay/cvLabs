@@ -2,16 +2,16 @@ import { User } from "@/domain/User";
 import { Experience } from "@/domain/Experience";
 import { Education } from "@/domain/Education";
 import { Summary } from "@/domain/Summary";
-import { Language } from "@/domain/Language";
 import { SoftSkill } from "@/domain/SoftSkill";
 import { TechSkill } from "@/domain/TechSkill";
+import { CvLanguage } from "@/domain/CvLanguage";
 
 export interface CvData {
   user: User;
   summary: Summary | null;
   experience: Experience[];
   education: Education[];
-  languages: Language[];
+  languages: CvLanguage[];
   softSkills: SoftSkill[];
   techSkills: TechSkill[];
 }

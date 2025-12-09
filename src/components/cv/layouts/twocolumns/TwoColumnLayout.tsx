@@ -300,7 +300,9 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
                 {data.languages.map((l) => (
                   <li key={l.id} className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
-                    <span>{l.name}</span>
+                    <span>
+                      {l.name} {`(${l.level_name})`}
+                    </span>
                   </li>
                 ))}
               </ul>
