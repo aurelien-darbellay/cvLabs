@@ -255,6 +255,35 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
                     GitHub
                   </LinkWithIcon>
                 )}
+                {data.user.portfolioUrl && (
+                  <LinkWithIcon
+                    icon={
+                      <svg
+                        className="w-[30px] h-[30px]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.4}
+                          d="M3 7a2 2 0 012-2h3l1-2h6l1 2h3a2 2 0 012 2v11a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.4}
+                          d="M9 12h6"
+                        />
+                      </svg>
+                    }
+                    href={data.user.portfolioUrl}
+                    textClassName="text-sm"
+                  >
+                    Portfolio
+                  </LinkWithIcon>
+                )}
               </div>
             </div>
 

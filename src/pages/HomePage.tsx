@@ -19,8 +19,10 @@ export default function HomePage() {
 
   return (
     <div className="font-sans p-6">
-      <AuthButton />
-      <h1 className="text-3xl font-bold mb-6">My CV App</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">My CV App</h1>
+        <AuthButton />
+      </div>
 
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">CVs</h2>

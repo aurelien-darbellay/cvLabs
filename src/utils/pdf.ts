@@ -34,7 +34,7 @@ export async function exportElementToPdf(
   filename = "cv.pdf"
 ) {
   const canvas = await html2canvas(element, {
-    scale: 8,
+    scale: 5,
     useCORS: true,
     backgroundColor: "#ffffff",
     logging: false,
@@ -53,7 +53,7 @@ export async function exportElementToPdf(
     }
   }, "image/png"); */
 
-  const imgData = canvas.toDataURL("image/jpeg", 0.8);
+  const imgData = canvas.toDataURL("image/jpeg", 0.5);
   const pdf = new jsPDF({
     orientation: "p",
     unit: "mm",
