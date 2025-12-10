@@ -1,17 +1,21 @@
-export interface EducationTranslatedFieldRow {
-  education_id: string;
+import { TranslatedField, type TranslatedFieldRow } from "./TranslatedField";
+
+export interface EducationTranslatedFieldRow extends TranslatedFieldRow {
+  education_id: number;
   lang_code: string;
   title: string;
   description: string;
 }
 
-export class EducationTranslatedField {
+export class EducationTranslatedField extends TranslatedField {
   constructor(
-    public educationId: string,
-    public langCode: string,
+    domainId: number,
+    langCode: string,
     public title: string,
     public description: string
-  ) {}
+  ) {
+    super(domainId, langCode);
+  }
 
   static fromRow(row: EducationTranslatedFieldRow): EducationTranslatedField {
     return new EducationTranslatedField(

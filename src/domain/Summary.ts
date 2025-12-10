@@ -1,4 +1,6 @@
-export interface SummaryRow {
+import { SummaryTranslatedField } from "./translations/SummaryTranslatedField";
+
+export interface SummaryInCvRow {
   id: number;
   owner_id: string;
   user_id: string;
@@ -6,20 +8,33 @@ export interface SummaryRow {
   content?: string;
 }
 
-export class Summary {
+export class SummaryInCv {
   constructor(
     public id: number,
     public ownerId: string,
-    public userId: string,
     public content: string | null
-  ) { }
+  ) {}
+
+  static fromRow(row: SummaryInCvRow): SummaryInCv {
+    return new SummaryInCv(row.id, row.owner_id, row.content ?? null);
+  }
+}
+
+export interface SummaryRow {
+  id: number;
+  summary_translations?: any[];
+}
+
+export class Summary {
+  constructor(
+    public id: number,
+    public translatedFields: SummaryTranslatedField[]
+  ) {}
 
   static fromRow(row: SummaryRow): Summary {
     return new Summary(
       row.id,
-      row.owner_id,
-      row.user_id,
-      row.content ?? null
+      (row.summary_translations || []).map(SummaryTranslatedField.fromRow)
     );
   }
 }

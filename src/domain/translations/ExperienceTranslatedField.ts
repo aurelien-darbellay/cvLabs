@@ -1,4 +1,6 @@
-export interface ExperienceTranslatedFieldRow {
+import { TranslatedField, type TranslatedFieldRow } from "./TranslatedField";
+
+export interface ExperienceTranslatedFieldRow extends TranslatedFieldRow {
   experience_id: number;
   lang_code: string;
   job_title: string;
@@ -6,14 +8,16 @@ export interface ExperienceTranslatedFieldRow {
   skills: string[];
 }
 
-export class ExperienceTranslatedField {
+export class ExperienceTranslatedField extends TranslatedField {
   constructor(
-    public experienceId: number,
-    public langCode: string,
+    domainId: number,
+    langCode: string,
     public jobTitle: string,
     public description: string,
     public skills: string[]
-  ) {}
+  ) {
+    super(domainId, langCode);
+  }
 
   static fromRow(row: ExperienceTranslatedFieldRow): ExperienceTranslatedField {
     return new ExperienceTranslatedField(

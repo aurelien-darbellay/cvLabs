@@ -5,6 +5,7 @@ import { useLanguages, useSoftSkills, useTechSkills } from "@/hooks/useSkills";
 import { AuthButton } from "@/components/auth/AuthButton";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { experienceService } from "@/services/experience/ExperienceService";
 
 export default function HomePage() {
   const { user } = useAuth();

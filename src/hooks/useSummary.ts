@@ -1,12 +1,15 @@
 import { useAsync } from "./useAsync";
 import { summaryService } from "@/services/summary/SummaryService";
-import type { Summary } from "@/domain/Summary";
+import type { SummaryInCv } from "@/domain/Summary";
 
 export function useSummaries() {
-  const { data, loading, error } = useAsync<Summary[]>(() => summaryService.list(), []);
+  const { data, loading, error } = useAsync<SummaryInCv[]>(
+    () => summaryService.list(),
+    []
+  );
   return {
     summaries: data ?? [],
     loading,
-    error
+    error,
   };
 }

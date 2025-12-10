@@ -1,7 +1,6 @@
 export interface EducationInCvRow {
   id: number;
   owner_id: string;
-  user_id: string;
   institution: string | null;
   start_year: number | null;
   end_year: number | null;
@@ -14,7 +13,6 @@ export class EducationInCv {
   constructor(
     public id: number,
     public ownerId: string,
-    public userId: string,
     public institution: string | null,
     public startYear: number | null,
     public endYear: number | null,
@@ -26,7 +24,6 @@ export class EducationInCv {
     return new EducationInCv(
       row.id,
       row.owner_id,
-      row.user_id,
       row.institution,
       row.start_year,
       row.end_year,

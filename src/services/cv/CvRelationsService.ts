@@ -1,4 +1,6 @@
 import { TechSkillRow } from "@/domain/TechSkill";
+import { ExperienceInCvRow } from "@/domain/ExperienceInCv";
+import { EducationInCvRow } from "@/domain/EducationInCv";
 import { supabase } from "@/lib/supabaseClient";
 
 export interface CvExperienceRow {
@@ -36,7 +38,10 @@ export class CvRelationsService {
       .eq("cv_id", cvId)
       .order("position", { ascending: true });
 
-    if (error) throw error;
+    if (error) {
+      console.error("Error fetching cv_experiences:", error);
+      throw error
+    };
     return (data ?? []) as CvExperienceRow[];
   }
 
@@ -101,20 +106,39 @@ export class CvRelationsService {
     return (data ?? []) as CvTechSkillRow[];
   }
   async getTechSkillsForCv(cvId: number): Promise<TechSkillRow[]> {
-    const techSkills = await this.listTechSkillsForCv(cvId);
-    const techSkillIds = techSkills.map((ts) => ts.techskill_id);
-    if (techSkillIds.length === 0) {
-      return [];
-    }
     const { data, error } = await supabase
-      .from("techskills")
-      .select("*")
-      .in("id", techSkillIds);
+      .from("cv_techskills")
+      .select("techskills(*)")
+      .eq("cv_id", cvId)
+      .eq("visible", true)
+      .order("position", { ascending: true });
+
     if (error) throw error;
-    if (data.length === 0) {
-      return [];
-    }
-    return data as TechSkillRow[];
+    return (data?.map((row: any) => row.techskills).filter(Boolean) ?? []) as TechSkillRow[];
+  }
+
+  async getExperienceForCv(cvId: number): Promise<ExperienceInCvRow[]> {
+    const { data, error } = await supabase
+      .from("cv_experience")
+      .select("experience(*)")
+      .eq("cv_id", cvId)
+      .eq("visible", true)
+      .order("position", { ascending: true });
+
+    if (error) throw error;
+    return (data?.map((row: any) => row.experience).filter(Boolean) ?? []) as ExperienceInCvRow[];
+  }
+
+  async getEducationForCv(cvId: number): Promise<EducationInCvRow[]> {
+    const { data, error } = await supabase
+      .from("cv_education")
+      .select("education(*)")
+      .eq("cv_id", cvId)
+      .eq("visible", true)
+      .order("position", { ascending: true });
+
+    if (error) throw error;
+    return (data?.map((row: any) => row.education).filter(Boolean) ?? []) as EducationInCvRow[];
   }
 }
 

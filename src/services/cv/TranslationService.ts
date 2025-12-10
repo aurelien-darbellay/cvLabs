@@ -1,10 +1,11 @@
 import { supabase } from "@/lib/supabaseClient";
 import { ExperienceInCv } from "@/domain/ExperienceInCv";
 import { EducationInCv } from "@/domain/EducationInCv";
-import { Summary } from "@/domain/Summary";
-import { SoftSkill } from "@/domain/SoftSkill";
+import { SummaryInCv } from "@/domain/Summary";
+import { SoftSkillInCv } from "@/domain/SoftSkill";
 import { Profession } from "@/domain/Profession";
 import { CvLanguage } from "@/domain/CvLanguage";
+import { cvRelationsService } from "./CvRelationsService";
 
 export class TranslationService {
   async getExperienceForCv(
@@ -12,16 +13,9 @@ export class TranslationService {
     langCode: string
   ): Promise<ExperienceInCv[]> {
     // First, get all experience_ids from cv_experiences
-    const { data: cvExperiencesData, error: cvExperiencesError } =
-      await supabase
-        .from("cv_experience")
-        .select(
-          "experience_id, experience(id, owner_id, company, start_date, end_date, is_current, technologies, clients, created_at)"
-        )
-        .eq("cv_id", cvId)
-        .eq("visible", true);
+    const cvExperiencesData = cvRelationsService.listExperienceForCv(cvId);
 
-    if (cvExperiencesError || !cvExperiencesData) {
+    if (!cvExperiencesData) {
       console.error("Error fetching cv_experiences:", cvExperiencesError);
       return [];
     }
@@ -49,7 +43,6 @@ export class TranslationService {
           new ExperienceInCv(
             experienceBase.id,
             experienceBase.owner_id,
-            experienceBase.user_id,
             experienceBase.company,
             experienceBase.start_date
               ? new Date(experienceBase.start_date)
@@ -68,7 +61,6 @@ export class TranslationService {
         new ExperienceInCv(
           experienceBase.id,
           experienceBase.owner_id,
-          experienceBase.user_id,
           experienceBase.company,
           experienceBase.start_date
             ? new Date(experienceBase.start_date)
@@ -128,7 +120,6 @@ export class TranslationService {
           new EducationInCv(
             educationBase.id,
             educationBase.owner_id,
-            educationBase.user_id,
             educationBase.institution,
             educationBase.start_year,
             educationBase.end_year
@@ -141,7 +132,6 @@ export class TranslationService {
         new EducationInCv(
           educationBase.id,
           educationBase.owner_id,
-          educationBase.user_id,
           educationBase.institution,
           educationBase.start_year,
           educationBase.end_year,
@@ -156,11 +146,11 @@ export class TranslationService {
   async getSummaryForCv(
     cvId: number,
     langCode: string
-  ): Promise<Summary | null> {
+  ): Promise<SummaryInCv | null> {
     // First, get the summary_id from cv_summaries
     const { data: cvSummaryData, error: cvSummaryError } = await supabase
       .from("cv_summaries")
-      .select("summary_id, summaries(id, user_id, owner_id)")
+      .select("summary_id, summaries(id,owner_id)")
       .eq("cv_id", cvId)
       .eq("visible", true)
       .single();
@@ -184,18 +174,12 @@ export class TranslationService {
     if (translationError) {
       console.error("Error fetching summary translation:", translationError);
       // Return summary without content if translation not found
-      return new Summary(
-        summaryBase.id,
-        summaryBase.owner_id,
-        summaryBase.user_id,
-        null
-      );
+      return new SummaryInCv(summaryBase.id, summaryBase.owner_id, null);
     }
 
-    return new Summary(
+    return new SummaryInCv(
       summaryBase.id,
       summaryBase.owner_id,
-      summaryBase.user_id,
       translationData?.content ?? null
     );
   }
@@ -203,7 +187,7 @@ export class TranslationService {
   async getTranslatedSoftSkills(
     userId: string,
     langCode: string
-  ): Promise<SoftSkill[]> {
+  ): Promise<SoftSkillInCv[]> {
     const { data, error } = await supabase
       .from("softskills")
       .select(
@@ -223,7 +207,7 @@ export class TranslationService {
 
     return data.map((row: any) => {
       const translation = row.softskill_translations[0];
-      return new SoftSkill(row.id, translation.name);
+      return new SoftSkillInCv(row.id, translation.name);
     });
   }
 

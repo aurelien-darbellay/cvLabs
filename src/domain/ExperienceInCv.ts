@@ -1,7 +1,6 @@
 export interface ExperienceInCvRow {
   id: number;
   owner_id: string;
-  user_id: string;
   company: string | null;
   start_date: string | null;
   end_date: string | null;
@@ -18,7 +17,6 @@ export class ExperienceInCv {
   constructor(
     public id: number,
     public ownerId: string,
-    public userId: string,
     public company: string | null,
     public startDate: Date | null,
     public endDate: Date | null,
@@ -34,7 +32,6 @@ export class ExperienceInCv {
     return new ExperienceInCv(
       row.id,
       row.owner_id,
-      row.user_id,
       row.company,
       row.start_date ? new Date(row.start_date) : null,
       row.end_date ? new Date(row.end_date) : null,

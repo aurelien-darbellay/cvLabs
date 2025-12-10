@@ -1,12 +1,12 @@
-export interface SoftSkillRow {
+export interface SoftSkillInCvRow {
   id: number;
   softskill_key: string;
 }
 
-export class SoftSkill {
+export class SoftSkillInCv {
   constructor(public id: number, public key: string) {}
 
-  static fromRow(row: SoftSkillRow): SoftSkill {
-    return new SoftSkill(row.id, row.softskill_key);
+  static fromRow(row: SoftSkillInCvRow): SoftSkillInCv {
+    return new SoftSkillInCv(row.id, row.softskill_key);
   }
 }
