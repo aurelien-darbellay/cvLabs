@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabaseClient";
-import { Experience } from "@/domain/Experience";
-import { Education } from "@/domain/Education";
+import { ExperienceInCv } from "@/domain/ExperienceInCv";
+import { EducationInCv } from "@/domain/EducationInCv";
 import { Summary } from "@/domain/Summary";
 import { SoftSkill } from "@/domain/SoftSkill";
 import { Profession } from "@/domain/Profession";
@@ -10,7 +10,7 @@ export class TranslationService {
   async getExperienceForCv(
     cvId: number,
     langCode: string
-  ): Promise<Experience[]> {
+  ): Promise<ExperienceInCv[]> {
     // First, get all experience_ids from cv_experiences
     const { data: cvExperiencesData, error: cvExperiencesError } =
       await supabase
@@ -27,7 +27,7 @@ export class TranslationService {
     }
 
     // Then, for each experience, get the translation
-    const experiences: Experience[] = [];
+    const experiences: ExperienceInCv[] = [];
     for (const cvExp of cvExperiencesData) {
       const experienceId = cvExp.experience_id;
       const experienceBase = cvExp.experience as any;
@@ -46,7 +46,7 @@ export class TranslationService {
         );
         // Add experience without translation
         experiences.push(
-          new Experience(
+          new ExperienceInCv(
             experienceBase.id,
             experienceBase.owner_id,
             experienceBase.user_id,
@@ -65,7 +65,7 @@ export class TranslationService {
       }
 
       experiences.push(
-        new Experience(
+        new ExperienceInCv(
           experienceBase.id,
           experienceBase.owner_id,
           experienceBase.user_id,
@@ -90,7 +90,7 @@ export class TranslationService {
   async getEducationForCv(
     cvId: number,
     langCode: string
-  ): Promise<Education[]> {
+  ): Promise<EducationInCv[]> {
     // First, get all education_ids from cv_education
     const { data: cvEducationData, error: cvEducationError } = await supabase
       .from("cv_education")
@@ -106,7 +106,7 @@ export class TranslationService {
     }
 
     // Then, for each education, get the translation
-    const educations: Education[] = [];
+    const educations: EducationInCv[] = [];
     for (const cvEdu of cvEducationData) {
       const educationId = cvEdu.education_id;
       const educationBase = cvEdu.education as any;
@@ -125,7 +125,7 @@ export class TranslationService {
         );
         // Add education without translation
         educations.push(
-          new Education(
+          new EducationInCv(
             educationBase.id,
             educationBase.owner_id,
             educationBase.user_id,
@@ -138,7 +138,7 @@ export class TranslationService {
       }
 
       educations.push(
-        new Education(
+        new EducationInCv(
           educationBase.id,
           educationBase.owner_id,
           educationBase.user_id,

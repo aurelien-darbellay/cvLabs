@@ -1,10 +1,12 @@
 import { CrudService } from "@/services/base/CrudService";
-import { Education, type EducationRow } from "@/domain/Education";
+import { EducationInCv, type EducationInCvRow } from "@/domain/EducationInCv";
 
-export type EducationInsertDto = Omit<EducationRow, "id" | "owner_id">;
+export type EducationInsertDto = Omit<EducationInCvRow, "id" | "owner_id">;
 export type EducationUpdateDto = Partial<EducationInsertDto>;
 
-export const educationService = new CrudService<Education, EducationRow, EducationInsertDto, EducationUpdateDto>(
-  "education",
-  Education.fromRow
-);
+export const educationService = new CrudService<
+  EducationInCv,
+  EducationInCvRow,
+  EducationInsertDto,
+  EducationUpdateDto
+>("education", EducationInCv.fromRow);

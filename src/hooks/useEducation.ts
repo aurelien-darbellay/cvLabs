@@ -1,9 +1,9 @@
 import { useAsync } from "./useAsync";
 import { educationService } from "@/services/education/EducationService";
-import type { Education } from "@/domain/Education";
+import type { EducationInCv } from "@/domain/EducationInCv";
 
 export function useEducationList(deps: any[] = []) {
-  const { data, loading, error } = useAsync<Education[]>(
+  const { data, loading, error } = useAsync<EducationInCv[]>(
     () => educationService.list(),
     deps
   );

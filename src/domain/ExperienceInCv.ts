@@ -1,4 +1,4 @@
-export interface ExperienceRow {
+export interface ExperienceInCvRow {
   id: number;
   owner_id: string;
   user_id: string;
@@ -14,7 +14,7 @@ export interface ExperienceRow {
   description?: string;
 }
 
-export class Experience {
+export class ExperienceInCv {
   constructor(
     public id: number,
     public ownerId: string,
@@ -28,10 +28,10 @@ export class Experience {
     public createdAt: Date,
     public jobTitle?: string,
     public description?: string
-  ) { }
+  ) {}
 
-  static fromRow(row: ExperienceRow): Experience {
-    return new Experience(
+  static fromRow(row: ExperienceInCvRow): ExperienceInCv {
+    return new ExperienceInCv(
       row.id,
       row.owner_id,
       row.user_id,

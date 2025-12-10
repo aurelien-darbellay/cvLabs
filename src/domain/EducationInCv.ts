@@ -1,4 +1,4 @@
-export interface EducationRow {
+export interface EducationInCvRow {
   id: number;
   owner_id: string;
   user_id: string;
@@ -10,7 +10,7 @@ export interface EducationRow {
   description?: string;
 }
 
-export class Education {
+export class EducationInCv {
   constructor(
     public id: number,
     public ownerId: string,
@@ -20,10 +20,10 @@ export class Education {
     public endYear: number | null,
     public title?: string,
     public description?: string
-  ) { }
+  ) {}
 
-  static fromRow(row: EducationRow): Education {
-    return new Education(
+  static fromRow(row: EducationInCvRow): EducationInCv {
+    return new EducationInCv(
       row.id,
       row.owner_id,
       row.user_id,

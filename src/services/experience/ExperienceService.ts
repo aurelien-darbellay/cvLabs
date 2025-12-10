@@ -1,12 +1,18 @@
 import { CrudService } from "@/services/base/CrudService";
-import { Experience, type ExperienceRow } from "@/domain/Experience";
+import {
+  ExperienceInCv,
+  type ExperienceInCvRow,
+} from "@/domain/ExperienceInCv";
 
-export type ExperienceInsertDto = Omit<ExperienceRow, "id" | "owner_id" | "created_at">;
+export type ExperienceInsertDto = Omit<
+  ExperienceInCvRow,
+  "id" | "owner_id" | "created_at"
+>;
 export type ExperienceUpdateDto = Partial<ExperienceInsertDto>;
 
 export const experienceService = new CrudService<
-  Experience,
-  ExperienceRow,
+  ExperienceInCv,
+  ExperienceInCvRow,
   ExperienceInsertDto,
   ExperienceUpdateDto
->("experience", Experience.fromRow);
+>("experience", ExperienceInCv.fromRow);

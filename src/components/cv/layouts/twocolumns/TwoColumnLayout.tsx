@@ -152,7 +152,7 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
             <img
               src={data.user.profileImageUrl}
               alt={data.user.fullName}
-              className="absolute top-10 left-10 w-50 h-50 rounded-full object-cover shadow-lg z-10"
+              className="absolute top-10 left-10 w-50 h-50 rounded-full object-cover shadow-lg z-5"
             />
           )}
           <div className="relative w-[275px]"></div>
