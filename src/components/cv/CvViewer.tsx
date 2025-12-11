@@ -14,6 +14,7 @@ import { translationService } from "@/services/cv/TranslationService";
 import { languageService } from "@/services/skills/LanguageService";
 import { cvRelationsService } from "@/services/cv/CvRelationsService";
 import { calculateOptimalScale } from "@/utils/scaleCalculator";
+import { LoadingSpinner } from "../ui/LoadingSpinner";
 
 interface CvViewerProps {
   cv: Cv;
@@ -116,8 +117,8 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
           cv.id,
           currentLang
         );
-        const softSkills = await translationService.getTranslatedSoftSkills(
-          cv.userId,
+        const softSkills = await translationService.getSoftSkillsForCv(
+          cv.id,
           currentLang
         );
 
@@ -176,7 +177,7 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
     return () => clearTimeout(timer);
   }, [data, layout, currentLang, cvRef.current, singlePageMode]);
 
-  if (loading) return <div className="p-8 text-center">Loading CV...</div>;
+  if (loading) return <LoadingSpinner />;
   if (!data) return <div className="p-8 text-center">Error loading data</div>;
 
   const labels = SECTION_TITLES[currentLang] || SECTION_TITLES["en"];

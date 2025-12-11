@@ -13,18 +13,13 @@ export class TranslationService {
     langCode: string
   ): Promise<ExperienceInCv[]> {
     // First, get all experience_ids from cv_experiences
-    const cvExperiencesData = cvRelationsService.listExperienceForCv(cvId);
-
-    if (!cvExperiencesData) {
-      console.error("Error fetching cv_experiences:", cvExperiencesError);
-      return [];
-    }
+    const cvExperiencesData = await cvRelationsService.getExperienceForCv(cvId);
+    console.log("cvExperiencesData:", cvExperiencesData);
 
     // Then, for each experience, get the translation
     const experiences: ExperienceInCv[] = [];
     for (const cvExp of cvExperiencesData) {
-      const experienceId = cvExp.experience_id;
-      const experienceBase = cvExp.experience as any;
+      const experienceId = cvExp.id;
 
       const { data: translationData, error: translationError } = await supabase
         .from("experience_translations")
@@ -38,42 +33,11 @@ export class TranslationService {
           "Error fetching experience translation:",
           translationError
         );
-        // Add experience without translation
-        experiences.push(
-          new ExperienceInCv(
-            experienceBase.id,
-            experienceBase.owner_id,
-            experienceBase.company,
-            experienceBase.start_date
-              ? new Date(experienceBase.start_date)
-              : null,
-            experienceBase.end_date ? new Date(experienceBase.end_date) : null,
-            experienceBase.is_current,
-            [],
-            experienceBase.clients || [],
-            new Date(experienceBase.created_at)
-          )
-        );
-        continue;
       }
-
-      experiences.push(
-        new ExperienceInCv(
-          experienceBase.id,
-          experienceBase.owner_id,
-          experienceBase.company,
-          experienceBase.start_date
-            ? new Date(experienceBase.start_date)
-            : null,
-          experienceBase.end_date ? new Date(experienceBase.end_date) : null,
-          experienceBase.is_current,
-          translationData?.skills || experienceBase.technologies || [],
-          experienceBase.clients || [],
-          new Date(experienceBase.created_at),
-          translationData?.job_title,
-          translationData?.description
-        )
-      );
+      cvExp.job_title = translationData?.job_title;
+      cvExp.description = translationData?.description;
+      cvExp.technologies = translationData?.skills;
+      experiences.push(ExperienceInCv.fromRow(cvExp));
     }
 
     return experiences;
@@ -84,24 +48,12 @@ export class TranslationService {
     langCode: string
   ): Promise<EducationInCv[]> {
     // First, get all education_ids from cv_education
-    const { data: cvEducationData, error: cvEducationError } = await supabase
-      .from("cv_education")
-      .select(
-        "education_id, education(id, owner_id, institution, start_year, end_year)"
-      )
-      .eq("cv_id", cvId)
-      .eq("visible", true);
-
-    if (cvEducationError || !cvEducationData) {
-      console.error("Error fetching cv_education:", cvEducationError);
-      return [];
-    }
+    const cvEducationData = await cvRelationsService.getEducationForCv(cvId);
 
     // Then, for each education, get the translation
     const educations: EducationInCv[] = [];
     for (const cvEdu of cvEducationData) {
-      const educationId = cvEdu.education_id;
-      const educationBase = cvEdu.education as any;
+      const educationId = cvEdu.id;
 
       const { data: translationData, error: translationError } = await supabase
         .from("education_translations")
@@ -115,30 +67,11 @@ export class TranslationService {
           "Error fetching education translation:",
           translationError
         );
-        // Add education without translation
-        educations.push(
-          new EducationInCv(
-            educationBase.id,
-            educationBase.owner_id,
-            educationBase.institution,
-            educationBase.start_year,
-            educationBase.end_year
-          )
-        );
-        continue;
       }
+      cvEdu.title = translationData?.title;
+      cvEdu.description = translationData?.description;
 
-      educations.push(
-        new EducationInCv(
-          educationBase.id,
-          educationBase.owner_id,
-          educationBase.institution,
-          educationBase.start_year,
-          educationBase.end_year,
-          translationData?.title,
-          translationData?.description
-        )
-      );
+      educations.push(EducationInCv.fromRow(cvEdu));
     }
     return educations;
   }
@@ -184,31 +117,32 @@ export class TranslationService {
     );
   }
 
-  async getTranslatedSoftSkills(
-    userId: string,
+  async getSoftSkillsForCv(
+    cvId: number,
     langCode: string
   ): Promise<SoftSkillInCv[]> {
-    const { data, error } = await supabase
-      .from("softskills")
-      .select(
-        `
-        *,
-        softskill_translations!inner (
-          name
-        )
-      `
-      )
-      .eq("softskill_translations.lang_code", langCode);
+    const softSkillsData = await cvRelationsService.getSoftSkillsForCv(cvId);
+    const softSkills: SoftSkillInCv[] = [];
+    for (const skill of softSkillsData) {
+      //console.log("Soft skill before translation:", skill);
+      const { data: translationData, error: translationError } = await supabase
+        .from("softskill_translations")
+        .select("name")
+        .eq("softskill_id", skill.id)
+        .eq("lang_code", langCode)
+        .single();
 
-    if (error) {
-      console.error("Error fetching translated soft skills:", error);
-      return [];
+      if (translationError) {
+        console.error(
+          "Error fetching translated soft skills:",
+          translationError
+        );
+      }
+      skill.key = translationData?.name ?? skill.key;
+      softSkills.push(SoftSkillInCv.fromRow(skill));
     }
 
-    return data.map((row: any) => {
-      const translation = row.softskill_translations[0];
-      return new SoftSkillInCv(row.id, translation.name);
-    });
+    return softSkills;
   }
 
   async getProfessionForCv(

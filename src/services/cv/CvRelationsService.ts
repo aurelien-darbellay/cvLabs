@@ -2,6 +2,7 @@ import { TechSkillRow } from "@/domain/TechSkill";
 import { ExperienceInCvRow } from "@/domain/ExperienceInCv";
 import { EducationInCvRow } from "@/domain/EducationInCv";
 import { supabase } from "@/lib/supabaseClient";
+import { SoftSkillInCv } from "@/domain/SoftSkill";
 
 export interface CvExperienceRow {
   id: number;
@@ -31,20 +32,6 @@ export interface CvTechSkillRow {
 }
 
 export class CvRelationsService {
-  async listExperienceForCv(cvId: number): Promise<CvExperienceRow[]> {
-    const { data, error } = await supabase
-      .from("cv_experience")
-      .select("*")
-      .eq("cv_id", cvId)
-      .order("position", { ascending: true });
-
-    if (error) {
-      console.error("Error fetching cv_experiences:", error);
-      throw error
-    };
-    return (data ?? []) as CvExperienceRow[];
-  }
-
   async addExperienceToCv(
     cvId: number,
     experienceId: number,
@@ -69,17 +56,6 @@ export class CvRelationsService {
     if (error) throw error;
   }
 
-  async listEducationForCv(cvId: number): Promise<CvEducationRow[]> {
-    const { data, error } = await supabase
-      .from("cv_education")
-      .select("*")
-      .eq("cv_id", cvId)
-      .order("position", { ascending: true });
-
-    if (error) throw error;
-    return (data ?? []) as CvEducationRow[];
-  }
-
   async addEducationToCv(
     cvId: number,
     educationId: number,
@@ -95,16 +71,6 @@ export class CvRelationsService {
     return data as CvEducationRow;
   }
 
-  async listTechSkillsForCv(cvId: number): Promise<CvTechSkillRow[]> {
-    const { data, error } = await supabase
-      .from("cv_techskills")
-      .select("*")
-      .eq("cv_id", cvId)
-      .order("position", { ascending: true });
-
-    if (error) throw error;
-    return (data ?? []) as CvTechSkillRow[];
-  }
   async getTechSkillsForCv(cvId: number): Promise<TechSkillRow[]> {
     const { data, error } = await supabase
       .from("cv_techskills")
@@ -114,7 +80,8 @@ export class CvRelationsService {
       .order("position", { ascending: true });
 
     if (error) throw error;
-    return (data?.map((row: any) => row.techskills).filter(Boolean) ?? []) as TechSkillRow[];
+    return (data?.map((row: any) => row.techskills).filter(Boolean) ??
+      []) as TechSkillRow[];
   }
 
   async getExperienceForCv(cvId: number): Promise<ExperienceInCvRow[]> {
@@ -126,7 +93,8 @@ export class CvRelationsService {
       .order("position", { ascending: true });
 
     if (error) throw error;
-    return (data?.map((row: any) => row.experience).filter(Boolean) ?? []) as ExperienceInCvRow[];
+    return (data?.map((row: any) => row.experience).filter(Boolean) ??
+      []) as ExperienceInCvRow[];
   }
 
   async getEducationForCv(cvId: number): Promise<EducationInCvRow[]> {
@@ -138,7 +106,23 @@ export class CvRelationsService {
       .order("position", { ascending: true });
 
     if (error) throw error;
-    return (data?.map((row: any) => row.education).filter(Boolean) ?? []) as EducationInCvRow[];
+    return (data?.map((row: any) => row.education).filter(Boolean) ??
+      []) as EducationInCvRow[];
+  }
+
+  async getSoftSkillsForCv(cvId: number): Promise<SoftSkillInCv[]> {
+    const { data, error } = await supabase
+      .from("cv_softskills")
+      .select("*")
+      .eq("cv_id", cvId)
+      .eq("visible", true)
+      .order("position", { ascending: true });
+    if (error) throw error;
+    return (data
+      ?.map((row: any) => {
+        return SoftSkillInCv.fromRow(row);
+      })
+      .filter(Boolean) ?? []) as SoftSkillInCv[];
   }
 }
 
