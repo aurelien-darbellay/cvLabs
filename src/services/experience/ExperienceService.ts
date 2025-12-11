@@ -3,7 +3,6 @@ import {
   ExperienceInCv,
   type ExperienceInCvRow,
 } from "@/domain/ExperienceInCv";
-import { useAuth } from "@/hooks/useAuth";
 import { Experience } from "@/domain/Experience";
 import { ApiEndpoints } from "@/config/ApiEndpoints";
 import { ExperienceTranslatedFieldRow } from "@/domain/translations";
@@ -22,7 +21,12 @@ class ExperienceService extends CrudTranslatableService<
   ExperienceUpdateDto
 > {
   constructor() {
-    super("experience", "experience_translations", ExperienceInCv.fromRow);
+    super(
+      "experience",
+      "experience_id",
+      "experience_translations",
+      ExperienceInCv.fromRow
+    );
   }
 
   // Override only the list method

@@ -14,7 +14,12 @@ class SummaryService extends CrudTranslatableService<
   SummaryUpdateDto
 > {
   constructor() {
-    super("summaries", "summaries_translations", SummaryInCv.fromRow);
+    super(
+      "summaries",
+      "summary_id",
+      "summaries_translations",
+      SummaryInCv.fromRow
+    );
   }
 
   // Override with getAll method

@@ -20,7 +20,12 @@ class SoftSkillService extends CrudTranslatableService<
   SoftSkillUpdateDto
 > {
   constructor() {
-    super("softskills", "softskills_translations", SoftSkillInCv.fromRow);
+    super(
+      "softskills",
+      "softskill_id",
+      "softskills_translations",
+      SoftSkillInCv.fromRow
+    );
   }
 }
 

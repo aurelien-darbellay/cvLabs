@@ -15,7 +15,12 @@ class EducationService extends CrudTranslatableService<
   EducationUpdateDto
 > {
   constructor() {
-    super("education", "education_translations", EducationInCv.fromRow);
+    super(
+      "education",
+      "education_id",
+      "education_translations",
+      EducationInCv.fromRow
+    );
   }
 
   // Override only the list method

@@ -18,6 +18,8 @@ export class CrudService<
 
   async list(): Promise<TDomain[]> {
     const { data, error } = await supabase.from(this.tableName).select("*");
+    console.log(`Listing from ${this.tableName}:`, { data, error });
+    console.log("test", ((data as TRow[] | null) ?? []).map(this.mapRow));
     if (error) throw error;
     return ((data as TRow[] | null) ?? []).map(this.mapRow);
   }

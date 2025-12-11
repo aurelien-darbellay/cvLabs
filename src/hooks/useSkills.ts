@@ -23,6 +23,7 @@ export function useSoftSkills(deps: any[] = []) {
     () => softSkillService.list(),
     deps
   );
+  console.log("Soft skills data:", data);
   return {
     softSkills: data ?? [],
     loading,

@@ -2,11 +2,15 @@ import { useAsync } from "./useAsync";
 import { educationService } from "@/services/education/EducationService";
 import { Education } from "@/domain/Education";
 
-export function useEducationList(deps: any[] = []) {
+export function useEducationList(userId: string | null | undefined) {
   const { data, loading, error } = useAsync<Education[]>(
-    () => educationService.getAll(deps[0]),
-    deps
+    async () => {
+      if (!userId) return [];
+      return educationService.getAll(userId);
+    },
+    [userId]
   );
+
   return {
     education: data ?? [],
     loading,
