@@ -1,6 +1,11 @@
 import { CrudTranslatableService } from "@/services/base/CrudTranslatableService";
-import { SoftSkillInCv, type SoftSkillInCvRow } from "@/domain/SoftSkill";
+import {
+  SoftSkill,
+  SoftSkillInCv,
+  type SoftSkillInCvRow,
+} from "@/domain/SoftSkill";
 import { TranslatedFieldRow } from "@/domain/translations";
+import { ApiEndpoints } from "@/config/ApiEndpoints";
 
 export type SoftSkillInsertDto = Omit<SoftSkillInCvRow, "id">;
 export type SoftSkillUpdateDto = Partial<SoftSkillInsertDto>;
@@ -23,9 +28,36 @@ class SoftSkillService extends CrudTranslatableService<
     super(
       "softskills",
       "softskill_id",
-      "softskills_translations",
+      "softskill_translations",
       SoftSkillInCv.fromRow
     );
+  }
+
+  async getAll(id: string | null): Promise<SoftSkill[]> {
+    if (!id) {
+      throw new Error("User ID is required to fetch education data");
+    }
+    const url = `${ApiEndpoints.EXPORT_SOFTSKILLS}?owner_id=${id}`;
+    return fetch(url, {
+      headers: {
+        apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+        authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          const responseText = response.text().then((text) => {
+            return text;
+          });
+          throw new Error(
+            `HTTP error! status: ${response.status}, content: ${responseText}`
+          );
+        }
+        return response.json();
+      })
+      .then((data) => {
+        return data.map(SoftSkill.fromRow);
+      });
   }
 }
 

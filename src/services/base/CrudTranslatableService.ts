@@ -6,16 +6,19 @@ export interface TranslatableRow {
   id: number | string;
 }
 
-
 export class CrudTranslatableService<
   TDomain extends { id: number | string },
   TRow extends TranslatableRow,
   TTranslatedRow extends TranslatedFieldRow,
-  InsertDto = Omit<TRow, "id" | "owner_id" | "created_at" | "updated_at">,
+  InsertDto = Omit<
+    TRow,
+    "id" | "owner_id" | "created_at" | "updated_at" | "translatedFields"
+  >,
   UpdateDto = Partial<InsertDto>
 > extends CrudService<TDomain, TRow, InsertDto, UpdateDto> {
   constructor(
     tableName: string,
+    private readonly domainIdField: string,
     private readonly translationTableName: string,
     mapRow: (row: TRow) => TDomain
   ) {
@@ -31,11 +34,14 @@ export class CrudTranslatableService<
   async createTranslation(
     domainId: number | string,
     langCode: string,
-    translation: Omit<TTranslatedRow, "id" | "owner_id" | `${string}_id` | "lang_code">
+    translation: Omit<
+      TTranslatedRow,
+      "id" | "owner_id" | `${string}_id` | "lang_code"
+    >
   ): Promise<TTranslatedRow> {
     const payload = {
       ...translation,
-      [`${this.tableName.slice(0, -1)}_id`]: domainId, // e.g., experience_id, education_id
+      [this.domainIdField]: domainId,
       lang_code: langCode,
     };
 
@@ -71,7 +77,7 @@ export class CrudTranslatableService<
     const { data, error } = await supabase
       .from(this.translationTableName)
       .select("*")
-      .eq(`${this.tableName.slice(0, -1)}_id`, domainId)
+      .eq(this.domainIdField, domainId)
       .eq("lang_code", langCode)
       .single();
 
@@ -98,12 +104,14 @@ export class CrudTranslatableService<
   async updateTranslation(
     domainId: number | string,
     langCode: string,
-    updates: Partial<Omit<TTranslatedRow, "id" | "owner_id" | `${string}_id` | "lang_code">>
+    updates: Partial<
+      Omit<TTranslatedRow, "id" | "owner_id" | `${string}_id` | "lang_code">
+    >
   ): Promise<TTranslatedRow> {
     const { data, error } = await supabase
       .from(this.translationTableName)
       .update(updates as any)
-      .eq(`${this.tableName.slice(0, -1)}_id`, domainId)
+      .eq(this.domainIdField, domainId)
       .eq("lang_code", langCode)
       .select("*")
       .single();
@@ -134,7 +142,7 @@ export class CrudTranslatableService<
     const { error } = await supabase
       .from(this.translationTableName)
       .delete()
-      .eq(`${this.tableName.slice(0, -1)}_id`, domainId)
+      .eq(this.domainIdField, domainId)
       .eq("lang_code", langCode);
 
     if (error) {
@@ -158,7 +166,7 @@ export class CrudTranslatableService<
     const { data, error } = await supabase
       .from(this.translationTableName)
       .select("*")
-      .eq(`${this.tableName.slice(0, -1)}_id`, domainId);
+      .eq(this.domainIdField, domainId);
 
     if (error) {
       console.error(

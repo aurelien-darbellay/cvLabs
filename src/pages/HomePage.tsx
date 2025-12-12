@@ -10,6 +10,7 @@ import { CvsSection } from "@/components/cv/CvsSection";
 import { AssetsGrid } from "@/components/dashboard/AssetsGrid";
 import { useUser } from "@/hooks/useUser";
 import { useSummaries } from "@/hooks/useSummary";
+import { useProfessionList } from "@/hooks/useProfession";
 
 export default function HomePage() {
   const { user: authenUser } = useAuth();
@@ -21,9 +22,10 @@ export default function HomePage() {
   const { education } = useEducationList(userId);
   const { experience } = useExperienceList(userId);
   const { languages } = useLanguages([userId]);
-  const { softSkills } = useSoftSkills([userId]);
+  const { softSkills } = useSoftSkills(userId);
   const { techSkills } = useTechSkills([userId]);
   const { summaries } = useSummaries(userId);
+  const { professions } = useProfessionList(userId);
   const handleProfileSuccess = useCallback(() => {
     // Refetch user data if needed
   }, []);
@@ -34,7 +36,8 @@ export default function HomePage() {
   console.log("Languages data in HomePage:", languages);
   console.log("Soft Skills data in HomePage:", softSkills);
   console.log("Tech Skills data in HomePage:", techSkills);
-  console.log("Summaries data in HomePage:", summaries); */
+  console.log("Summaries data in HomePage:", summaries); 
+  console.log("Professions data in HomePage:", professions);*/
 
   if (!user) {
     return (
@@ -87,12 +90,12 @@ export default function HomePage() {
 
         {/* Assets Grid */}
         <AssetsGrid
-          educationCount={education.length}
-          experienceCount={experience.length}
-          professionCount={0}
-          techSkillsCount={techSkills.length}
-          softSkillsCount={softSkills.length}
-          summariesCount={summaries.length}
+          education={education}
+          experience={experience}
+          professions={professions}
+          techSkills={techSkills}
+          softSkills={softSkills}
+          summaries={summaries}
         />
       </div>
     </div>

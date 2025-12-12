@@ -1,8 +1,8 @@
-import { Profession } from "./Profession";
+import { ProfessionInCv } from "./ProfessionInCv";
 
 export interface UserRow {
   id: string;
-  profession: Profession | null;
+  profession: ProfessionInCv | null;
   full_name: string;
   profile_image_url: string | null;
   contact_email: string | null;
@@ -16,7 +16,7 @@ export interface UserRow {
 export class User {
   constructor(
     public id: string,
-    public profession: Profession | null,
+    public profession: ProfessionInCv | null,
     public fullName: string,
     public profileImageUrl: string | null,
     public contactEmail: string | null,

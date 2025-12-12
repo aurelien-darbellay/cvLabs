@@ -5,4 +5,6 @@ export class ApiEndpoints {
   static readonly EXPORT_EXPERIENCE = `${FUNCTIONS_BASE_URL}/export-experience`;
   static readonly EXPORT_EDUCATION = `${FUNCTIONS_BASE_URL}/export-education`;
   static readonly EXPORT_SUMMARIES = `${FUNCTIONS_BASE_URL}/export-summaries`;
+  static readonly EXPORT_SOFTSKILLS = `${FUNCTIONS_BASE_URL}/export-softskill`;
+  static readonly EXPORT_PROFESSION = `${FUNCTIONS_BASE_URL}/export-professions`;
 }

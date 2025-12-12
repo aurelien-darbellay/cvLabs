@@ -7,6 +7,7 @@ export function useSummaries(userId: string | null | undefined) {
     if (!userId) return [];
     return summaryService.getAll(userId);
   }, [userId]);
+  console.log("useSummaries data:", data);
   return {
     summaries: data ?? [],
     loading,

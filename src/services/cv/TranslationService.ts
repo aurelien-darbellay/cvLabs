@@ -3,7 +3,7 @@ import { ExperienceInCv } from "@/domain/ExperienceInCv";
 import { EducationInCv } from "@/domain/EducationInCv";
 import { SummaryInCv } from "@/domain/Summary";
 import { SoftSkillInCv } from "@/domain/SoftSkill";
-import { Profession } from "@/domain/Profession";
+import { ProfessionInCv } from "@/domain/ProfessionInCv";
 import { CvLanguage } from "@/domain/CvLanguage";
 import { cvRelationsService } from "./CvRelationsService";
 
@@ -148,7 +148,7 @@ export class TranslationService {
   async getProfessionForCv(
     cvId: number,
     langCode: string
-  ): Promise<Profession | null> {
+  ): Promise<ProfessionInCv | null> {
     // First, get the profession_id from cv_profession
     const { data: cvProfessionData, error: cvProfessionError } = await supabase
       .from("cv_profession")
@@ -176,7 +176,7 @@ export class TranslationService {
     if (translationError) {
       console.error("Error fetching profession translation:", translationError);
       // Return profession without title/description if translation not found
-      return new Profession(
+      return new ProfessionInCv(
         professionBase.id,
         professionBase.owner_id,
         null,
@@ -184,7 +184,7 @@ export class TranslationService {
       );
     }
 
-    return new Profession(
+    return new ProfessionInCv(
       professionBase.id,
       professionBase.owner_id,
       translationData?.title ?? null,

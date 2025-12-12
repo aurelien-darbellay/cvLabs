@@ -23,7 +23,6 @@ class EducationService extends CrudTranslatableService<
     );
   }
 
-  // Override only the list method
   async getAll(id: string | null): Promise<Education[]> {
     if (!id) {
       throw new Error("User ID is required to fetch education data");

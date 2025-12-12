@@ -3,7 +3,7 @@ import { techSkillService } from "@/services/skills/TechSkillService";
 import { softSkillService } from "@/services/skills/SoftSkillService";
 import { languageService } from "@/services/skills/LanguageService";
 import type { TechSkill } from "@/domain/TechSkill";
-import type { SoftSkillInCv } from "@/domain/SoftSkill";
+import type { SoftSkill, SoftSkillInCv } from "@/domain/SoftSkill";
 import type { Language } from "@/domain/Language";
 
 export function useTechSkills(deps: any[] = []) {
@@ -18,12 +18,11 @@ export function useTechSkills(deps: any[] = []) {
   };
 }
 
-export function useSoftSkills(deps: any[] = []) {
-  const { data, loading, error } = useAsync<SoftSkillInCv[]>(
-    () => softSkillService.list(),
-    deps
-  );
-  console.log("Soft skills data:", data);
+export function useSoftSkills(ownerId: string | null | undefined) {
+  const { data, loading, error } = useAsync<SoftSkill[]>(async () => {
+    if (!ownerId) return [];
+    return softSkillService.getAll(ownerId);
+  }, [ownerId]);
   return {
     softSkills: data ?? [],
     loading,

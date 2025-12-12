@@ -13,13 +13,11 @@ export class CrudService<
 > {
   constructor(
     protected readonly tableName: string,
-    private readonly mapRow: (row: TRow) => TDomain
+    protected readonly mapRow: (row: TRow) => TDomain
   ) {}
 
   async list(): Promise<TDomain[]> {
     const { data, error } = await supabase.from(this.tableName).select("*");
-    console.log(`Listing from ${this.tableName}:`, { data, error });
-    console.log("test", ((data as TRow[] | null) ?? []).map(this.mapRow));
     if (error) throw error;
     return ((data as TRow[] | null) ?? []).map(this.mapRow);
   }

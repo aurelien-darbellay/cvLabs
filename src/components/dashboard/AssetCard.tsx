@@ -1,16 +1,13 @@
 import { Link } from "react-router-dom";
+import type { ReactNode } from "react";
+import type { AssetType } from "@/types/assets";
 
 interface AssetCardProps {
-  icon: React.ReactNode;
+  icon: ReactNode;
   title: string;
   count: number;
-  assetType:
-    | "education"
-    | "experience"
-    | "profession"
-    | "techskills"
-    | "softskills"
-    | "summaries";
+  assetType: AssetType;
+  assets: any[];
   color: "blue" | "green" | "purple" | "pink" | "orange" | "indigo";
 }
 
@@ -58,13 +55,15 @@ export function AssetCard({
   title,
   count,
   assetType,
+  assets,
   color,
 }: AssetCardProps) {
   const colors = colorMap[color];
 
   return (
     <Link
-      to={`/manage-assets-${assetType}`}
+      to={`/manage-assets/${assetType}`}
+      state={{ assets }}
       className={`${colors.bg} ${colors.border} ${colors.hover} border-2 rounded-lg p-6 cursor-pointer transition block`}
     >
       <div className="flex items-center gap-4">

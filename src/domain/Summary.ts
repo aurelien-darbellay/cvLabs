@@ -22,18 +22,21 @@ export class SummaryInCv {
 
 export interface SummaryRow {
   id: number;
+  short_description?: string;
   summary_translations?: any[];
 }
 
 export class Summary {
   constructor(
     public id: number,
+    public shortDescription: string | null,
     public translatedFields: SummaryTranslatedField[]
   ) {}
 
   static fromRow(row: SummaryRow): Summary {
     return new Summary(
       row.id,
+      row.short_description ?? null,
       (row.summary_translations || []).map(SummaryTranslatedField.fromRow)
     );
   }

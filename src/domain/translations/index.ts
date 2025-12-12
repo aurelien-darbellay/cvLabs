@@ -11,3 +11,7 @@ export {
   SummaryTranslatedField,
   type SummaryTranslatedFieldRow,
 } from "./SummaryTranslatedField";
+export {
+  ProfessionTranslatedField,
+  type ProfessionTranslatedFieldRow,
+} from "./ProfessionTranslatedField";

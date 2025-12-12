@@ -3,13 +3,10 @@ import { educationService } from "@/services/education/EducationService";
 import { Education } from "@/domain/Education";
 
 export function useEducationList(userId: string | null | undefined) {
-  const { data, loading, error } = useAsync<Education[]>(
-    async () => {
-      if (!userId) return [];
-      return educationService.getAll(userId);
-    },
-    [userId]
-  );
+  const { data, loading, error } = useAsync<Education[]>(async () => {
+    if (!userId) return [];
+    return educationService.getAll(userId);
+  }, [userId]);
 
   return {
     education: data ?? [],
