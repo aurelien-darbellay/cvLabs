@@ -49,19 +49,18 @@ export const assetFormSchema: Record<AssetType, AssetFormConfig> = {
         key: "institution",
         label: "Institution",
         type: "text",
-        optional: false,
       },
       {
         key: "startYear",
         label: "Start year",
         type: "number",
-        optional: false,
+        optional: true,
       },
       {
         key: "endYear",
         label: "End year",
         type: "number",
-        optional: false,
+        optional: true,
       },
     ],
     translationFields: [
