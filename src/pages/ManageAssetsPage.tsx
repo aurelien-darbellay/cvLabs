@@ -8,6 +8,7 @@ import { EditAssetModal } from "@/components/dashboard/EditAssetModal";
 import { saveAsset } from "@/services/assets/saveAsset";
 import { assetTypeLabels, isAssetType, type AssetType } from "@/types/assets";
 import { updateAssetsState } from "@/components/dashboard/helpers/updateAssetsState";
+import type { AssetEditMode } from "@/types/assets";
 
 interface ManageAssetsState {
   assets?: any[];
@@ -33,7 +34,12 @@ export default function ManageAssetsPage() {
     setSelected(selection);
   };
 
-  const handleSave = async (data: any) => {
+  const handleSave = async (data: {
+    mode: AssetEditMode;
+    values: Record<string, any>;
+    asset: any;
+    translation?: any | null;
+  }) => {
     if (assetType === null) {
       console.error("Cannot save asset: unknown asset type");
       return;
@@ -88,9 +94,6 @@ export default function ManageAssetsPage() {
             <h1 className="text-3xl font-bold text-gray-900">
               {assetTypeLabels[assetType]}
             </h1>
-            <p className="text-gray-600">
-              Using data already fetched on the dashboard.
-            </p>
           </div>
           <button
             onClick={() => navigate(-1)}

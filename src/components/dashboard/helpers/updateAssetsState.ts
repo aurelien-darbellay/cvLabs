@@ -11,6 +11,9 @@ export function updateAssetsState(
   console.log("Current assets before update:", currentAssets);
   console.log("Data provided for update:", data);
   if (data.mode === "base") {
+    if (data.asset?.id == null) {
+      return [...currentAssets, saved];
+    }
     return currentAssets.map((item) =>
       item.id === data.asset?.id ? { ...item, ...saved } : item
     );
