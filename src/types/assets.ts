@@ -6,6 +6,8 @@ export type AssetType =
   | "softskills"
   | "summaries";
 
+export type AssetEditMode = "base" | "translation";
+
 export const assetTypeLabels: Record<AssetType, string> = {
   education: "Education",
   experience: "Experience",
@@ -20,13 +22,23 @@ export function isAssetType(value: string | undefined): value is AssetType {
   return Object.keys(assetTypeLabels).includes(value);
 }
 
+export const assetTypeSupportsTranslations: Record<AssetType, boolean> = {
+  education: true,
+  experience: true,
+  profession: true,
+  techskills: false,
+  softskills: true,
+  summaries: true,
+};
+
 export type FieldInputType =
   | "text"
   | "textarea"
   | "number"
   | "boolean"
   | "date"
-  | "tags";
+  | "tags"
+  | "select";
 
 export interface AssetFieldConfig {
   key: string;
@@ -35,113 +47,5 @@ export interface AssetFieldConfig {
   translation?: boolean;
   optional?: boolean;
   placeholder?: string;
+  options?: { value: string; label: string }[];
 }
-
-export interface AssetFormConfig {
-  baseFields: AssetFieldConfig[];
-  translationFields?: AssetFieldConfig[];
-}
-
-export const assetFormSchema: Record<AssetType, AssetFormConfig> = {
-  education: {
-    baseFields: [
-      {
-        key: "institution",
-        label: "Institution",
-        type: "text",
-      },
-      {
-        key: "startYear",
-        label: "Start year",
-        type: "number",
-        optional: true,
-      },
-      {
-        key: "endYear",
-        label: "End year",
-        type: "number",
-        optional: true,
-      },
-    ],
-    translationFields: [
-      { key: "title", label: "Title", type: "text", translation: true },
-      {
-        key: "description",
-        label: "Description",
-        type: "textarea",
-        translation: true,
-        optional: true,
-      },
-    ],
-  },
-  experience: {
-    baseFields: [
-      { key: "company", label: "Company", type: "text" },
-      { key: "startDate", label: "Start date", type: "date", optional: true },
-      { key: "endDate", label: "End date", type: "date", optional: true },
-      { key: "isCurrent", label: "Currently working", type: "boolean" },
-      {
-        key: "technologies",
-        label: "Technologies",
-        type: "tags",
-        optional: true,
-      },
-      { key: "clients", label: "Clients", type: "tags", optional: true },
-    ],
-    translationFields: [
-      {
-        key: "jobTitle",
-        label: "Job title",
-        type: "text",
-        translation: true,
-      },
-      {
-        key: "description",
-        label: "Description",
-        type: "textarea",
-        translation: true,
-        optional: true,
-      },
-      {
-        key: "skills",
-        label: "Skills",
-        type: "tags",
-        translation: true,
-        optional: true,
-      },
-    ],
-  },
-  profession: {
-    baseFields: [],
-    translationFields: [
-      { key: "title", label: "Title", type: "text", translation: true },
-      {
-        key: "description",
-        label: "Description",
-        type: "textarea",
-        translation: true,
-        optional: true,
-      },
-    ],
-  },
-  techskills: {
-    baseFields: [{ key: "name", label: "Name", type: "text" }],
-  },
-  softskills: {
-    baseFields: [{ key: "key", label: "Key", type: "text" }],
-    translationFields: [
-      { key: "name", label: "Name", type: "text", translation: true },
-    ],
-  },
-  summaries: {
-    baseFields: [],
-    translationFields: [
-      {
-        key: "content",
-        label: "Content",
-        type: "textarea",
-        translation: true,
-      },
-    ],
-  },
-};

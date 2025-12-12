@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Cv } from "@/domain/Cv";
-import { Language } from "@/domain/Language";
 import { TechSkill } from "@/domain/TechSkill";
 import { userService } from "@/services/user/UserService";
 import {
@@ -11,10 +10,10 @@ import {
   LayoutLabels,
 } from "./layouts";
 import { translationService } from "@/services/cv/TranslationService";
-import { languageService } from "@/services/skills/LanguageService";
 import { cvRelationsService } from "@/services/cv/CvRelationsService";
 import { calculateOptimalScale } from "@/utils/scaleCalculator";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
+import { useLinguisticContext } from "@/contexts/LinguisticContext";
 
 interface CvViewerProps {
   cv: Cv;
@@ -53,21 +52,13 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
     "two-column"
   );
   const [currentLang, setCurrentLang] = useState("en");
-  const [languages, setLanguages] = useState<Language[]>([]);
   const [downloading, setDownloading] = useState(false);
   const [scaleFactor, setScaleFactor] = useState(0.6);
   const [showWarning, setShowWarning] = useState(false);
   const [singlePageMode, setSinglePageMode] = useState(true);
   const cvRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    // Fetch available languages
-    const fetchLangs = async () => {
-      const langs = await languageService.list();
-      setLanguages(langs);
-    };
-    fetchLangs();
-  }, []);
+  const { languages, loading: languagesLoading } = useLinguisticContext();
 
   const availableLangs = useMemo(
     () => languages.map((lang) => lang.code),
@@ -177,7 +168,7 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
     return () => clearTimeout(timer);
   }, [data, layout, currentLang, cvRef.current, singlePageMode]);
 
-  if (loading) return <LoadingSpinner />;
+  if (loading || languagesLoading) return <LoadingSpinner />;
   if (!data) return <div className="p-8 text-center">Error loading data</div>;
 
   const labels = SECTION_TITLES[currentLang] || SECTION_TITLES["en"];

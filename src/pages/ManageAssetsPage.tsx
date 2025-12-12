@@ -1,12 +1,13 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useMemo, useState } from "react";
-import { AssetTable } from "@/components/dashboard/AssetTable";
-import { EditAssetModal } from "@/components/dashboard/EditAssetModal";
 import {
-  assetTypeLabels,
-  isAssetType,
-  type AssetType,
-} from "@/types/assets";
+  AssetTable,
+  type AssetTableSelection,
+} from "@/components/dashboard/assetTable/AssetTable";
+import { EditAssetModal } from "@/components/dashboard/EditAssetModal";
+import { saveAsset } from "@/services/assets/saveAsset";
+import { assetTypeLabels, isAssetType, type AssetType } from "@/types/assets";
+import { updateAssetsState } from "@/components/dashboard/helpers/updateAssetsState";
 
 interface ManageAssetsState {
   assets?: any[];
@@ -25,13 +26,30 @@ export default function ManageAssetsPage() {
     return null;
   }, [assetTypeParam]);
 
-  const [selected, setSelected] = useState<{
-    asset: any;
-    translation?: any;
-  } | null>(null);
+  const [selected, setSelected] = useState<AssetTableSelection | null>(null);
+  const [assets, setAssets] = useState<any[]>(state.assets ?? []);
 
-  const handleRowClick = (asset: any, translation?: any) => {
-    setSelected({ asset, translation });
+  const handleRowClick = (selection: AssetTableSelection) => {
+    setSelected(selection);
+  };
+
+  const handleSave = async (data: any) => {
+    if (assetType === null) {
+      console.error("Cannot save asset: unknown asset type");
+      return;
+    }
+    try {
+      const saved = await saveAsset({
+        assetType,
+        mode: data.mode,
+        assetId: data.asset?.id ?? null,
+        values: data.values,
+      });
+      setAssets((prev) => updateAssetsState(prev, saved, data));
+      closeModal();
+    } catch (error) {
+      console.error("Error saving asset", error);
+    }
   };
 
   const closeModal = () => setSelected(null);
@@ -57,7 +75,6 @@ export default function ManageAssetsPage() {
     );
   }
 
-  const assets = state.assets ?? [];
   const hasState = Array.isArray(state.assets);
 
   return (
@@ -111,7 +128,9 @@ export default function ManageAssetsPage() {
         assetType={assetType}
         asset={selected?.asset ?? null}
         translation={selected?.translation ?? null}
+        mode={selected?.mode ?? "base"}
         onClose={closeModal}
+        onSave={handleSave}
       />
     </div>
   );
