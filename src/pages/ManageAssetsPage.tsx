@@ -49,6 +49,8 @@ export default function ManageAssetsPage() {
         data.mode === "base"
           ? data.asset?.id ?? null
           : data.translation?.id ?? null;
+      if (data.mode === "translation")
+        data.values.domainId = data.translation?.domainId;
       const saved = await saveAsset({
         assetType,
         mode: data.mode,

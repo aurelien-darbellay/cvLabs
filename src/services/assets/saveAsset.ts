@@ -49,28 +49,25 @@ export async function saveAsset({
   if (!entry.translatable) {
     throw new Error(`Translations are not supported for ${assetType}`);
   }
-  if (assetId == null) {
-    throw new Error("assetId is required to save a translation");
-  }
   const langCode = values.langCode ?? values.lang_code;
   if (!langCode) {
     throw new Error("lang_code is required for translations");
   }
 
   const translationPayload = { ...values };
-
+  console.log("Translation payload before normalization:", translationPayload);
   const normalizedTranslation = normalizeValues(translationPayload);
-
+  console.log(
+    "Translation payload after normalization:",
+    normalizedTranslation
+  );
   if (typeof service.updateTranslation !== "function") {
     throw new Error(
       `Translation methods not available for asset type ${assetType}`
     );
   }
+  const { domain_id, ...updates } = normalizedTranslation;
   if (assetId == null)
-    return service.createTranslation(assetId, langCode, normalizedTranslation);
-  return service.updateTranslation(
-    normalizedTranslation.domainId,
-    langCode,
-    normalizedTranslation
-  );
+    return service.createTranslation(domain_id, langCode, updates);
+  return service.updateTranslation(domain_id, langCode, updates);
 }
