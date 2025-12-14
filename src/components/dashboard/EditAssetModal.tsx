@@ -33,7 +33,6 @@ export function EditAssetModal({
   onSave,
 }: EditAssetModalProps) {
   if (!isOpen || !asset) return null;
-
   const isTranslationMode = mode === "translation";
   const translationLang = translation ? getLangCode(translation) : null;
   const fields = useAssetFields(assetType, mode);

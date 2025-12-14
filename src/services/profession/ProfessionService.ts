@@ -31,8 +31,6 @@ class ProfessionService extends CrudTranslatableService<
 
   // Override only the list method
   async getAll(id: string | null): Promise<Profession[]> {
-    /* console.log("ProfessionService getAll called");
-    console.log("Fetching profession for user ID:", id); */
     if (!id) {
       throw new Error("User ID is required to fetch profession data");
     }

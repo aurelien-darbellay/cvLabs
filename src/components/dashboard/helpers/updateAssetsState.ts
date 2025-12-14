@@ -7,9 +7,6 @@ export function updateAssetsState(
     values: Record<string, any>;
   }
 ): any[] {
-  console.log("Updating assets state with saved data:", saved);
-  console.log("Current assets before update:", currentAssets);
-  console.log("Data provided for update:", data);
   if (data.mode === "base") {
     if (data.asset?.id == null) {
       return [...currentAssets, saved];

@@ -12,7 +12,9 @@ function toSnakeCase(key: string): string {
   return key.replace(/([A-Z])/g, "_$1").toLowerCase();
 }
 
-export function normalizeValues(values: Record<string, any>): Record<string, any> {
+export function normalizeValues(
+  values: Record<string, any>
+): Record<string, any> {
   return Object.entries(values || {}).reduce<Record<string, any>>(
     (acc, [key, value]) => {
       const snakeKey = toSnakeCase(key);
@@ -35,7 +37,6 @@ export async function saveAsset({
   }
 
   const service = entry.service as any;
-
   if (mode === "base") {
     const payload = normalizeValues(values);
     if (assetId == null) {
@@ -57,8 +58,6 @@ export async function saveAsset({
   }
 
   const translationPayload = { ...values };
-  delete (translationPayload as any).langCode;
-  delete (translationPayload as any).lang_code;
 
   const normalizedTranslation = normalizeValues(translationPayload);
 
@@ -67,6 +66,11 @@ export async function saveAsset({
       `Translation methods not available for asset type ${assetType}`
     );
   }
-
-  return service.updateTranslation(assetId, langCode, normalizedTranslation);
+  if (assetId == null)
+    return service.createTranslation(assetId, langCode, normalizedTranslation);
+  return service.updateTranslation(
+    normalizedTranslation.domainId,
+    langCode,
+    normalizedTranslation
+  );
 }

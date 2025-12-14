@@ -1,6 +1,7 @@
 import { TranslatedField, type TranslatedFieldRow } from "./TranslatedField";
 
 export interface ProfessionTranslatedFieldRow extends TranslatedFieldRow {
+  id: number;
   profession_id: number;
   lang_code: string;
   title: string;
@@ -9,12 +10,13 @@ export interface ProfessionTranslatedFieldRow extends TranslatedFieldRow {
 
 export class ProfessionTranslatedField extends TranslatedField {
   constructor(
+    id: number,
     domainId: number,
     langCode: string,
     public title: string,
     public description: string
   ) {
-    super(domainId, langCode);
+    super(id, domainId, langCode);
   }
 
   static fromRow(row: ProfessionTranslatedFieldRow): ProfessionTranslatedField {

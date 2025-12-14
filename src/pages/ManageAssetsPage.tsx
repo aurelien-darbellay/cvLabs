@@ -45,10 +45,14 @@ export default function ManageAssetsPage() {
       return;
     }
     try {
+      const assetId =
+        data.mode === "base"
+          ? data.asset?.id ?? null
+          : data.translation?.id ?? null;
       const saved = await saveAsset({
         assetType,
         mode: data.mode,
-        assetId: data.asset?.id ?? null,
+        assetId,
         values: data.values,
       });
       setAssets((prev) => updateAssetsState(prev, saved, data));

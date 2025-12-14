@@ -3,6 +3,8 @@
  * All translation tables follow the pattern: {entity}_id, lang_code, ...other fields
  */
 export interface TranslatedFieldRow {
+  id: number;
+  domainId: number;
   lang_code: string;
   [key: string]: any;
 }
@@ -12,7 +14,11 @@ export interface TranslatedFieldRow {
  * Common structure: domainId (the ID of the main entity), langCode, and translated content
  */
 export abstract class TranslatedField {
-  constructor(public domainId: number, public langCode: string) {}
+  constructor(
+    public id: number,
+    public domainId: number,
+    public langCode: string
+  ) {}
 
   /**
    * Factory method to create domain object from database row

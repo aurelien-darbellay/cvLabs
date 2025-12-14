@@ -14,7 +14,6 @@ export class TranslationService {
   ): Promise<ExperienceInCv[]> {
     // First, get all experience_ids from cv_experiences
     const cvExperiencesData = await cvRelationsService.getExperienceForCv(cvId);
-    console.log("cvExperiencesData:", cvExperiencesData);
 
     // Then, for each experience, get the translation
     const experiences: ExperienceInCv[] = [];
@@ -124,7 +123,6 @@ export class TranslationService {
     const softSkillsData = await cvRelationsService.getSoftSkillsForCv(cvId);
     const softSkills: SoftSkillInCv[] = [];
     for (const skill of softSkillsData) {
-      //console.log("Soft skill before translation:", skill);
       const { data: translationData, error: translationError } = await supabase
         .from("softskill_translations")
         .select("name")

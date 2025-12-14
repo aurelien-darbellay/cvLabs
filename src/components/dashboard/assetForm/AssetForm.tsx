@@ -16,12 +16,10 @@ export function AssetForm({ fields, values, onSubmit }: AssetFormProps) {
     });
     return initial;
   });
-
   const requiredFields = useMemo(
     () => fields.filter((f) => !f.optional),
     [fields]
   );
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit?.(formValues);

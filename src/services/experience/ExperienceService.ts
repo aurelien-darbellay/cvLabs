@@ -31,8 +31,6 @@ class ExperienceService extends CrudTranslatableService<
 
   // Override only the list method
   async getAll(id: string | null): Promise<Experience[]> {
-    /* console.log("ExperienceService getAll called");
-    console.log("Fetching experience for user ID:", id); */
     if (!id) {
       throw new Error("User ID is required to fetch experience data");
     }

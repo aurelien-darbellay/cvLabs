@@ -29,15 +29,6 @@ export default function HomePage() {
   const handleProfileSuccess = useCallback(() => {
     // Refetch user data if needed
   }, []);
-  /* console.log("User data in HomePage:", user);
-  console.log("CVs data in HomePage:", cvs);
-  console.log("Education data in HomePage:", education);
-  console.log("Experience data in HomePage:", experience);
-  console.log("Languages data in HomePage:", languages);
-  console.log("Soft Skills data in HomePage:", softSkills);
-  console.log("Tech Skills data in HomePage:", techSkills);
-  console.log("Summaries data in HomePage:", summaries); 
-  console.log("Professions data in HomePage:", professions);*/
 
   if (!user) {
     return (
