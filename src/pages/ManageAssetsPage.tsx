@@ -44,6 +44,7 @@ export default function ManageAssetsPage() {
       console.error("Cannot save asset: unknown asset type");
       return;
     }
+    console.log("Saving asset with translation data:", data.values);
     try {
       const assetId =
         data.mode === "base"

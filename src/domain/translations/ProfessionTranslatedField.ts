@@ -21,6 +21,7 @@ export class ProfessionTranslatedField extends TranslatedField {
 
   static fromRow(row: ProfessionTranslatedFieldRow): ProfessionTranslatedField {
     return new ProfessionTranslatedField(
+      row.id,
       row.profession_id,
       row.lang_code,
       row.title,

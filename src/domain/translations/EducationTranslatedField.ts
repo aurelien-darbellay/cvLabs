@@ -21,6 +21,7 @@ export class EducationTranslatedField extends TranslatedField {
 
   static fromRow(row: EducationTranslatedFieldRow): EducationTranslatedField {
     return new EducationTranslatedField(
+      row.id,
       row.education_id,
       row.lang_code,
       row.title,

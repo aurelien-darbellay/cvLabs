@@ -30,8 +30,6 @@ export default function HomePage() {
     // Refetch user data if needed
   }, []);
 
-  console.log("HomePage render: experience =", experience);
-
   if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen">

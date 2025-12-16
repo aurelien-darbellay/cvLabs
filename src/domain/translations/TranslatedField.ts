@@ -4,7 +4,7 @@
  */
 export interface TranslatedFieldRow {
   id: number;
-  domainId: number;
+  domain_id: number;
   lang_code: string;
   [key: string]: any;
 }

@@ -78,7 +78,7 @@ export function AssetTable({ assetType, assets, onRowClick }: AssetTableProps) {
                           e.stopPropagation();
                           onRowClick({
                             asset,
-                            translation: {},
+                            translation: { domainId: asset.id },
                             mode: "translation" satisfies AssetEditMode,
                           });
                         }}
