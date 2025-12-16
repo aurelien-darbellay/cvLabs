@@ -29,7 +29,10 @@ export function updateAssetsState(
         ? translations.map((t: any, i: number) =>
             i === idx ? { ...t, ...data.values } : t
           )
-        : [...translations, data.values];
+        : [
+            ...translations,
+            { ...data.values, id: saved?.id ?? data.values.id },
+          ];
 
     if (item.translatedFields) {
       return { ...item, translatedFields: nextTranslations };

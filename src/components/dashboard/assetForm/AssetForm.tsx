@@ -12,7 +12,8 @@ export function AssetForm({ fields, values, onSubmit }: AssetFormProps) {
   const [formValues, setFormValues] = useState<Record<string, any>>(() => {
     const initial: Record<string, any> = {};
     fields.forEach((field) => {
-      initial[field.key] = values?.[field.key] ?? "";
+      initial[field.key] =
+        values?.[field.key] ?? (field.type === "tags" ? [] : "");
     });
     return initial;
   });

@@ -21,6 +21,11 @@ interface EditAssetModalProps {
     asset: any;
     translation?: any | null;
   }) => void;
+  onDelete?: (payload: {
+    mode: AssetEditMode;
+    asset: any;
+    translation?: any | null;
+  }) => void;
 }
 
 export function EditAssetModal({
@@ -31,9 +36,9 @@ export function EditAssetModal({
   mode,
   onClose,
   onSave,
+  onDelete,
 }: EditAssetModalProps) {
   if (!isOpen || !asset) return null;
-  console.log("Translation data in EditAssetModal:", translation);
   const isTranslationMode = mode === "translation";
   const translationLang = translation ? getLangCode(translation) : null;
   const fields = useAssetFields(assetType, mode);
@@ -93,6 +98,19 @@ export function EditAssetModal({
           values={initialValues}
           onSubmit={(values) => onSave?.({ mode, values, asset, translation })}
         />
+
+        {((!isTranslationMode && asset?.id) ||
+          (isTranslationMode && translation?.id)) && (
+          <div className="flex justify-end">
+            <button
+              type="button"
+              className="text-sm px-3 border rounded text-red-600 hover:text-red-700 font-semibold"
+              onClick={() => onDelete?.({ mode, asset, translation })}
+            >
+              Delete
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

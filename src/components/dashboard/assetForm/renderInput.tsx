@@ -47,23 +47,36 @@ export function renderInput({ field, value, onChange }: RenderInputArgs) {
           {field.label}
         </label>
       );
-    case "tags":
+    case "tags": {
+      const displayValue = Array.isArray(value)
+        ? value.join(", ")
+        : value ?? "";
+
+      const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        onChange(e.target.value); // keep raw string while typing
+      };
+
+      const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        onChange(
+          e.target.value
+            .split(",")
+            .map((v) => v.trim())
+            .filter(Boolean)
+        );
+      };
+
       return (
         <input
           type="text"
           {...commonProps}
+          value={displayValue}
+          onChange={handleChange}
+          onBlur={handleBlur}
           placeholder="Comma-separated"
-          value={Array.isArray(value) ? value.join(", ") : value ?? []}
-          onChange={(e) =>
-            onChange(
-              e.target.value
-                .split(",")
-                .map((v) => v.trim())
-                .filter(Boolean)
-            )
-          }
         />
       );
+    }
+
     case "select":
       return (
         <select

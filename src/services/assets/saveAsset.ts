@@ -55,12 +55,7 @@ export async function saveAsset({
   }
 
   const translationPayload = { ...values };
-  console.log("Translation payload before normalization:", translationPayload);
   const normalizedTranslation = normalizeValues(translationPayload);
-  console.log(
-    "Translation payload after normalization:",
-    normalizedTranslation
-  );
   if (typeof service.updateTranslation !== "function") {
     throw new Error(
       `Translation methods not available for asset type ${assetType}`
