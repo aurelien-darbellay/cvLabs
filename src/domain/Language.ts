@@ -16,6 +16,10 @@ export class Language extends Asset<LanguageInCv> {
     return new Language(row.id, row.name, row.code);
   }
 
+  static deSerialize(data: Language): Language {
+    return new Language(data.id, data.name, data.code);
+  }
+
   override prepForCv(): LanguageInCv {
     return new LanguageInCv(this.id, this.name, this.code, "");
   }

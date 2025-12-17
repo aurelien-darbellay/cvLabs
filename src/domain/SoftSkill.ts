@@ -1,5 +1,6 @@
 import { Asset } from "./Asset";
 import { SoftSkillInCv } from "./elementsInCv/SoftSkillInCv";
+import { SoftSkillTranslatedField } from "./translations/SoftSkillTranslatedField";
 
 export interface SoftSkillRow {
   id: number;
@@ -13,7 +14,7 @@ export class SoftSkill extends Asset<SoftSkillInCv> {
     public id: number,
     public ownerId: string,
     public key: string,
-    public translatedFields: any[]
+    public translatedFields: SoftSkillTranslatedField[]
   ) {
     super();
   }
@@ -27,10 +28,23 @@ export class SoftSkill extends Asset<SoftSkillInCv> {
     );
   }
 
+  static deSerialize(data: SoftSkill): SoftSkill {
+    return new SoftSkill(
+      data.id,
+      data.ownerId,
+      data.key,
+      data.translatedFields
+    );
+  }
+
   /**
    * Converts SoftSkill to SoftSkillInCv.
    */
   override prepForCv(): SoftSkillInCv {
-    return new SoftSkillInCv(this.id, this.key);
+    console.log("Preparing SoftSkill for CV:", this);
+    return new SoftSkillInCv(
+      this.id,
+      this.translatedFields?.[0]?.name || this.key
+    );
   }
 }

@@ -14,6 +14,10 @@ export class TechSkill extends Asset<TechSkill> {
   static fromRow(row: TechSkillRow): TechSkill {
     return new TechSkill(row.id, row.owner_id, row.name);
   }
+
+  static deSerialize(data: TechSkill): TechSkill {
+    return new TechSkill(data.id, data.ownerId, data.name);
+  }
   override prepForCv(): TechSkill {
     return this;
   }

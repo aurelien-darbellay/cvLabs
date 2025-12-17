@@ -31,6 +31,16 @@ export class Education extends Asset<EducationInCv> {
     );
   }
 
+  static deSerialize(data: Education): Education {
+    return new Education(
+      data.id,
+      data.institution,
+      data.startYear,
+      data.endYear,
+      data.translatedFields
+    );
+  }
+
   /**
    * Converts Education to EducationInCv using its translated fields.
    */

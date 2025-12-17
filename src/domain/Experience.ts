@@ -40,6 +40,19 @@ export class Experience extends Asset<ExperienceInCv> {
     );
   }
 
+  static deSerialize(data: Experience): Experience {
+    return new Experience(
+      data.id,
+      data.company,
+      data.startDate ? new Date(data.startDate) : null,
+      data.endDate ? new Date(data.endDate) : null,
+      data.isCurrent,
+      data.technologies,
+      data.clients,
+      data.translatedFields
+    );
+  }
+
   /**
    * Converts Experience to ExperienceInCv using its translated fields.
    */

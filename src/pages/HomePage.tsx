@@ -29,6 +29,7 @@ export default function HomePage() {
   const { techSkills } = useTechSkills([userId]);
   const { summaries } = useSummaries(userId);
   const { professions } = useProfessionList(userId);
+
   const assetData = {
     education,
     experience,

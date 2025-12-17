@@ -25,6 +25,10 @@ export class Profession extends Asset<ProfessionInCv> {
     );
   }
 
+  static deSerialize(data: Profession): Profession {
+    return new Profession(data.id, data.identifier, data.translatedFields);
+  }
+
   /**
    * Converts Profession to ProfessionInCv using its translated fields.
    */

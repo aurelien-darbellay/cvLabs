@@ -44,6 +44,14 @@ export class Summary extends Asset<SummaryInCv> {
     );
   }
 
+  static deSerialize(data: Summary): Summary {
+    return new Summary(
+      data.id,
+      data.shortDescription ?? null,
+      data.translatedFields
+    );
+  }
+
   /**
    * Converts Summary to SummaryInCv using its translated fields.
    */

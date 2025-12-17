@@ -20,6 +20,13 @@ import {
 import { calculateOptimalScale } from "@/utils/scaleCalculator";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
 import { useLinguisticContext } from "@/contexts/LinguisticContext";
+import { Profession } from "@/domain/Profession";
+import { Experience } from "@/domain/Experience";
+import { Education } from "@/domain/Education";
+import { SoftSkill } from "@/domain/SoftSkill";
+import { Language } from "@/domain/Language";
+import { TechSkill } from "@/domain/TechSkill";
+import { Summary } from "@/domain/Summary";
 
 interface CvViewerProps {
   cv: Cv;
@@ -69,11 +76,11 @@ export const CvViewer: React.FC<CvViewerProps> = ({
   const [singlePageMode, setSinglePageMode] = useState(true);
   const cvRef = useRef<HTMLDivElement>(null);
   const { languages, loading: languagesLoading } = useLinguisticContext();
-
   const availableLangs = useMemo(
     () => languages.map((lang) => lang.code),
     [languages]
   );
+
   const handleDownloadPdf = async () => {
     if (!cvRef.current) return;
     try {
@@ -87,55 +94,57 @@ export const CvViewer: React.FC<CvViewerProps> = ({
       setDownloading(false);
     }
   };
-
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
         // 1. Fetch User
-        console.log("AssetData:", assetData);
-        console.log(
-          "Professions asset data:",
-          assetData.assetData?.professions
-        );
         const user = await userService.getById(cv.userId);
         if (!user) throw new Error("User not found");
 
         const profession = await cvProfessionRelations
-          .getAssetsForCv(cv.id, assetData?.professions || [], currentLang)
+          .getAssetsForCv(
+            cv.id,
+            assetData?.professions.map(Profession.deSerialize) || [],
+            currentLang
+          )
           .then((profs) => profs[0]);
         if (profession) {
           user.profession = profession;
         }
         // 2. Fetch Translated Data
         const summary = await cvSummaryRelations
-          .getAssetsForCv(cv.id, assetData?.summaries || [], currentLang)
+          .getAssetsForCv(
+            cv.id,
+            assetData?.summaries.map(Summary.deSerialize) || [],
+            currentLang
+          )
           .then((summaries) => summaries[0]);
         const experience = await cvExperienceRelations.getAssetsForCv(
           cv.id,
-          assetData?.experience || [],
+          assetData?.experience.map(Experience.deSerialize) || [],
           currentLang
         );
         const education = await cvEducationRelations.getAssetsForCv(
           cv.id,
-          assetData?.education || [],
+          assetData?.education.map(Education.deSerialize) || [],
           currentLang
         );
         const softSkills = await cvSoftSkillRelations.getAssetsForCv(
           cv.id,
-          assetData?.softSkills || [],
+          assetData?.softSkills.map(SoftSkill.deSerialize) || [],
           currentLang
         );
-
+        console.log("Fetched soft skills:", softSkills);
         const languagesForCv = await cvLanguageRelations.getAssetsForCv(
           cv.id,
-          assetData?.languages || [],
+          assetData?.languages.map(Language.deSerialize) || [],
           currentLang
         );
 
         const techSkills = await cvTechSkillRelations.getAssetsForCv(
           cv.id,
-          assetData?.techSkills || []
+          assetData?.techSkills.map(TechSkill.deSerialize) || []
         );
 
         setData({

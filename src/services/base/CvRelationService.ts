@@ -62,24 +62,24 @@ export class CvRelationService<
     assets: Asset<any>[],
     langCode?: string
   ): Promise<T[]> {
-    console.log("Asset passed", assets);
+    if (this.domainIdField == "softskill_id")
+      console.log("Getting soft skills for CV:", cvId, assets, langCode);
     const assetsInCv = await this.getAssetsInCV(cvId);
     if (assetsInCv.length === 0) {
       return [];
     }
+
     // Filter assets by matching their id with the relation's domain id field
     const filtered = assets.filter((asset) => {
-      console.log("Checking asset:", asset);
       return assetsInCv.some(
         (relation) => relation[this.domainIdField] === asset.id
       );
     });
-    console.log(`Assets for CV ${cvId} from ${this.tableName}:`, filtered);
 
     // If language specified, optionally filter translation fields
     // (assumes assets may have translatedFields or similar structure)
     if (langCode) {
-      return filtered
+      const twiceFiltered = filtered
         .map((asset) => {
           if (
             asset &&
@@ -94,7 +94,10 @@ export class CvRelationService<
           return asset;
         })
         .map((asset) => (asset as any).prepForCv() as T);
+
+      return twiceFiltered;
     }
+
     return filtered.map((asset) => (asset as any).prepForCv() as T);
   }
 }
