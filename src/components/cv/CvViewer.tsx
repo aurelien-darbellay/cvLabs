@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Cv } from "@/domain/Cv";
-import { TechSkill } from "@/domain/TechSkill";
 import { userService } from "@/services/user/UserService";
 import {
   StandardLayout,
@@ -9,14 +8,22 @@ import {
   CvData,
   LayoutLabels,
 } from "./layouts";
-import { translationService } from "@/services/cv/TranslationService";
-import { cvRelationsService } from "@/services/cv/CvRelationsService";
+import {
+  cvEducationRelations,
+  cvExperienceRelations,
+  cvLanguageRelations,
+  cvProfessionRelations,
+  cvSoftSkillRelations,
+  cvSummaryRelations,
+  cvTechSkillRelations,
+} from "@/services/cv/CvRelationsService";
 import { calculateOptimalScale } from "@/utils/scaleCalculator";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
 import { useLinguisticContext } from "@/contexts/LinguisticContext";
 
 interface CvViewerProps {
   cv: Cv;
+  assetData?: any;
   onClose: () => void;
 }
 
@@ -45,7 +52,11 @@ const SECTION_TITLES: Record<string, LayoutLabels> = {
   },
 };
 
-export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
+export const CvViewer: React.FC<CvViewerProps> = ({
+  cv,
+  assetData,
+  onClose,
+}) => {
   const [data, setData] = useState<CvData | null>(null);
   const [loading, setLoading] = useState(true);
   const [layout, setLayout] = useState<"standard" | "two-column" | "ia">(
@@ -64,7 +75,6 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
     () => languages.map((lang) => lang.code),
     [languages]
   );
-
   const handleDownloadPdf = async () => {
     if (!cvRef.current) return;
     try {
@@ -87,39 +97,42 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
         const user = await userService.getById(cv.userId);
         if (!user) throw new Error("User not found");
 
-        const profession = await translationService.getProfessionForCv(
-          cv.id,
-          currentLang
-        );
+        const profession = await cvProfessionRelations
+          .getAssetsForCv(cv.id, assetData?.professions || [], currentLang)
+          .then((profs) => profs[0]);
         if (profession) {
           user.profession = profession;
         }
-
         // 2. Fetch Translated Data
-        const summary = await translationService.getSummaryForCv(
+        const summary = await cvSummaryRelations
+          .getAssetsForCv(cv.id, assetData?.summaries || [], currentLang)
+          .then((summaries) => summaries[0]);
+        const experience = await cvExperienceRelations.getAssetsForCv(
           cv.id,
+          assetData?.experience || [],
           currentLang
         );
-        const experience = await translationService.getExperienceForCv(
+        const education = await cvEducationRelations.getAssetsForCv(
           cv.id,
+          assetData?.education || [],
           currentLang
         );
-        const education = await translationService.getEducationForCv(
+        const softSkills = await cvSoftSkillRelations.getAssetsForCv(
           cv.id,
-          currentLang
-        );
-        const softSkills = await translationService.getSoftSkillsForCv(
-          cv.id,
-          currentLang
-        );
-
-        const languagesForCv = await translationService.getLanguagesForCv(
-          cv.id,
+          assetData?.softSkills || [],
           currentLang
         );
 
-        const techData = await cvRelationsService.getTechSkillsForCv(cv.id);
-        const techSkills = (techData || []).map(TechSkill.fromRow);
+        const languagesForCv = await cvLanguageRelations.getAssetsForCv(
+          cv.id,
+          assetData?.languages || [],
+          currentLang
+        );
+
+        const techSkills = await cvTechSkillRelations.getAssetsForCv(
+          cv.id,
+          assetData?.techSkills || []
+        );
 
         setData({
           user,
@@ -136,9 +149,8 @@ export const CvViewer: React.FC<CvViewerProps> = ({ cv, onClose }) => {
         setLoading(false);
       }
     };
-
     fetchData();
-  }, [cv.userId, cv.id, currentLang, languages]);
+  }, [cv.userId, cv.id, currentLang, languages, assetData]);
 
   // Auto-adjust scale to fit A4 height
   useEffect(() => {

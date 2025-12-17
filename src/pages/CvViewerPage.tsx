@@ -10,7 +10,6 @@ export default function CvViewerPage() {
   const [cv, setCv] = useState<Cv | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     const fetchCv = async () => {
       if (!cvId) {

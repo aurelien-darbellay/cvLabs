@@ -2,7 +2,7 @@ import { CrudTranslatableService } from "@/services/base/CrudTranslatableService
 import {
   ExperienceInCv,
   type ExperienceInCvRow,
-} from "@/domain/ExperienceInCv";
+} from "@/domain/elementsInCv/ExperienceInCv";
 import { Experience } from "@/domain/Experience";
 import { ApiEndpoints } from "@/config/ApiEndpoints";
 import { ExperienceTranslatedFieldRow } from "@/domain/translations";

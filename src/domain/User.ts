@@ -1,4 +1,4 @@
-import { ProfessionInCv } from "./ProfessionInCv";
+import { ProfessionInCv } from "./elementsInCv/ProfessionInCv";
 
 export interface UserRow {
   id: string;

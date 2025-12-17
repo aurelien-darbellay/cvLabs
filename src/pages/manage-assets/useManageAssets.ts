@@ -58,6 +58,7 @@ export function useManageAssets() {
         assetId,
         values: data.values,
       });
+      console.log("Asset saved", saved);
       setAssets((prev) => updateAssetsState(prev, saved, data));
       closeModal();
     } catch (error) {

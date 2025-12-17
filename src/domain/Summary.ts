@@ -1,3 +1,4 @@
+import { Asset } from "./Asset";
 import { SummaryTranslatedField } from "./translations/SummaryTranslatedField";
 
 export interface SummaryInCvRow {
@@ -26,18 +27,31 @@ export interface SummaryRow {
   summary_translations?: any[];
 }
 
-export class Summary {
+export class Summary extends Asset<SummaryInCv> {
   constructor(
     public id: number,
     public shortDescription: string | null,
     public translatedFields: SummaryTranslatedField[]
-  ) {}
+  ) {
+    super();
+  }
 
   static fromRow(row: SummaryRow): Summary {
     return new Summary(
       row.id,
       row.short_description ?? null,
       (row.summary_translations || []).map(SummaryTranslatedField.fromRow)
+    );
+  }
+
+  /**
+   * Converts Summary to SummaryInCv using its translated fields.
+   */
+  override prepForCv(): SummaryInCv {
+    return new SummaryInCv(
+      this.id,
+      "",
+      this.translatedFields?.[0]?.content ?? null
     );
   }
 }

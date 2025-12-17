@@ -1,5 +1,8 @@
 import { CrudTranslatableService } from "@/services/base/CrudTranslatableService";
-import { EducationInCv, type EducationInCvRow } from "@/domain/EducationInCv";
+import {
+  EducationInCv,
+  type EducationInCvRow,
+} from "@/domain/elementsInCv/EducationInCv";
 import { Education } from "@/domain/Education";
 import { ApiEndpoints } from "@/config/ApiEndpoints";
 import { EducationTranslatedFieldRow } from "@/domain/translations";

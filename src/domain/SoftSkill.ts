@@ -1,15 +1,5 @@
-export interface SoftSkillInCvRow {
-  id: number;
-  key: string;
-}
-
-export class SoftSkillInCv {
-  constructor(public id: number, public key: string) {}
-
-  static fromRow(row: SoftSkillInCvRow): SoftSkillInCv {
-    return new SoftSkillInCv(row.id, row.key);
-  }
-}
+import { Asset } from "./Asset";
+import { SoftSkillInCv } from "./elementsInCv/SoftSkillInCv";
 
 export interface SoftSkillRow {
   id: number;
@@ -18,13 +8,15 @@ export interface SoftSkillRow {
   softskill_translations: any[];
 }
 
-export class SoftSkill {
+export class SoftSkill extends Asset<SoftSkillInCv> {
   constructor(
     public id: number,
     public ownerId: string,
     public key: string,
     public translatedFields: any[]
-  ) {}
+  ) {
+    super();
+  }
 
   static fromRow(row: SoftSkillRow): SoftSkill {
     return new SoftSkill(
@@ -33,5 +25,12 @@ export class SoftSkill {
       row.key,
       row.softskill_translations || []
     );
+  }
+
+  /**
+   * Converts SoftSkill to SoftSkillInCv.
+   */
+  override prepForCv(): SoftSkillInCv {
+    return new SoftSkillInCv(this.id, this.key);
   }
 }

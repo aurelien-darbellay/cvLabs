@@ -1,4 +1,6 @@
+import { Asset } from "./Asset";
 import { ExperienceTranslatedField } from "./translations/ExperienceTranslatedField";
+import { ExperienceInCv } from "./elementsInCv/ExperienceInCv";
 
 export interface ExperienceRow {
   id: number;
@@ -11,7 +13,7 @@ export interface ExperienceRow {
   experience_translations?: any[];
 }
 
-export class Experience {
+export class Experience extends Asset<ExperienceInCv> {
   constructor(
     public id: number,
     public company: string,
@@ -21,7 +23,9 @@ export class Experience {
     public technologies: string[],
     public clients: string[],
     public translatedFields: ExperienceTranslatedField[]
-  ) {}
+  ) {
+    super();
+  }
 
   static fromRow(row: ExperienceRow): Experience {
     return new Experience(
@@ -33,6 +37,25 @@ export class Experience {
       row.technologies || [],
       row.clients || [],
       (row.experience_translations || []).map(ExperienceTranslatedField.fromRow)
+    );
+  }
+
+  /**
+   * Converts Experience to ExperienceInCv using its translated fields.
+   */
+  prepForCv(): ExperienceInCv {
+    return new ExperienceInCv(
+      this.id,
+      "",
+      this.company,
+      this.startDate,
+      this.endDate,
+      this.isCurrent,
+      this.translatedFields?.[0]?.skills || this.technologies,
+      this.clients,
+      new Date(),
+      this.translatedFields?.[0]?.jobTitle,
+      this.translatedFields?.[0]?.description
     );
   }
 }

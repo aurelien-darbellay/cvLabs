@@ -1,11 +1,11 @@
-export interface CvLanguageRow {
+export interface LanguageInCV {
   id: number;
   name: string;
   level_code: string;
   level_name: string;
 }
 
-export class CvLanguage {
+export class LanguageInCv {
   constructor(
     public id: number,
     public name: string,
@@ -13,7 +13,7 @@ export class CvLanguage {
     public level_name: string
   ) {}
 
-  static fromRow(row: CvLanguageRow): CvLanguage {
-    return new CvLanguage(row.id, row.name, row.level_code, row.level_name);
+  static fromRow(row: LanguageInCV): LanguageInCv {
+    return new LanguageInCv(row.id, row.name, row.level_code, row.level_name);
   }
 }

@@ -8,6 +8,7 @@ interface CvsSectionProps {
   loading: boolean;
   onCvCreated: () => void;
   onCvDeleted: () => void;
+  onViewCv?: (cvId: number) => void;
 }
 
 export function CvsSection({
@@ -15,6 +16,7 @@ export function CvsSection({
   loading,
   onCvCreated,
   onCvDeleted,
+  onViewCv,
 }: CvsSectionProps) {
   const [creatingNew, setCreatingNew] = useState(false);
   const [newCvTitle, setNewCvTitle] = useState("");
@@ -115,12 +117,21 @@ export function CvsSection({
                 </p>
               </div>
               <div className="flex gap-2">
-                <Link
-                  to={`/cv/${cv.id}`}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium text-sm"
-                >
-                  View
-                </Link>
+                {onViewCv ? (
+                  <button
+                    onClick={() => onViewCv(cv.id)}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium text-sm"
+                  >
+                    View
+                  </button>
+                ) : (
+                  <Link
+                    to={`/cv/${cv.id}`}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium text-sm"
+                  >
+                    View
+                  </Link>
+                )}
                 <button
                   onClick={() => handleDeleteCv(cv.id)}
                   className="px-4 py-2 border border-red-300 text-red-600 rounded-md hover:bg-red-50 font-medium text-sm"

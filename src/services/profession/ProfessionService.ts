@@ -2,7 +2,7 @@ import { CrudTranslatableService } from "@/services/base/CrudTranslatableService
 import {
   ProfessionInCv,
   type ProfessionInCvRow,
-} from "@/domain/ProfessionInCv";
+} from "@/domain/elementsInCv/ProfessionInCv";
 import { Profession } from "@/domain/Profession";
 import { ApiEndpoints } from "@/config/ApiEndpoints";
 import { ProfessionTranslatedFieldRow } from "@/domain/translations";

@@ -1,9 +1,9 @@
 import { CrudTranslatableService } from "@/services/base/CrudTranslatableService";
+import { SoftSkill } from "@/domain/SoftSkill";
 import {
-  SoftSkill,
   SoftSkillInCv,
   type SoftSkillInCvRow,
-} from "@/domain/SoftSkill";
+} from "@/domain/elementsInCv/SoftSkillInCv";
 import { TranslatedFieldRow } from "@/domain/translations";
 import { ApiEndpoints } from "@/config/ApiEndpoints";
 

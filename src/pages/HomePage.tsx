@@ -26,6 +26,7 @@ export default function HomePage() {
   const { techSkills } = useTechSkills([userId]);
   const { summaries } = useSummaries(userId);
   const { professions } = useProfessionList(userId);
+
   const handleProfileSuccess = useCallback(() => {
     // Refetch user data if needed
   }, []);
