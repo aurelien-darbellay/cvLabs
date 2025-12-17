@@ -1,19 +1,21 @@
 import type { AssetType } from "@/types/assets";
 
 export function formatAssetTitle(assetType: AssetType, asset: any): string {
+  if (!asset.id) return `New ${assetType}`;
   switch (assetType) {
     case "education":
       return asset?.institution || `Education #${asset?.id ?? "?"}`;
     case "experience":
       return (
-        `${asset?.company} (${asset?.translatedFields[0]?.jobTitle})` ||
-        `Experience #${asset?.id ?? "?"}`
+        `${asset?.company} ${
+          asset.translatedFields && asset.translatedFields[0]
+            ? `(${asset?.translatedFields[0]?.jobTitle})`
+            : ""
+        }` || `Experience #${asset?.id ?? "?"}`
       );
     case "profession":
       return (
-        asset?.translatedFields?.[0]?.title ||
-        asset?.title ||
-        `Profession #${asset?.id ?? "?"}`
+        asset?.identifier || asset?.title || `Profession #${asset?.id ?? "?"}`
       );
     case "techskills":
       return asset?.name || `Tech skill #${asset?.id ?? "?"}`;

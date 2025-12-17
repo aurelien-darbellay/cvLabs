@@ -7,10 +7,7 @@ import { Profession } from "@/domain/Profession";
 import { ApiEndpoints } from "@/config/ApiEndpoints";
 import { ProfessionTranslatedFieldRow } from "@/domain/translations";
 
-export type ProfessionInsertDto = Omit<
-  ProfessionInCvRow,
-  "id" | "owner_id" | "created_at"
->;
+export type ProfessionInsertDto = Omit<ProfessionInCvRow, "id" | "owner_id">;
 export type ProfessionUpdateDto = Partial<ProfessionInsertDto>;
 
 class ProfessionService extends CrudTranslatableService<
@@ -22,7 +19,7 @@ class ProfessionService extends CrudTranslatableService<
 > {
   constructor() {
     super(
-      "profession",
+      "professions",
       "profession_id",
       "professions_translations",
       ProfessionInCv.fromRow

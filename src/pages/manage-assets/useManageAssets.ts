@@ -6,10 +6,7 @@ import type { AssetTableSelection } from "@/components/dashboard/assetTable/Asse
 import { saveAsset } from "@/services/assets/saveAsset";
 import { deleteAsset } from "@/services/assets/deleteAsset";
 import { updateAssetsState } from "./updateAssetsState";
-import {
-  getLangCode,
-  getTranslationsFromAsset,
-} from "@/components/dashboard/assetTable/formatters";
+import { getLangCode } from "@/components/dashboard/assetTable/formatters";
 import deleteAssetInState from "./deleteAssetInState";
 
 interface ManageAssetsState {

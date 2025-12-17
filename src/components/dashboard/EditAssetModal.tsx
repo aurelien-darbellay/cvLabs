@@ -38,6 +38,7 @@ export function EditAssetModal({
   onSave,
   onDelete,
 }: EditAssetModalProps) {
+  console.log("Render EditAssetModal", { isOpen, asset, translation, mode });
   if (!isOpen || !asset) return null;
   const isTranslationMode = mode === "translation";
   const translationLang = translation ? getLangCode(translation) : null;
@@ -88,7 +89,7 @@ export function EditAssetModal({
             <p className="text-sm text-gray-600">
               {isTranslationMode
                 ? "No translation selected."
-                : "You are editing the base fields for this asset."}
+                : "You are editing the fields that aren't translated - to add translatable fields, add/edit a translation."}
             </p>
           </div>
         )}

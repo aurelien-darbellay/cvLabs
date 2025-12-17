@@ -34,23 +34,19 @@ export function AssetTable({ assetType, assets, onRowClick }: AssetTableProps) {
             <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Details
             </th>
-            {canTranslate ? (
-              <th className="px-4 py-3 text-right">
-                <button
-                  className="px-3 py-2 text-sm font-semibold text-indigo-600 border border-indigo-200 rounded hover:bg-indigo-50"
-                  onClick={() =>
-                    onRowClick({
-                      asset: {},
-                      mode: "base" satisfies AssetEditMode,
-                    })
-                  }
-                >
-                  Add Asset
-                </button>
-              </th>
-            ) : (
-              <th className="px-4 py-3" />
-            )}
+            <th className="px-4 py-3 text-right">
+              <button
+                className="px-3 py-2 text-sm font-semibold text-indigo-600 border border-indigo-200 rounded hover:bg-indigo-50"
+                onClick={() =>
+                  onRowClick({
+                    asset: {},
+                    mode: "base" satisfies AssetEditMode,
+                  })
+                }
+              >
+                Add Asset
+              </button>
+            </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100">

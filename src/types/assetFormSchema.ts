@@ -89,7 +89,7 @@ export const assetFormSchema: Record<AssetType, AssetFormConfig> = {
     ],
   },
   profession: {
-    baseFields: [],
+    baseFields: [{ key: "identifier", label: "Identifier", type: "text" }],
     translationFields: [
       {
         key: "langCode",
@@ -125,7 +125,9 @@ export const assetFormSchema: Record<AssetType, AssetFormConfig> = {
     ],
   },
   summaries: {
-    baseFields: [],
+    baseFields: [
+      { key: "shortDescription", label: "Short Description", type: "text" },
+    ],
     translationFields: [
       {
         key: "langCode",

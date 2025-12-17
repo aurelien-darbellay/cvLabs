@@ -7,6 +7,9 @@ export default function deleteAssetInState(
   currentAssets: any[],
   data: { mode: "base" | "translation"; asset: any; translation?: any }
 ): any[] {
+  if (data.mode === "base") {
+    return currentAssets.filter((item) => item.id !== data.asset?.id);
+  }
   const langCode = (data.translation && getLangCode(data.translation)) || "";
   return currentAssets.map((item) => {
     if (item.id !== data.translation?.domainId && item.id !== data.asset?.id)
