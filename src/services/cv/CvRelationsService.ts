@@ -1,6 +1,6 @@
 import { EducationInCv } from "@/domain/elementsInCv/EducationInCv";
 import { ExperienceInCv } from "@/domain/elementsInCv/ExperienceInCv";
-import { LanguageInCV } from "@/domain/elementsInCv/LanguageInCv";
+import { LanguageSkillInCvRow } from "@/domain/elementsInCv/LanguageSkillInCv";
 import { ProfessionInCv } from "@/domain/elementsInCv/ProfessionInCv";
 import { SoftSkillInCv } from "@/domain/elementsInCv/SoftSkillInCv";
 import { SummaryInCv } from "@/domain/Summary";
@@ -65,7 +65,7 @@ export const cvProfessionRelations = new CvRelationService<
 >("cv_profession", "profession_id", { orderByPosition: false });
 export const cvLanguageRelations = new CvRelationService<
   CvLanguageInCvRow,
-  LanguageInCV
+  LanguageSkillInCvRow
 >("cv_languages", "language_id");
 
 export const cvRelationsService = {};

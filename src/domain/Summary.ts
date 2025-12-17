@@ -33,7 +33,7 @@ export class Summary extends Asset<SummaryInCv> {
     public shortDescription: string | null,
     public translatedFields: SummaryTranslatedField[]
   ) {
-    super();
+    super(id);
   }
 
   static fromRow(row: SummaryRow): Summary {

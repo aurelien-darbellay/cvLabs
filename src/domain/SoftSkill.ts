@@ -16,7 +16,7 @@ export class SoftSkill extends Asset<SoftSkillInCv> {
     public key: string,
     public translatedFields: SoftSkillTranslatedField[]
   ) {
-    super();
+    super(id);
   }
 
   static fromRow(row: SoftSkillRow): SoftSkill {
@@ -24,7 +24,7 @@ export class SoftSkill extends Asset<SoftSkillInCv> {
       row.id,
       row.owner_id,
       row.key,
-      row.softskill_translations || []
+      (row.softskill_translations || []).map(SoftSkillTranslatedField.fromRow)
     );
   }
 

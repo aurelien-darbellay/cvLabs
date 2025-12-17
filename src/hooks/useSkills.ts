@@ -1,10 +1,9 @@
 import { useAsync } from "./useAsync";
 import { techSkillService } from "@/services/skills/TechSkillService";
 import { softSkillService } from "@/services/skills/SoftSkillService";
-import { languageService } from "@/services/skills/LanguageService";
 import type { TechSkill } from "@/domain/TechSkill";
-import type { SoftSkill, SoftSkillInCv } from "@/domain/SoftSkill";
-import type { Language } from "@/domain/Language";
+import type { SoftSkill } from "@/domain/SoftSkill";
+
 
 export function useTechSkills(deps: any[] = []) {
   const { data, loading, error } = useAsync<TechSkill[]>(
@@ -25,18 +24,6 @@ export function useSoftSkills(ownerId: string | null | undefined) {
   }, [ownerId]);
   return {
     softSkills: data ?? [],
-    loading,
-    error,
-  };
-}
-
-export function useLanguages(deps: any[] = []) {
-  const { data, loading, error } = useAsync<Language[]>(
-    () => languageService.list(),
-    deps
-  );
-  return {
-    languages: data ?? [],
     loading,
     error,
   };

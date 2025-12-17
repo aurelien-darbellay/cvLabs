@@ -18,7 +18,7 @@ export class Education extends Asset<EducationInCv> {
     public endYear: number | null,
     public translatedFields: EducationTranslatedField[]
   ) {
-    super();
+    super(id);
   }
 
   static fromRow(row: EducationRow): Education {

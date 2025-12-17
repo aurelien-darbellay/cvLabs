@@ -15,3 +15,7 @@ export {
   ProfessionTranslatedField,
   type ProfessionTranslatedFieldRow,
 } from "./ProfessionTranslatedField";
+export {
+  LanguageSkillTranslatedField,
+  type LanguageSkillTranslatedFieldRow,
+} from "./LanguageSkillTranslatedField";

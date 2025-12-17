@@ -14,7 +14,8 @@ import { techSkillService } from "@/services/skills/TechSkillService";
 import { softSkillService } from "@/services/skills/SoftSkillService";
 import { summaryService } from "@/services/summary/SummaryService";
 import { professionService } from "@/services/profession/ProfessionService";
-import { languageService } from "@/services/skills/LanguageService";
+import { languageService } from "@/services/language/LanguageService";
+import { languageSkillService } from "@/services/skills/LanguageSkillService";
 
 const TEST_USER_ID = "0426c115-e35e-407d-926f-49e0ba90f724";
 const TEST_CV_ID = 1;
@@ -36,6 +37,7 @@ export default function TestPage() {
     { service: "Summary", status: "loading" },
     { service: "Profession", status: "loading" },
     { service: "Language", status: "loading" },
+    { service: "LanguageSkill", status: "loading" },
   ]);
 
   useEffect(() => {
@@ -86,7 +88,7 @@ export default function TestPage() {
 
       // Test TechSkill
       try {
-        const techSkills = await techSkillService.getAll(TEST_USER_ID);
+        const techSkills = await techSkillService.list();
         const techSkillsInCv = await cvTechSkillRelations.getAssetsForCv(
           TEST_CV_ID,
           techSkills,
@@ -170,20 +172,32 @@ export default function TestPage() {
 
       // Test Language
       try {
-        const languages = await languageService.getAll(TEST_USER_ID);
-        const languagesInCv = await cvLanguageRelations.getAssetsForCv(
-          TEST_CV_ID,
-          languages,
-          TEST_LANG
-        );
+        const languages = await languageService.list();
+
         testResults.push({
           service: "Language",
           status: "success",
-          count: languagesInCv.length,
+          count: languages.length,
         });
       } catch (err) {
         testResults.push({
           service: "Language",
+          status: "error",
+          error: err instanceof Error ? err.message : "Unknown error",
+        });
+      }
+
+      // Test LanguageSkill
+      try {
+        const languageSkills = await languageSkillService.getAll(TEST_USER_ID);
+        testResults.push({
+          service: "LanguageSkill",
+          status: "success",
+          count: languageSkills.length,
+        });
+      } catch (err) {
+        testResults.push({
+          service: "LanguageSkill",
           status: "error",
           error: err instanceof Error ? err.message : "Unknown error",
         });

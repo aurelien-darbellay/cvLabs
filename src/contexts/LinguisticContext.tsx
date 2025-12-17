@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 import type { ReactNode } from "react";
-import { useLanguages } from "@/hooks/useSkills";
+import { useLanguages } from "@/hooks/useLanguages";
 import type { Language } from "@/domain/Language";
 
 interface LinguisticContextValue {

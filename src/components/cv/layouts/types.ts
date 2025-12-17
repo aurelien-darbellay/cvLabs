@@ -4,14 +4,14 @@ import { EducationInCv } from "@/domain/elementsInCv/EducationInCv";
 import { SummaryInCv } from "@/domain/Summary";
 import { SoftSkillInCv } from "@/domain/SoftSkill";
 import { TechSkill } from "@/domain/TechSkill";
-import { LanguageInCv } from "@/domain/elementsInCv/LanguageInCv";
+import { LanguageSkillInCv } from "@/domain/elementsInCv/LanguageSkillInCv";
 
 export interface CvData {
   user: User;
   summary: SummaryInCv | null;
   experience: ExperienceInCv[];
   education: EducationInCv[];
-  languages: LanguageInCv[];
+  languages: LanguageSkillInCv[];
   softSkills: SoftSkillInCv[];
   techSkills: TechSkill[];
 }

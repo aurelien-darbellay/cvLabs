@@ -8,7 +8,7 @@ export interface TechSkillRow {
 
 export class TechSkill extends Asset<TechSkill> {
   constructor(public id: number, public ownerId: string, public name: string) {
-    super();
+    super(id);
   }
 
   static fromRow(row: TechSkillRow): TechSkill {

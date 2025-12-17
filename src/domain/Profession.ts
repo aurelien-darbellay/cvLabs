@@ -14,7 +14,7 @@ export class Profession extends Asset<ProfessionInCv> {
     public identifier: string,
     public translatedFields: ProfessionTranslatedField[]
   ) {
-    super();
+    super(id);
   }
 
   static fromRow(row: ProfessionRow): Profession {

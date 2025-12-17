@@ -4,7 +4,7 @@ import { EducationInCv } from "@/domain/elementsInCv/EducationInCv";
 import { SummaryInCv } from "@/domain/Summary";
 import { SoftSkillInCv } from "@/domain/elementsInCv/SoftSkillInCv";
 import { ProfessionInCv } from "@/domain/elementsInCv/ProfessionInCv";
-import { LanguageInCv } from "@/domain/elementsInCv/LanguageInCv";
+import { LanguageSkillInCv } from "@/domain/elementsInCv/LanguageSkillInCv";
 import { cvRelationsService } from "./CvRelationsService";
 
 export class TranslationService {
@@ -193,7 +193,7 @@ export class TranslationService {
   async getLanguagesForCv(
     cvId: number,
     langCode: string
-  ): Promise<LanguageInCv[] | null> {
+  ): Promise<LanguageSkillInCv[] | null> {
     // First, get the profession_id from cv_profession
     const { data: languageData, error: languageError } = await supabase
       .from("cv_languages")
@@ -206,7 +206,7 @@ export class TranslationService {
       return null;
     }
 
-    const languages: LanguageInCv[] = [];
+    const languages: LanguageSkillInCv[] = [];
     for (const cvLang of languageData) {
       const languageId = cvLang.language_id;
       const level = cvLang.level as any;
@@ -231,12 +231,14 @@ export class TranslationService {
           nameError || levelError
         );
         // Add education without translation
-        languages.push(new LanguageInCv(languageId, "Unknown", level, level));
+        languages.push(
+          new LanguageSkillInCv(languageId, "Unknown", level, level)
+        );
         continue;
       }
 
       languages.push(
-        new LanguageInCv(
+        new LanguageSkillInCv(
           languageId,
           translatedName?.name ?? "Unknown",
           level,

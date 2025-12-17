@@ -24,7 +24,7 @@ export class Experience extends Asset<ExperienceInCv> {
     public clients: string[],
     public translatedFields: ExperienceTranslatedField[]
   ) {
-    super();
+    super(id);
   }
 
   static fromRow(row: ExperienceRow): Experience {
