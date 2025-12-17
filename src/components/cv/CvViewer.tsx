@@ -68,7 +68,6 @@ export const CvViewer: React.FC<CvViewerProps> = ({
   const [showWarning, setShowWarning] = useState(false);
   const [singlePageMode, setSinglePageMode] = useState(true);
   const cvRef = useRef<HTMLDivElement>(null);
-
   const { languages, loading: languagesLoading } = useLinguisticContext();
 
   const availableLangs = useMemo(
@@ -94,6 +93,11 @@ export const CvViewer: React.FC<CvViewerProps> = ({
       setLoading(true);
       try {
         // 1. Fetch User
+        console.log("AssetData:", assetData);
+        console.log(
+          "Professions asset data:",
+          assetData.assetData?.professions
+        );
         const user = await userService.getById(cv.userId);
         if (!user) throw new Error("User not found");
 

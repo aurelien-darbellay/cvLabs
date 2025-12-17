@@ -62,11 +62,11 @@ export class CvRelationService<
     assets: Asset<any>[],
     langCode?: string
   ): Promise<T[]> {
+    console.log("Asset passed", assets);
     const assetsInCv = await this.getAssetsInCV(cvId);
     if (assetsInCv.length === 0) {
       return [];
     }
-    console.log(assets);
     // Filter assets by matching their id with the relation's domain id field
     const filtered = assets.filter((asset) => {
       console.log("Checking asset:", asset);

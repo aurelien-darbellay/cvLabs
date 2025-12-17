@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { useCvs } from "@/hooks/useCvs";
 import { useEducationList } from "@/hooks/useEducation";
 import { useExperienceList } from "@/hooks/useExperience";
@@ -11,12 +12,14 @@ import { AssetsGrid } from "@/components/dashboard/AssetsGrid";
 import { useUser } from "@/hooks/useUser";
 import { useSummaries } from "@/hooks/useSummary";
 import { useProfessionList } from "@/hooks/useProfession";
+import { Education } from "@/domain/Education";
 
 export default function HomePage() {
   const { user: authenUser } = useAuth();
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const userId = authenUser?.id;
   const { user } = useUser(userId);
+  const navigate = useNavigate();
 
   const { cvs, loading: loadingCvs } = useCvs([userId]);
   const { education } = useEducationList(userId);
@@ -26,6 +29,22 @@ export default function HomePage() {
   const { techSkills } = useTechSkills([userId]);
   const { summaries } = useSummaries(userId);
   const { professions } = useProfessionList(userId);
+  const assetData = {
+    education,
+    experience,
+    languages,
+    professions,
+    techSkills,
+    softSkills,
+    summaries,
+  };
+
+  const handleViewCv = useCallback(
+    (cvId: number) => {
+      navigate(`/cv/${cvId}`, { state: { ...assetData } });
+    },
+    [navigate, assetData]
+  );
 
   const handleProfileSuccess = useCallback(() => {
     // Refetch user data if needed
@@ -78,6 +97,7 @@ export default function HomePage() {
           loading={loadingCvs}
           onCvCreated={() => {}}
           onCvDeleted={() => {}}
+          onViewCv={handleViewCv}
         />
 
         {/* Assets Grid */}

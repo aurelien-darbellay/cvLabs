@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { CvViewer } from "@/components/cv/CvViewer";
 import { Cv } from "@/domain/Cv";
@@ -7,6 +7,8 @@ import { supabase } from "@/lib/supabaseClient";
 export default function CvViewerPage() {
   const { cvId } = useParams<{ cvId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+  const assetData = location.state ?? null;
   const [cv, setCv] = useState<Cv | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -62,5 +64,7 @@ export default function CvViewerPage() {
     );
   }
 
-  return <CvViewer cv={cv} onClose={() => navigate("/")} />;
+  return (
+    <CvViewer cv={cv} assetData={assetData} onClose={() => navigate("/")} />
+  );
 }
