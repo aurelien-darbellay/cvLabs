@@ -14,7 +14,6 @@ import { AssetsGrid } from "@/components/dashboard/AssetsGrid";
 import { useUser } from "@/hooks/useUser";
 import { useSummaries } from "@/hooks/useSummary";
 import { useProfessionList } from "@/hooks/useProfession";
-import { Education } from "@/domain/Education";
 
 export default function HomePage() {
   const { user: authenUser } = useAuth();
@@ -54,8 +53,8 @@ export default function HomePage() {
     summaries,
   };
   const handleViewCv = useCallback(
-    (cvId: number) => {
-      navigate(`/cv/${cvId}`, { state: { ...assetData } });
+    (cvId: number, path?: string) => {
+      navigate(`/cv/${cvId}${path || ""}`, { state: { ...assetData } });
     },
     [navigate, assetData]
   );

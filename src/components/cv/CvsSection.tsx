@@ -8,7 +8,7 @@ interface CvsSectionProps {
   loading: boolean;
   onCvCreated: () => void;
   onCvDeleted: () => void;
-  onViewCv?: (cvId: number) => void;
+  onViewCv?: (cvId: number, path?: string) => void;
 }
 
 export function CvsSection({
@@ -118,19 +118,35 @@ export function CvsSection({
               </div>
               <div className="flex gap-2">
                 {onViewCv ? (
-                  <button
-                    onClick={() => onViewCv(cv.id)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium text-sm"
-                  >
-                    View
-                  </button>
+                  <>
+                    <button
+                      onClick={() => onViewCv(cv.id)}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium text-sm"
+                    >
+                      View
+                    </button>
+                    <button
+                      onClick={() => onViewCv(cv.id, "/manage-assets")}
+                      className="px-4 py-2 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50 font-medium text-sm"
+                    >
+                      Manage Assets
+                    </button>
+                  </>
                 ) : (
-                  <Link
-                    to={`/cv/${cv.id}`}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium text-sm"
-                  >
-                    View
-                  </Link>
+                  <>
+                    <Link
+                      to={`/cv/${cv.id}`}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium text-sm"
+                    >
+                      View
+                    </Link>
+                    <Link
+                      to={`/cv/${cv.id}/manage-assets`}
+                      className="px-4 py-2 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50 font-medium text-sm"
+                    >
+                      Manage Assets
+                    </Link>
+                  </>
                 )}
                 <button
                   onClick={() => handleDeleteCv(cv.id)}

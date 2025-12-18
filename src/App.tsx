@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import CvViewerPage from "./pages/CvViewerPage";
 import ManageAssetsPage from "./pages/ManageAssetsPage";
+import ManageCvAssetsPage from "./pages/ManageCvAssetsPage";
 import TestPage from "./pages/TestPage";
 
 export default function App() {
@@ -10,6 +11,7 @@ export default function App() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/cv/:cvId" element={<CvViewerPage />} />
       <Route path="/manage-assets/:assetType" element={<ManageAssetsPage />} />
+      <Route path="/cv/:cvId/manage-assets" element={<ManageCvAssetsPage />} />
       <Route path="/test" element={<TestPage />} />
     </Routes>
   );
