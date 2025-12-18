@@ -6,7 +6,7 @@ export const IALayout = React.forwardRef<HTMLDivElement, LayoutProps>(
     return (
       <div
         ref={ref}
-        className="mx-auto px-12 py-16 bg-white shadow-sm ia-layout"
+        className="mx-auto px-8 py-10 bg-white shadow-sm ia-layout"
         style={{ width: "210mm", minHeight: "297mm" }}
       >
         <style>{`
@@ -144,11 +144,11 @@ export const IALayout = React.forwardRef<HTMLDivElement, LayoutProps>(
           }
         `}</style>
         {/* Header */}
-        <header className="mb-12 pb-6 border-b-2 border-gray-900">
-          <h1 className="text-5xl font-serif font-bold text-gray-900 mb-3">
+        <header className="mb-4 pb-2 border-b-2 border-gray-900">
+          <h1 className="text-4xl font-serif font-bold text-gray-900 mb-2">
             {data.user.fullName}
           </h1>
-          <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+          <div className="flex flex-wrap gap-1 text-xs text-gray-600">
             <span className="flex items-center gap-1.5">
               <svg
                 className="w-4 h-4"
@@ -204,12 +204,36 @@ export const IALayout = React.forwardRef<HTMLDivElement, LayoutProps>(
                 </a>
               </>
             )}
+            {data.user.portfolioUrl && (
+              <>
+                <span className="text-gray-400">|</span>
+                <a
+                  href={data.user.portfolioUrl}
+                  className="flex items-center gap-1.5 text-blue-700 hover:text-blue-900 underline"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 3a9 9 0 100 18 9 9 0 000-18zM3.6 9h16.8M3.6 15h16.8M12 3.6v16.8"
+                    />
+                  </svg>
+                  Portfolio
+                </a>
+              </>
+            )}
           </div>
         </header>
 
         {/* Summary */}
         {data.summary && (
-          <section className="mb-10">
+          <section className="mb-6">
             <p className="text-lg text-gray-800 leading-relaxed font-serif italic border-l-4 border-gray-300 pl-6 py-2">
               {data.summary.content}
             </p>
@@ -217,33 +241,33 @@ export const IALayout = React.forwardRef<HTMLDivElement, LayoutProps>(
         )}
 
         {/* Experience */}
-        <section className="mb-10">
-          <h2 className="text-2xl font-serif font-bold text-gray-900 mb-6 uppercase tracking-widest border-b border-gray-300 pb-2">
+        <section className="mb-4">
+          <h2 className="text-lg font-serif font-bold text-gray-900 mb-2 uppercase tracking-widest border-b border-gray-300 pb-1">
             {labels.experience}
           </h2>
-          <div className="space-y-6">
+          <div className="space-y-2">
             {data.experience.map((exp) => (
               <div key={exp.id} className="group">
-                <div className="flex justify-between items-baseline mb-2">
-                  <h3 className="text-xl font-serif font-semibold text-gray-900">
+                <div className="flex justify-between items-baseline mb-1">
+                  <h3 className="text-sm font-serif font-semibold text-gray-900">
                     {exp.company}
                   </h3>
-                  <span className="text-sm text-gray-500 italic whitespace-nowrap ml-4">
+                  <span className="text-xs text-gray-500 italic whitespace-nowrap ml-2">
                     {exp.startDate?.getFullYear()} -{" "}
                     {exp.isCurrent ? "Present" : exp.endDate?.getFullYear()}
                   </span>
                 </div>
                 {exp.jobTitle && (
-                  <p className="text-base font-medium text-gray-700 mb-2">
+                  <p className="text-xs font-medium text-gray-700 mb-1">
                     {exp.jobTitle}
                   </p>
                 )}
                 {exp.description && (
-                  <p className="text-gray-700 leading-relaxed mb-3">
+                  <p className="text-gray-700 leading-tight mb-1 text-xs">
                     {exp.description}
                   </p>
                 )}
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1">
                   {exp.technologies.map((tech, idx) => (
                     <span
                       key={idx}
@@ -259,18 +283,18 @@ export const IALayout = React.forwardRef<HTMLDivElement, LayoutProps>(
         </section>
 
         {/* Education */}
-        <section className="mb-10">
-          <h2 className="text-2xl font-serif font-bold text-gray-900 mb-6 uppercase tracking-widest border-b border-gray-300 pb-2">
+        <section className="mb-4">
+          <h2 className="text-lg font-serif font-bold text-gray-900 mb-2 uppercase tracking-widest border-b border-gray-300 pb-1">
             {labels.education}
           </h2>
-          <div className="space-y-5">
+          <div className="space-y-1">
             {data.education.map((edu) => (
               <div key={edu.id}>
-                <div className="flex justify-between items-baseline mb-1">
-                  <h3 className="text-lg font-serif font-semibold text-gray-900">
+                <div className="flex justify-between items-baseline mb-0.5">
+                  <h3 className="text-sm font-serif font-semibold text-gray-900">
                     {edu.institution}
                   </h3>
-                  <span className="text-sm text-gray-500 italic whitespace-nowrap ml-4">
+                  <span className="text-xs text-gray-500 italic whitespace-nowrap ml-2">
                     {edu.startYear} - {edu.endYear}
                   </span>
                 </div>
@@ -326,7 +350,9 @@ export const IALayout = React.forwardRef<HTMLDivElement, LayoutProps>(
                 {labels.languages}
               </h3>
               <p className="text-gray-700 leading-relaxed">
-                {data.languages.map((l) => l.name).join(" | ")}
+                {data.languages
+                  .map((l) => `${l.name} (${l.level_name})`)
+                  .join(" | ")}
               </p>
             </div>
           </div>

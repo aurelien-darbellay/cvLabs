@@ -62,8 +62,8 @@ export class CvRelationService<
     assets: Asset<any>[],
     langCode?: string
   ): Promise<T[]> {
-    if (this.domainIdField == "softskill_id")
-      console.log("Getting soft skills for CV:", cvId, assets, langCode);
+    if (this.domainIdField == "summary_id")
+      console.log("Getting summary for CV:", cvId, assets, langCode);
     const assetsInCv = await this.getAssetsInCV(cvId);
     if (assetsInCv.length === 0) {
       return [];

@@ -41,7 +41,6 @@ export class SoftSkill extends Asset<SoftSkillInCv> {
    * Converts SoftSkill to SoftSkillInCv.
    */
   override prepForCv(): SoftSkillInCv {
-    console.log("Preparing SoftSkill for CV:", this);
     return new SoftSkillInCv(
       this.id,
       this.translatedFields?.[0]?.name || this.key

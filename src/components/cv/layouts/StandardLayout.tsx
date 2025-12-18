@@ -137,15 +137,15 @@ export const StandardLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
           }
         `}</style>
         <div
-          className="bg-white mx-auto px-8 py-12 shadow-sm"
+          className="bg-white mx-auto px-6 py-8 shadow-sm"
           style={{ width: "210mm", minHeight: "297mm" }}
         >
           {/* Header */}
-          <header className="mb-12 pb-8 border-b-2 border-gray-200">
-            <h1 className="text-5xl font-bold text-gray-900 mb-3">
+          <header className="mb-4 pb-3 border-b border-gray-200">
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
               {data.user.fullName}
             </h1>
-            <div className="flex flex-wrap gap-4 text-gray-600 text-sm">
+            <div className="flex flex-wrap gap-1 text-gray-600 text-xs">
               <span className="flex items-center gap-2">
                 <svg
                   className="w-4 h-4"
@@ -208,52 +208,73 @@ export const StandardLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
                   GitHub
                 </a>
               )}
+              {data.user.portfolioUrl && (
+                <a
+                  href={data.user.portfolioUrl}
+                  className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 3a9 9 0 100 18 9 9 0 000-18zM3.6 9h16.8M3.6 15h16.8M12 3.6v16.8"
+                    />
+                  </svg>
+                  Portfolio
+                </a>
+              )}
             </div>
           </header>
 
           {/* Summary */}
           {data.summary && (
-            <section className="mb-10">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4 uppercase tracking-wide">
+            <section className="mb-4">
+              <h2 className="text-lg font-bold text-gray-900 mb-2 uppercase tracking-wide">
                 {labels.summary}
               </h2>
-              <p className="text-gray-700 leading-relaxed text-base">
+              <p className="text-gray-700 leading-relaxed text-sm\">
                 {data.summary.content}
               </p>
             </section>
           )}
 
           {/* Experience */}
-          <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 uppercase tracking-wide">
+          <section className="mb-4">
+            <h2 className="text-lg font-bold text-gray-900 mb-3 uppercase tracking-wide">
               {labels.experience}
             </h2>
-            <div className="space-y-6">
+            <div className="space-y-2">
               {data.experience.map((exp) => (
                 <div
                   key={exp.id}
                   className="border-l-4 border-blue-500 pl-6 py-2"
                 >
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-xl font-semibold text-gray-900">
+                  <div className="flex justify-between items-start mb-1">
+                    <h3 className="text-base font-semibold text-gray-900">
                       {exp.company}
                     </h3>
-                    <span className="text-sm text-gray-500 whitespace-nowrap ml-4">
+                    <span className="text-xs text-gray-500 whitespace-nowrap ml-2">
                       {exp.startDate?.getFullYear()} -{" "}
                       {exp.isCurrent ? "Present" : exp.endDate?.getFullYear()}
                     </span>
                   </div>
                   {exp.jobTitle && (
-                    <p className="text-lg text-blue-600 font-medium mb-2">
+                    <p className="text-sm text-blue-600 font-medium mb-1">
                       {exp.jobTitle}
                     </p>
                   )}
                   {exp.description && (
-                    <p className="text-gray-700 mb-3 leading-relaxed">
+                    <p className="text-gray-700 mb-1 leading-tight text-xs">
                       {exp.description}
                     </p>
                   )}
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1">
                     {exp.technologies.map((tech, idx) => (
                       <span
                         key={idx}
@@ -269,21 +290,21 @@ export const StandardLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
           </section>
 
           {/* Education */}
-          <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 uppercase tracking-wide">
+          <section className="mb-4">
+            <h2 className="text-lg font-bold text-gray-900 mb-3 uppercase tracking-wide">
               {labels.education}
             </h2>
-            <div className="space-y-4">
+            <div className="space-y-1">
               {data.education.map((edu) => (
                 <div
                   key={edu.id}
-                  className="border-l-4 border-green-500 pl-6 py-2"
+                  className="border-l-4 border-green-500 pl-4 py-0.5"
                 >
-                  <div className="flex justify-between items-start mb-1">
-                    <h3 className="text-lg font-semibold text-gray-900">
+                  <div className="flex justify-between items-start mb-0.5">
+                    <h3 className="text-sm font-semibold text-gray-900">
                       {edu.institution}
                     </h3>
-                    <span className="text-sm text-gray-500 whitespace-nowrap ml-4">
+                    <span className="text-xs text-gray-500 whitespace-nowrap ml-2">
                       {edu.startYear} - {edu.endYear}
                     </span>
                   </div>
@@ -302,10 +323,10 @@ export const StandardLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
 
           {/* Skills */}
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 uppercase tracking-wide">
+            <h2 className="text-lg font-bold text-gray-900 mb-3 uppercase tracking-wide">
               {labels.skills}
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
                   {labels.tech}

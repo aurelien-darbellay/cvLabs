@@ -41,7 +41,6 @@ export default function HomePage() {
     softSkills,
     summaries,
   };
-
   const handleViewCv = useCallback(
     (cvId: number) => {
       navigate(`/cv/${cvId}`, { state: { ...assetData } });

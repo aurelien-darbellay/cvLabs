@@ -45,14 +45,6 @@ export async function exportElementToPdf(
     },
   });
 
-  // Preview canvas in new tab
-  /* canvas.toBlob((blob) => {
-    if (blob) {
-      const previewUrl = URL.createObjectURL(blob);
-      window.open(previewUrl, "_blank");
-    }
-  }, "image/png"); */
-
   const imgData = canvas.toDataURL("image/jpeg", 0.5);
   const pdf = new jsPDF({
     orientation: "p",
@@ -74,7 +66,7 @@ export async function exportElementToPdf(
   pdf.addImage(imgData, "JPEG", margin, position, printableWidth, imgHeight);
   heightLeft -= PDF_PAGE_HEIGHT;
 
-  while (heightLeft > 0) {
+  while (heightLeft > 10) {
     position = heightLeft - imgHeight + margin;
     pageIndex += 1;
     pdf.addPage();
