@@ -290,7 +290,7 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
             {/* Tech Skills */}
             <div className="pb-2">
               <h3 className="text-lg font-bold uppercase tracking-[0.2em] text-slate-300 mb-3 pb-2 border-b border-slate-500">
-                {labels.tech}
+                {labels.standaloneTech}
               </h3>
               <div className="flex flex-wrap gap-2">
                 {data.techSkills.map((s) => (
@@ -308,7 +308,7 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
             {/* Soft Skills */}
             <div className="pb-2">
               <h3 className="text-lg font-bold uppercase tracking-[0.2em] text-slate-300 mb-3 pb-2 border-b border-slate-500">
-                {labels.soft}
+                {labels.standaloneSoft}
               </h3>
               <ul className="space-y-1.5 text-sm">
                 {data.softSkills.map((s) => (

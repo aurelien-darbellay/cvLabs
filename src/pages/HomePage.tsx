@@ -24,13 +24,25 @@ export default function HomePage() {
   const navigate = useNavigate();
 
   const { cvs, loading: loadingCvs } = useCvs([userId]);
-  const { education } = useEducationList(userId);
-  const { experience } = useExperienceList(userId);
-  const { languageSkills } = useLanguageSkills(userId);
-  const { softSkills } = useSoftSkills(userId);
-  const { techSkills } = useTechSkills([userId]);
-  const { summaries } = useSummaries(userId);
-  const { professions } = useProfessionList(userId);
+  const { education, loading: loadingEducation } = useEducationList(userId);
+  const { experience, loading: loadingExperience } = useExperienceList(userId);
+  const { languageSkills, loading: loadingLanguageSkills } =
+    useLanguageSkills(userId);
+  const { softSkills, loading: loadingSoftSkills } = useSoftSkills(userId);
+  const { techSkills, loading: loadingTechSkills } = useTechSkills([userId]);
+  const { summaries, loading: loadingSummaries } = useSummaries(userId);
+  const { professions, loading: loadingProfessions } =
+    useProfessionList(userId);
+
+  const loading =
+    loadingCvs ||
+    loadingEducation ||
+    loadingExperience ||
+    loadingLanguageSkills ||
+    loadingSoftSkills ||
+    loadingTechSkills ||
+    loadingSummaries ||
+    loadingProfessions;
 
   const assetData = {
     education,
@@ -96,7 +108,7 @@ export default function HomePage() {
         {/* CVs Section */}
         <CvsSection
           cvs={cvs}
-          loading={loadingCvs}
+          loading={loading}
           onCvCreated={() => {}}
           onCvDeleted={() => {}}
           onViewCv={handleViewCv}
