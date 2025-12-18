@@ -26,7 +26,6 @@ export default function HomePage() {
   const { cvs, loading: loadingCvs } = useCvs([userId]);
   const { education } = useEducationList(userId);
   const { experience } = useExperienceList(userId);
-  const { languages } = useLanguages([userId]);
   const { languageSkills } = useLanguageSkills(userId);
   const { softSkills } = useSoftSkills(userId);
   const { techSkills } = useTechSkills([userId]);
@@ -36,7 +35,6 @@ export default function HomePage() {
   const assetData = {
     education,
     experience,
-    languages,
     languageSkills,
     professions,
     techSkills,

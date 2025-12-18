@@ -8,6 +8,7 @@ import {
   CvData,
   LayoutLabels,
 } from "./layouts";
+import { SECTION_TITLES } from "./sectionTitles";
 import {
   cvEducationRelations,
   cvExperienceRelations,
@@ -24,9 +25,9 @@ import { Profession } from "@/domain/Profession";
 import { Experience } from "@/domain/Experience";
 import { Education } from "@/domain/Education";
 import { SoftSkill } from "@/domain/SoftSkill";
-import { Language } from "@/domain/Language";
 import { TechSkill } from "@/domain/TechSkill";
 import { Summary } from "@/domain/Summary";
+import { LanguageSkill } from "@/domain/LanguageSkill";
 
 interface CvViewerProps {
   cv: Cv;
@@ -34,30 +35,7 @@ interface CvViewerProps {
   onClose: () => void;
 }
 
-const SECTION_TITLES: Record<string, LayoutLabels> = {
-  en: {
-    summary: "Summary",
-    experience: "Experience",
-    education: "Education",
-    skills: "Skills",
-    tech: "Tech",
-    soft: "Soft",
-    languages: "Languages",
-    contact: "Contact",
-    profile: "Profile",
-  },
-  es: {
-    summary: "Resumen",
-    experience: "Experiencia",
-    education: "Educación",
-    skills: "Habilidades",
-    tech: "Técnicas",
-    soft: "Blandas",
-    languages: "Idiomas",
-    contact: "Contacto",
-    profile: "Perfil",
-  },
-};
+// SECTION_TITLES moved to dedicated file ./sectionTitles
 
 export const CvViewer: React.FC<CvViewerProps> = ({
   cv,
@@ -138,7 +116,7 @@ export const CvViewer: React.FC<CvViewerProps> = ({
         console.log("Fetched soft skills:", softSkills);
         const languagesForCv = await cvLanguageRelations.getAssetsForCv(
           cv.id,
-          assetData?.languages.map(Language.deSerialize) || [],
+          assetData?.languageSkills.map(LanguageSkill.deSerialize) || [],
           currentLang
         );
 

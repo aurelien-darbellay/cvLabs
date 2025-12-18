@@ -2,7 +2,7 @@ import { User } from "@/domain/User";
 import { ExperienceInCv } from "@/domain/elementsInCv/ExperienceInCv";
 import { EducationInCv } from "@/domain/elementsInCv/EducationInCv";
 import { SummaryInCv } from "@/domain/Summary";
-import { SoftSkillInCv } from "@/domain/SoftSkill";
+import { SoftSkillInCv } from "@/domain/elementsInCv/SoftSkillInCv";
 import { TechSkill } from "@/domain/TechSkill";
 import { LanguageSkillInCv } from "@/domain/elementsInCv/LanguageSkillInCv";
 
@@ -22,7 +22,9 @@ export interface LayoutLabels {
   education: string;
   skills: string;
   tech: string;
+  standaloneTech: string;
   soft: string;
+  standaloneSoft: string;
   languages: string;
   contact: string;
   profile: string;
