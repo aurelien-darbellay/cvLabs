@@ -144,4 +144,41 @@ export const assetFormSchema: Record<AssetType, AssetFormConfig> = {
       },
     ],
   },
+  languageskills: {
+    baseFields: [
+      {
+        key: "langCode",
+        label: "Language",
+        type: "select",
+        placeholder: "Select a language",
+      },
+      {
+        key: "levelCode",
+        label: "Level",
+        type: "select",
+        placeholder: "Select proficiency level",
+      },
+    ],
+    translationFields: [
+      {
+        key: "langCode",
+        label: "Language",
+        type: "select",
+        placeholder: "Select a language",
+        translation: true,
+      },
+      {
+        key: "langSkillName",
+        label: "Language Name",
+        type: "text",
+        translation: true,
+      },
+      {
+        key: "levelCode",
+        label: "Level",
+        type: "select",
+        placeholder: "Select proficiency level",
+      },
+    ],
+  },
 };

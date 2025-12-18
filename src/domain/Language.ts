@@ -1,6 +1,3 @@
-import { Asset } from "./Asset";
-import { LanguageSkillInCv } from "./elementsInCv/LanguageInCv";
-
 export interface LanguageRow {
   id: number;
   name: string;

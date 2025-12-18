@@ -28,6 +28,10 @@ export function formatAssetTitle(assetType: AssetType, asset: any): string {
       );
     case "summaries":
       return asset?.shortDescription || `Summary #${asset?.id ?? "?"}`;
+    case "languageskills":
+      return (
+        asset?.langCode.toUpperCase() || `Language skill #${asset?.id ?? "?"}`
+      );
     default:
       return `Asset #${asset?.id ?? "?"}`;
   }

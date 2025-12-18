@@ -4,7 +4,8 @@ export type AssetType =
   | "profession"
   | "techskills"
   | "softskills"
-  | "summaries";
+  | "summaries"
+  | "languageskills";
 
 export type AssetEditMode = "base" | "translation";
 
@@ -15,6 +16,7 @@ export const assetTypeLabels: Record<AssetType, string> = {
   techskills: "Tech Skills",
   softskills: "Soft Skills",
   summaries: "Summaries",
+  languageskills: "Language Skills",
 };
 
 export function isAssetType(value: string | undefined): value is AssetType {
@@ -29,6 +31,7 @@ export const assetTypeSupportsTranslations: Record<AssetType, boolean> = {
   techskills: false,
   softskills: true,
   summaries: true,
+  languageskills: true,
 };
 
 export type FieldInputType =

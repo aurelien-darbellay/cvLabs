@@ -6,7 +6,7 @@ import {
 } from "./assetTable/formatters";
 import { AssetForm } from "./assetForm/AssetForm";
 import type { AssetEditMode, AssetType } from "@/types/assets";
-import { useAssetFields } from "./helpers/getAssetFields";
+import { useAssetFields } from "./helpers/useAssetFields";
 
 interface EditAssetModalProps {
   isOpen: boolean;

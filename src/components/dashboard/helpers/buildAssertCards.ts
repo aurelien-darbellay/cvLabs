@@ -11,6 +11,7 @@ export default function buildAssetCards({
   techSkills,
   softSkills,
   summaries,
+  languageSkills,
 }: AssetsGridProps) {
   return [
     {
@@ -60,6 +61,14 @@ export default function buildAssetCards({
       assets: summaries,
       color: "indigo" as AssetColor,
       icon: "📝" as ReactNode,
+    },
+    {
+      assetType: "languageskills" as AssetType,
+      title: "Language Skills",
+      count: languageSkills.length,
+      assets: languageSkills,
+      color: "blue" as AssetColor,
+      icon: "🌐" as ReactNode,
     },
   ];
 }

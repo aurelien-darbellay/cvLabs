@@ -5,6 +5,7 @@ import { useEducationList } from "@/hooks/useEducation";
 import { useExperienceList } from "@/hooks/useExperience";
 import { useSoftSkills, useTechSkills } from "@/hooks/useSkills";
 import { useLanguages } from "@/hooks/useLanguages";
+import { useLanguageSkills } from "@/hooks/useLanguageSkills";
 import { useAuth } from "@/hooks/useAuth";
 import { AuthButton } from "@/components/auth/AuthButton";
 import { UserProfileModal } from "@/components/user/UserProfileModal";
@@ -26,6 +27,7 @@ export default function HomePage() {
   const { education } = useEducationList(userId);
   const { experience } = useExperienceList(userId);
   const { languages } = useLanguages([userId]);
+  const { languageSkills } = useLanguageSkills(userId);
   const { softSkills } = useSoftSkills(userId);
   const { techSkills } = useTechSkills([userId]);
   const { summaries } = useSummaries(userId);
@@ -35,6 +37,7 @@ export default function HomePage() {
     education,
     experience,
     languages,
+    languageSkills,
     professions,
     techSkills,
     softSkills,
@@ -110,6 +113,7 @@ export default function HomePage() {
           techSkills={techSkills}
           softSkills={softSkills}
           summaries={summaries}
+          languageSkills={languageSkills}
         />
       </div>
     </div>

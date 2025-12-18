@@ -5,6 +5,7 @@ import type { Profession } from "@/domain/Profession";
 import type { TechSkill } from "@/domain/TechSkill";
 import type { SoftSkill } from "@/domain/SoftSkill";
 import type { Summary } from "@/domain/Summary";
+import type { LanguageSkill } from "@/domain/LanguageSkill";
 import buildAssetCards from "./helpers/buildAssertCards";
 
 export interface AssetsGridProps {
@@ -14,6 +15,7 @@ export interface AssetsGridProps {
   techSkills: TechSkill[];
   softSkills: SoftSkill[];
   summaries: Summary[];
+  languageSkills: LanguageSkill[];
 }
 
 export function AssetsGrid(props: AssetsGridProps) {
