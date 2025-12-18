@@ -100,4 +100,52 @@ export class CvRelationService<
 
     return filtered.map((asset) => (asset as any).prepForCv() as T);
   }
+
+  /**
+   * Add an asset to a CV by creating a relation entry.
+   * @param cvId - The CV ID
+   * @param assetId - The asset ID (e.g., education_id, experience_id)
+   * @param ownerId - The owner/user ID
+   * @param position - Optional position in the list (defaults to 0)
+   * @param visible - Whether the asset is visible (defaults to true)
+   */
+  async addAssetToCv(
+    cvId: number,
+    assetId: number,
+    ownerId: string,
+    position: number = 0,
+    visible: boolean = true
+  ): Promise<R> {
+    const relationData: any = {
+      cv_id: cvId,
+      [this.domainIdField]: assetId,
+      owner_id: ownerId,
+      position,
+      visible,
+    };
+
+    const { data, error } = await supabase
+      .from(this.tableName)
+      .insert(relationData)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data as R;
+  }
+
+  /**
+   * Remove an asset from a CV by deleting the relation entry.
+   * @param cvId - The CV ID
+   * @param assetId - The asset ID (e.g., education_id, experience_id)
+   */
+  async removeAssetFromCv(cvId: number, assetId: number): Promise<void> {
+    const { error } = await supabase
+      .from(this.tableName)
+      .delete()
+      .eq("cv_id", cvId)
+      .eq(this.domainIdField as string, assetId);
+
+    if (error) throw error;
+  }
 }
