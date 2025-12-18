@@ -34,8 +34,7 @@ export interface CvProfessionRow extends AssetCVRelation {
 }
 
 export interface CvLanguageInCvRow extends AssetCVRelation {
-  language_id: number;
-  level?: string;
+  language_skill_id: number;
 }
 
 // Export typed relation services per asset type
@@ -66,6 +65,6 @@ export const cvProfessionRelations = new CvRelationService<
 export const cvLanguageRelations = new CvRelationService<
   CvLanguageInCvRow,
   LanguageSkillInCvRow
->("cv_languages", "language_id");
+>("cv_language_skills", "language_skill_id");
 
 export const cvRelationsService = {};

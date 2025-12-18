@@ -6,6 +6,7 @@ import { professionService } from "@/services/profession/ProfessionService";
 import { summaryService } from "@/services/summary/SummaryService";
 import { softSkillService } from "@/services/skills/SoftSkillService";
 import { techSkillService } from "@/services/skills/TechSkillService";
+import { languageSkillService } from "../skills/LanguageSkillService";
 
 export interface AssetServiceEntry {
   service: CrudService<any, any, any, any>;
@@ -19,6 +20,7 @@ export const assetServiceRegistry: Record<AssetType, AssetServiceEntry> = {
   summaries: { service: summaryService, translatable: true },
   softskills: { service: softSkillService, translatable: true },
   techskills: { service: techSkillService, translatable: false },
+  languageskills: { service: languageSkillService, translatable: true },
 };
 
 export function getAssetServiceEntry(

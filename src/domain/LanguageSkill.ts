@@ -4,7 +4,7 @@ import { LanguageSkillTranslatedField } from "./translations";
 
 export interface LanguageSkillRow {
   id: number;
-  lang_code: string;
+  identifier: string;
   level_code: string;
   language_skill_translations?: any[];
 }
@@ -12,7 +12,7 @@ export interface LanguageSkillRow {
 export class LanguageSkill extends Asset<LanguageSkillInCv> {
   constructor(
     public id: number,
-    public langCode: string,
+    public identifier: string,
     public levelCode: string,
     public translatedFields: LanguageSkillTranslatedField[]
   ) {
@@ -22,7 +22,7 @@ export class LanguageSkill extends Asset<LanguageSkillInCv> {
   static fromRow(row: LanguageSkillRow): LanguageSkill {
     return new LanguageSkill(
       row.id,
-      row.lang_code,
+      row.identifier,
       row.level_code,
       row.language_skill_translations?.map(
         LanguageSkillTranslatedField.fromRow

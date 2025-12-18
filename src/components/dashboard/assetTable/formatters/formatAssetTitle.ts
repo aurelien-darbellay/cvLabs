@@ -1,6 +1,7 @@
 import type { AssetType } from "@/types/assets";
 
 export function formatAssetTitle(assetType: AssetType, asset: any): string {
+  console.log("formatAssetTitle called", { assetType, asset });
   if (!asset.id) return `New ${assetType}`;
   switch (assetType) {
     case "education":
@@ -30,7 +31,7 @@ export function formatAssetTitle(assetType: AssetType, asset: any): string {
       return asset?.shortDescription || `Summary #${asset?.id ?? "?"}`;
     case "languageskills":
       return (
-        asset?.langCode.toUpperCase() || `Language skill #${asset?.id ?? "?"}`
+        asset?.identifier.toUpperCase() || `Language skill #${asset?.id ?? "?"}`
       );
     default:
       return `Asset #${asset?.id ?? "?"}`;

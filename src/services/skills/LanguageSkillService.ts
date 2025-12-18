@@ -1,24 +1,17 @@
 import { CrudTranslatableService } from "@/services/base/CrudTranslatableService";
-import { LanguageSkill } from "@/domain/LanguageSkill";
+import { LanguageSkill, LanguageSkillRow } from "@/domain/LanguageSkill";
 import {
   LanguageSkillInCv,
   LanguageSkillInCvRow,
 } from "@/domain/elementsInCv/LanguageSkillInCv";
 import { ApiEndpoints } from "@/config/ApiEndpoints";
 
-export interface LanguageSkillRow {
-  id: number;
-  owner_id: string;
-  level: string;
-  lang_code: string;
-}
-
 export type LanguageSkillInsertDto = Omit<LanguageSkillRow, "id">;
 export type LanguageSkillUpdateDto = Partial<LanguageSkillInsertDto>;
 
 class LanguageSkillService extends CrudTranslatableService<
-  LanguageSkillInCv,
-  LanguageSkillInCvRow,
+  LanguageSkill,
+  LanguageSkillRow,
   any, // No translations for LanguageSkill
   LanguageSkillInsertDto,
   LanguageSkillUpdateDto
@@ -27,8 +20,8 @@ class LanguageSkillService extends CrudTranslatableService<
     super(
       "language_skills",
       "language_skill_id",
-      "", // No translation table
-      LanguageSkillInCv.fromRow
+      "language_skills_translations", // No translation table
+      LanguageSkill.fromRow
     );
   }
 
