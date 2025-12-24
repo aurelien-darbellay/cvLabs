@@ -22,7 +22,7 @@ export default function HomePage() {
   const { user } = useUser(userId);
   const navigate = useNavigate();
 
-  const { cvs, loading: loadingCvs } = useCvs([userId]);
+  const { cvs, loading: loadingCvs, refetchCvs } = useCvs([userId]);
   const { education, loading: loadingEducation } = useEducationList(userId);
   const { experience, loading: loadingExperience } = useExperienceList(userId);
   const { languageSkills, loading: loadingLanguageSkills } =
@@ -108,8 +108,8 @@ export default function HomePage() {
         <CvsSection
           cvs={cvs}
           loading={loading}
-          onCvCreated={() => {}}
-          onCvDeleted={() => {}}
+          onCvCreated={refetchCvs}
+          onCvDeleted={refetchCvs}
           onViewCv={handleViewCv}
         />
 
