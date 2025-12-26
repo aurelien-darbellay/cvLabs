@@ -16,6 +16,9 @@ import { AssetType } from "@/types/assets";
 import tableMap from "@/types/relationTables";
 import AssetItem from "@/pages/manage-cv-assets/AssetItem";
 import useCvAssets from "./manage-cv-assets/useCvAssets";
+import { assetServiceRegistry } from "@/services/assets/serviceRegistry";
+import { PositionCvRelationService } from "@/services/base/CvRelationService";
+import normalizeValues from "@/utils/normalizeValues";
 
 export default function ManageCvAssetsPage() {
   const { cvId } = useParams<{ cvId: string }>();
@@ -50,16 +53,18 @@ export default function ManageCvAssetsPage() {
   const currentCv = cvs.find((cv) => cv.id === Number(cvId));
 
   const toggleAssetInCv = async (asset: AssetItem) => {
-    if (!cvId || !userId) return;
+    if (!cvId || !userId) {
+      throw new Error("CV ID or User ID is missing");
+    }
     setUpdating(asset.id);
-
+    const { relationService: service, positionned } =
+      assetServiceRegistry[asset.type];
+    if (!service) {
+      throw new Error("No relation service found for this asset type");
+    }
     try {
       const cvIdNum = Number(cvId);
-
-      // Map category to table name and field name
-
       const { table, field } = tableMap[asset.type];
-
       if (asset.isInCv) {
         // Remove from CV
         const { error } = await supabase
@@ -78,26 +83,20 @@ export default function ManageCvAssetsPage() {
           )
         );
       } else {
-        // Add to CV - get max position first
-        const { data: existing } = await supabase
-          .from(table)
-          .select("position")
-          .eq("cv_id", cvIdNum)
-          .order("position", { ascending: false })
-          .limit(1);
-
-        const maxPosition = existing?.[0]?.position ?? 0;
-
-        const { error } = await supabase.from(table).insert({
-          cv_id: cvIdNum,
-          [field]: asset.id,
-          owner_id: userId,
-          position: maxPosition + 1,
+        const payload: any = {
+          cvId: cvIdNum,
+          domainId: asset.id,
           visible: true,
-        });
-
+        };
+        if (positionned) {
+          const maxPosition = await (
+            service as PositionCvRelationService<any, any>
+          ).getLastPosition(cvIdNum);
+          payload["position"] = maxPosition + 1;
+        }
+        const normalizedPayload = normalizeValues(payload);
+        const { error } = await service.addAssetToCv(normalizedPayload);
         if (error) throw error;
-
         setAssets((prev) =>
           prev.map((a) =>
             a.id === asset.id && a.type === asset.type

@@ -6,7 +6,10 @@ import { SoftSkillInCv } from "@/domain/elementsInCv/SoftSkillInCv";
 import { SummaryInCv } from "@/domain/Summary";
 import { TechSkill } from "@/domain/TechSkill";
 import type { AssetCVRelation } from "@/services/base/CvRelationService";
-import { CvRelationService } from "@/services/base/CvRelationService";
+import {
+  CvRelationService,
+  PositionCvRelationService,
+} from "@/services/base/CvRelationService";
 
 // CV relation row interfaces extending the shared AssetInCv
 export interface CvExperienceRow extends AssetCVRelation {
@@ -43,19 +46,19 @@ export interface CvLanguageInCvRow extends AssetCVRelation {
 }
 
 // Export typed relation services per asset type
-export const cvExperienceRelations = new CvRelationService<
+export const cvExperienceRelations = new PositionCvRelationService<
   CvExperienceRow,
   ExperienceInCv
 >("cv_experience", "experience_id");
-export const cvEducationRelations = new CvRelationService<
+export const cvEducationRelations = new PositionCvRelationService<
   CvEducationRow,
   EducationInCv
 >("cv_education", "education_id");
-export const cvTechSkillRelations = new CvRelationService<
+export const cvTechSkillRelations = new PositionCvRelationService<
   CvTechSkillRow,
   TechSkill
 >("cv_techskills", "techskill_id");
-export const cvSoftSkillRelations = new CvRelationService<
+export const cvSoftSkillRelations = new PositionCvRelationService<
   CvSoftSkillRow,
   SoftSkillInCv
 >("cv_softskills", "softskill_id");
@@ -67,9 +70,7 @@ export const cvProfessionRelations = new CvRelationService<
   CvProfessionRow,
   ProfessionInCv
 >("cv_profession", "profession_id", { orderByPosition: false });
-export const cvLanguageRelations = new CvRelationService<
+export const cvLanguageRelations = new PositionCvRelationService<
   CvLanguageInCvRow,
   LanguageSkillInCvRow
 >("cv_language_skills", "language_skill_id");
-
-export const cvRelationsService = {};

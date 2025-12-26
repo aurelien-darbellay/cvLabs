@@ -131,3 +131,23 @@ export class CvRelationService<
     if (error) throw error;
   }
 }
+
+export class PositionCvRelationService<
+  R extends AssetCVRelation,
+  T extends { id: string | number }
+> extends CvRelationService<R, T> {
+  constructor(tableName: string, domainIdField: keyof R) {
+    super(tableName, domainIdField, { orderByPosition: true });
+  }
+
+  async getLastPosition(cvIdNum: number): Promise<number> {
+    const { data, error } = await supabase
+      .from(this.tableName)
+      .select("position")
+      .eq("cv_id", cvIdNum)
+      .order("position", { ascending: false })
+      .limit(1);
+    if (error) throw error;
+    return data?.[0]?.position ?? 0;
+  }
+}

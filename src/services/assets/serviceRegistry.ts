@@ -21,7 +21,7 @@ import { CvRelationService } from "../base/CvRelationService";
 export interface AssetServiceEntry {
   service: CrudService<any, any, any, any>;
   translatable: boolean;
-  relationservice: CvRelationService<any, any> | null;
+  relationService: CvRelationService<any, any> | null;
   positionned: boolean;
 }
 
@@ -29,43 +29,43 @@ export const assetServiceRegistry: Record<AssetType, AssetServiceEntry> = {
   education: {
     service: educationService,
     translatable: true,
-    relationservice: cvEducationRelations,
+    relationService: cvEducationRelations,
     positionned: true,
   },
   experience: {
     service: experienceService,
     translatable: true,
-    relationservice: cvExperienceRelations,
+    relationService: cvExperienceRelations,
     positionned: true,
   },
   summaries: {
     service: summaryService,
     translatable: true,
-    relationservice: cvSummaryRelations,
+    relationService: cvSummaryRelations,
     positionned: false,
   },
   softskills: {
     service: softSkillService,
     translatable: true,
-    relationservice: cvSoftSkillRelations,
+    relationService: cvSoftSkillRelations,
     positionned: true,
   },
   techskills: {
     service: techSkillService,
     translatable: false,
-    relationservice: cvTechSkillRelations,
+    relationService: cvTechSkillRelations,
     positionned: true,
   },
   languageskills: {
     service: languageSkillService,
     translatable: true,
-    relationservice: cvLanguageRelations,
+    relationService: cvLanguageRelations,
     positionned: true,
   },
   profession: {
     service: professionService,
     translatable: false,
-    relationservice: cvProfessionRelations,
+    relationService: cvProfessionRelations,
     positionned: false,
   },
 };
