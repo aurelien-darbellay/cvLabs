@@ -20,22 +20,14 @@ import {
   cvTechSkillRelations,
 } from "@/services/cv/CvRelationsService";
 import { supabase } from "@/lib/supabaseClient";
-
-type AssetCategory =
-  | "education"
-  | "experience"
-  | "profession"
-  | "techskills"
-  | "softskills"
-  | "summaries"
-  | "languageskills";
+import { AssetType } from "@/types/assets";
 
 interface AssetItem {
   id: number;
   title: string;
   subtitle?: string;
   isInCv: boolean;
-  category: AssetCategory;
+  category: AssetType;
 }
 
 interface LocationState {
@@ -73,7 +65,7 @@ export default function ManageCvAssetsPage() {
 
   const currentCv = cvs.find((cv) => cv.id === Number(cvId));
 
-  const tableMap: Record<AssetCategory, { table: string; field: string }> = {
+  const tableMap: Record<AssetType, { table: string; field: string }> = {
     education: { table: "cv_education", field: "education_id" },
     experience: { table: "cv_experience", field: "experience_id" },
     profession: { table: "cv_profession", field: "profession_id" },
@@ -294,9 +286,9 @@ export default function ManageCvAssetsPage() {
     }
     acc[asset.category].push(asset);
     return acc;
-  }, {} as Record<AssetCategory, AssetItem[]>);
+  }, {} as Record<AssetType, AssetItem[]>);
 
-  const categoryLabels: Record<AssetCategory, string> = {
+  const categoryLabels: Record<AssetType, string> = {
     education: "Education",
     experience: "Experience",
     profession: "Profession",
@@ -341,7 +333,7 @@ export default function ManageCvAssetsPage() {
             {Object.entries(groupedAssets).map(([category, items]) => (
               <div key={category}>
                 <h2 className="text-lg font-semibold text-gray-900 mb-3 border-b pb-2">
-                  {categoryLabels[category as AssetCategory]}
+                  {categoryLabels[category as AssetType]}
                 </h2>
                 <div className="space-y-2">
                   {items.map((asset) => (
@@ -378,8 +370,7 @@ export default function ManageCvAssetsPage() {
                   ))}
                   {items.length === 0 && (
                     <p className="text-sm text-gray-500 italic">
-                      No{" "}
-                      {categoryLabels[category as AssetCategory].toLowerCase()}{" "}
+                      No {categoryLabels[category as AssetType].toLowerCase()}{" "}
                       available
                     </p>
                   )}
