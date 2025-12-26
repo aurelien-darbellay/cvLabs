@@ -11,18 +11,22 @@ import { CvRelationService } from "@/services/base/CvRelationService";
 // CV relation row interfaces extending the shared AssetInCv
 export interface CvExperienceRow extends AssetCVRelation {
   experience_id: number;
+  position: number;
 }
 
 export interface CvEducationRow extends AssetCVRelation {
   education_id: number;
+  position: number;
 }
 
 export interface CvTechSkillRow extends AssetCVRelation {
   techskill_id: number;
+  position: number;
 }
 
 export interface CvSoftSkillRow extends AssetCVRelation {
   softskill_id: number;
+  position: number;
 }
 
 export interface CvSummaryRow extends AssetCVRelation {
@@ -35,6 +39,7 @@ export interface CvProfessionRow extends AssetCVRelation {
 
 export interface CvLanguageInCvRow extends AssetCVRelation {
   language_skill_id: number;
+  position: number;
 }
 
 // Export typed relation services per asset type

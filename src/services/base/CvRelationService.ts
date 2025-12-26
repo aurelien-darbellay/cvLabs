@@ -10,7 +10,6 @@ export interface AssetCVRelation {
   id: number;
   owner_id: string;
   cv_id: number;
-  position: number;
   visible: boolean;
 }
 
@@ -50,10 +49,10 @@ export class CvRelationService<
     const { data, error } = await query;
 
     if (error) throw error;
-    /* console.log(
+    console.log(
       `Fetched relations from ${this.tableName} for CV ${cvId}:`,
       data
-    ); */
+    );
     return (data ?? []) as R[];
   }
 
@@ -62,8 +61,6 @@ export class CvRelationService<
     assets: Asset<any>[],
     langCode?: string
   ): Promise<T[]> {
-    if (this.domainIdField == "summary_id")
-      console.log("Getting summary for CV:", cvId, assets, langCode);
     const assetsInCv = await this.getAssetsInCV(cvId);
     if (assetsInCv.length === 0) {
       return [];
