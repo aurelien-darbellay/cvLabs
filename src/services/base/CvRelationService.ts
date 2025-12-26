@@ -1,5 +1,6 @@
 import { Asset } from "@/domain/Asset";
 import { supabase } from "@/lib/supabaseClient";
+import normalizeValues from "@/utils/normalizeValues";
 
 type CvRelationOptions = {
   orderByPosition?: boolean;
@@ -8,9 +9,10 @@ type CvRelationOptions = {
 // Common fields shared by all cv_* relation rows
 export interface AssetCVRelation {
   id: number;
-  owner_id: string;
+  ownerId: string;
   cv_id: number;
   visible: boolean;
+  domain_id: number;
 }
 
 export class CvRelationService<
@@ -98,32 +100,15 @@ export class CvRelationService<
     return filtered.map((asset) => (asset as any).prepForCv() as T);
   }
 
-  /**
-   * Add an asset to a CV by creating a relation entry.
-   * @param cvId - The CV ID
-   * @param assetId - The asset ID (e.g., education_id, experience_id)
-   * @param ownerId - The owner/user ID
-   * @param position - Optional position in the list (defaults to 0)
-   * @param visible - Whether the asset is visible (defaults to true)
-   */
-  async addAssetToCv(
-    cvId: number,
-    assetId: number,
-    ownerId: string,
-    position: number = 0,
-    visible: boolean = true
-  ): Promise<R> {
-    const relationData: any = {
-      cv_id: cvId,
-      [this.domainIdField]: assetId,
-      owner_id: ownerId,
-      position,
-      visible,
+  async addAssetToCv(payload: R): Promise<R> {
+    const normalizedPayload: Partial<R> & { [key: string]: any } = {
+      ...payload,
+      [this.domainIdField]: payload.domain_id,
     };
-
+    delete normalizedPayload.domain_id;
     const { data, error } = await supabase
       .from(this.tableName)
-      .insert(relationData)
+      .insert(normalizedPayload)
       .select()
       .single();
 
