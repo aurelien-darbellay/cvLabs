@@ -1,6 +1,5 @@
 import { Asset } from "@/domain/Asset";
 import { supabase } from "@/lib/supabaseClient";
-import normalizeValues from "@/utils/normalizeValues";
 
 type CvRelationOptions = {
   orderByPosition?: boolean;
