@@ -4,7 +4,6 @@ import { useCvs } from "@/hooks/useCvs";
 import { useEducationList } from "@/hooks/useEducation";
 import { useExperienceList } from "@/hooks/useExperience";
 import { useSoftSkills, useTechSkills } from "@/hooks/useSkills";
-import { useLanguages } from "@/hooks/useLanguages";
 import { useLanguageSkills } from "@/hooks/useLanguageSkills";
 import { useAuth } from "@/hooks/useAuth";
 import { AuthButton } from "@/components/auth/AuthButton";
