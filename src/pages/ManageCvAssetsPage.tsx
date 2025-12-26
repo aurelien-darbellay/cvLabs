@@ -10,35 +10,12 @@ import { Profession } from "@/domain/Profession";
 import { TechSkill } from "@/domain/TechSkill";
 import { SoftSkill } from "@/domain/SoftSkill";
 import { Summary } from "@/domain/Summary";
-import {
-  cvEducationRelations,
-  cvExperienceRelations,
-  cvLanguageRelations,
-  cvProfessionRelations,
-  cvSoftSkillRelations,
-  cvSummaryRelations,
-  cvTechSkillRelations,
-} from "@/services/cv/CvRelationsService";
+
 import { supabase } from "@/lib/supabaseClient";
 import { AssetType } from "@/types/assets";
-
-interface AssetItem {
-  id: number;
-  title: string;
-  subtitle?: string;
-  isInCv: boolean;
-  category: AssetType;
-}
-
-interface LocationState {
-  education: Education[];
-  experience: Experience[];
-  languageSkills: LanguageSkill[];
-  professions: Profession[];
-  techSkills: TechSkill[];
-  softSkills: SoftSkill[];
-  summaries: Summary[];
-}
+import tableMap from "@/types/relationTables";
+import AssetItem from "@/pages/manage-cv-assets/AssetItem";
+import useCvAssets from "./manage-cv-assets/useCvAssets";
 
 export default function ManageCvAssetsPage() {
   const { cvId } = useParams<{ cvId: string }>();
@@ -50,149 +27,27 @@ export default function ManageCvAssetsPage() {
   const { cvs, loading: loadingCvs } = useCvs([userId]);
 
   // Get asset data from location state
-  const assetData = location.state as LocationState | null;
-  const education = assetData?.education || [];
-  const experience = assetData?.experience || [];
-  const languageSkills = assetData?.languageSkills || [];
-  const softSkills = assetData?.softSkills || [];
-  const techSkills = assetData?.techSkills || [];
-  const summaries = assetData?.summaries || [];
-  const professions = assetData?.professions || [];
-
-  const [assets, setAssets] = useState<AssetItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [updating, setUpdating] = useState<number | null>(null);
-
-  const currentCv = cvs.find((cv) => cv.id === Number(cvId));
-
-  const tableMap: Record<AssetType, { table: string; field: string }> = {
-    education: { table: "cv_education", field: "education_id" },
-    experience: { table: "cv_experience", field: "experience_id" },
-    profession: { table: "cv_profession", field: "profession_id" },
-    techskills: { table: "cv_techskills", field: "techskill_id" },
-    softskills: { table: "cv_softskills", field: "softskill_id" },
-    summaries: { table: "cv_summaries", field: "summary_id" },
-    languageskills: {
-      table: "cv_language_skills",
-      field: "language_skill_id",
-    },
-  };
-
-  useEffect(() => {
-    if (!cvId || !userId) return;
-
-    const fetchAssetsInCv = async () => {
-      setLoading(true);
-      try {
-        const cvIdNum = Number(cvId);
-
-        // Fetch all relation IDs for this CV
-        const [
-          eduInCv,
-          expInCv,
-          profInCv,
-          techInCv,
-          softInCv,
-          sumInCv,
-          langInCv,
-        ] = await Promise.all([
-          cvEducationRelations.getAssetsInCV(cvIdNum),
-          cvExperienceRelations.getAssetsInCV(cvIdNum),
-          cvProfessionRelations.getAssetsInCV(cvIdNum),
-          cvTechSkillRelations.getAssetsInCV(cvIdNum),
-          cvSoftSkillRelations.getAssetsInCV(cvIdNum),
-          cvSummaryRelations.getAssetsInCV(cvIdNum),
-          cvLanguageRelations.getAssetsInCV(cvIdNum),
-        ]);
-
-        // Map assets to AssetItem with isInCv flag
-        const eduItems: AssetItem[] = education.map((edu) => ({
-          id: edu.id,
-          title: edu.institution,
-          subtitle: edu.translatedFields[0]?.title || "",
-          isInCv: eduInCv.some((rel) => rel.education_id === edu.id),
-          category: "education",
-        }));
-
-        const expItems: AssetItem[] = experience.map((exp) => ({
-          id: exp.id,
-          title: exp.company,
-          subtitle: exp.translatedFields[0]?.jobTitle || "",
-          isInCv: expInCv.some((rel) => rel.experience_id === exp.id),
-          category: "experience",
-        }));
-
-        const profItems: AssetItem[] = professions.map((prof) => ({
-          id: prof.id,
-          title: prof.translatedFields[0]?.title || "Untitled",
-          subtitle: prof.translatedFields[0]?.description || "",
-          isInCv: profInCv.some((rel) => rel.profession_id === prof.id),
-          category: "profession",
-        }));
-
-        const techItems: AssetItem[] = techSkills.map((skill) => ({
-          id: skill.id,
-          title: skill.name,
-          subtitle: undefined,
-          isInCv: techInCv.some((rel) => rel.techskill_id === skill.id),
-          category: "techskills",
-        }));
-
-        const softItems: AssetItem[] = softSkills.map((skill) => ({
-          id: skill.id,
-          title: skill.translatedFields[0]?.name || "Untitled",
-          subtitle: undefined,
-          isInCv: softInCv.some((rel) => rel.softskill_id === skill.id),
-          category: "softskills",
-        }));
-
-        const sumItems: AssetItem[] = summaries.map((sum) => ({
-          id: sum.id,
-          title:
-            sum.translatedFields[0]?.content?.slice(0, 50) + "..." || "Summary",
-          subtitle: undefined,
-          isInCv: sumInCv.some((rel) => rel.summary_id === sum.id),
-          category: "summaries",
-        }));
-
-        const langItems: AssetItem[] = languageSkills.map((lang) => ({
-          id: lang.id,
-          title: `${
-            lang.translatedFields[0]?.langSkillName || lang.identifier
-          } (${lang.levelCode})`,
-          subtitle: undefined,
-          isInCv: langInCv.some((rel) => rel.language_skill_id === lang.id),
-          category: "languageskills",
-        }));
-
-        setAssets([
-          ...profItems,
-          ...sumItems,
-          ...expItems,
-          ...eduItems,
-          ...techItems,
-          ...softItems,
-          ...langItems,
-        ]);
-      } catch (error) {
-        console.error("Error fetching CV assets:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAssetsInCv();
-  }, [
-    cvId,
-    userId,
+  const {
     education,
     experience,
-    professions,
-    techSkills,
-    softSkills,
-    summaries,
     languageSkills,
-  ]);
+    softSkills,
+    techSkills,
+    summaries,
+    professions,
+  } = location.state;
+
+  const [updating, setUpdating] = useState<number | null>(null);
+  const { assets, setAssets, loading } = useCvAssets(cvId, userId, {
+    education,
+    experience,
+    languageSkills,
+    softSkills,
+    techSkills,
+    summaries,
+    professions,
+  });
+  const currentCv = cvs.find((cv) => cv.id === Number(cvId));
 
   const toggleAssetInCv = async (asset: AssetItem) => {
     if (!cvId || !userId) return;
@@ -203,7 +58,7 @@ export default function ManageCvAssetsPage() {
 
       // Map category to table name and field name
 
-      const { table, field } = tableMap[asset.category];
+      const { table, field } = tableMap[asset.type];
 
       if (asset.isInCv) {
         // Remove from CV
@@ -217,7 +72,7 @@ export default function ManageCvAssetsPage() {
 
         setAssets((prev) =>
           prev.map((a) =>
-            a.id === asset.id && a.category === asset.category
+            a.id === asset.id && a.type === asset.type
               ? { ...a, isInCv: false }
               : a
           )
@@ -245,7 +100,7 @@ export default function ManageCvAssetsPage() {
 
         setAssets((prev) =>
           prev.map((a) =>
-            a.id === asset.id && a.category === asset.category
+            a.id === asset.id && a.type === asset.type
               ? { ...a, isInCv: true }
               : a
           )
@@ -281,10 +136,10 @@ export default function ManageCvAssetsPage() {
 
   // Group assets by category
   const groupedAssets = assets.reduce((acc, asset) => {
-    if (!acc[asset.category]) {
-      acc[asset.category] = [];
+    if (!acc[asset.type]) {
+      acc[asset.type] = [];
     }
-    acc[asset.category].push(asset);
+    acc[asset.type].push(asset);
     return acc;
   }, {} as Record<AssetType, AssetItem[]>);
 
@@ -338,7 +193,7 @@ export default function ManageCvAssetsPage() {
                 <div className="space-y-2">
                   {items.map((asset) => (
                     <div
-                      key={`${asset.category}-${asset.id}`}
+                      key={`${asset.type}-${asset.id}`}
                       className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50"
                     >
                       <div>
