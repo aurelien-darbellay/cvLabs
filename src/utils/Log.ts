@@ -2,7 +2,11 @@
 const isDev = import.meta.env.DEV;
 
 export const log = (...args: any[]) => {
-  if (isDev) console.log(...args);
+  if (isDev) {
+    console.groupCollapsed(...args);
+    console.trace();
+    console.groupEnd();
+  }
 };
 export const warn = (...args: any[]) => {
   if (isDev) console.warn(...args);
