@@ -7,6 +7,7 @@ import {
 import { AssetForm } from "./assetForm/AssetForm";
 import type { AssetEditMode, AssetType } from "@/types/assets";
 import { useAssetFields } from "./helpers/useAssetFields";
+import { log } from "@/utils/Log";
 
 interface EditAssetModalProps {
   isOpen: boolean;
@@ -38,7 +39,7 @@ export function EditAssetModal({
   onSave,
   onDelete,
 }: EditAssetModalProps) {
-  console.log("Render EditAssetModal", { isOpen, asset, translation, mode });
+  log("Render EditAssetModal", { isOpen, asset, translation, mode });
   if (!isOpen || !asset) return null;
   const isTranslationMode = mode === "translation";
   const translationLang = translation ? getLangCode(translation) : null;

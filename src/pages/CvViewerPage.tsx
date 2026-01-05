@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { CvViewer } from "@/components/cv/CvViewer";
 import { Cv } from "@/domain/Cv";
 import { supabase } from "@/lib/supabaseClient";
+import { error as logError } from "@/utils/Log";
 
 export default function CvViewerPage() {
   const { cvId } = useParams<{ cvId: string }>();
@@ -32,7 +33,7 @@ export default function CvViewerPage() {
 
         setCv(Cv.fromRow(data));
       } catch (err) {
-        console.error("Error fetching CV:", err);
+        logError("Error fetching CV:", err);
         setError(err instanceof Error ? err.message : "Failed to load CV");
       } finally {
         setLoading(false);

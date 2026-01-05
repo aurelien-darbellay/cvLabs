@@ -10,6 +10,8 @@ import {
   cvTechSkillRelations,
 } from "@/services/cv/CvRelationsService";
 
+import { error } from "@/utils/Log";
+
 export default function useCvAssets(
   cvId: string | undefined,
   userId: string | undefined,
@@ -131,8 +133,8 @@ export default function useCvAssets(
           ...softItems,
           ...langItems,
         ]);
-      } catch (error) {
-        console.error("Error fetching CV assets:", error);
+      } catch (err) {
+        error("Error fetching CV assets:", err);
       } finally {
         setLoading(false);
       }

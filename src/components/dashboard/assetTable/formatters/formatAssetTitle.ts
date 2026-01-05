@@ -1,7 +1,8 @@
 import type { AssetType } from "@/types/assets";
+import { log } from "@/utils/Log";
 
 export function formatAssetTitle(assetType: AssetType, asset: any): string {
-  console.log("formatAssetTitle called", { assetType, asset });
+  log("formatAssetTitle called", { assetType, asset });
   if (!asset.id) return `New ${assetType}`;
   switch (assetType) {
     case "education":

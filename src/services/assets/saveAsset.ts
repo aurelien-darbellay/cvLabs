@@ -1,6 +1,7 @@
 import type { AssetEditMode, AssetType } from "@/types/assets";
 import { assetServiceRegistry } from "./serviceRegistry";
 import normalizeValues from "@/utils/normalizeValues";
+import { log } from "@/utils/Log";
 
 interface SaveAssetParams {
   assetType: AssetType;
@@ -15,7 +16,7 @@ export async function saveAsset({
   assetId,
   values,
 }: SaveAssetParams) {
-  console.log("saveAsset called", { assetType, mode, assetId, values });
+  log("saveAsset called", { assetType, mode, assetId, values });
   const entry = assetServiceRegistry[assetType];
   if (!entry) {
     throw new Error(`Unknown asset type: ${assetType}`);

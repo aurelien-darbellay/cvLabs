@@ -1,6 +1,6 @@
 import { Asset } from "@/domain/Asset";
 import { supabase } from "@/lib/supabaseClient";
-
+import { log } from "@/utils/Log";
 type CvRelationOptions = {
   orderByPosition?: boolean;
 };
@@ -50,10 +50,7 @@ export class CvRelationService<
     const { data, error } = await query;
 
     if (error) throw error;
-    console.log(
-      `Fetched relations from ${this.tableName} for CV ${cvId}:`,
-      data
-    );
+    log(`Fetched relations from ${this.tableName} for CV ${cvId}:`, data);
     return (data ?? []) as R[];
   }
 

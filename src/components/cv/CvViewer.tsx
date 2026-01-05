@@ -28,6 +28,7 @@ import { SoftSkill } from "@/domain/SoftSkill";
 import { TechSkill } from "@/domain/TechSkill";
 import { Summary } from "@/domain/Summary";
 import { LanguageSkill } from "@/domain/LanguageSkill";
+import { error, log } from "@/utils/Log";
 
 interface CvViewerProps {
   cv: Cv;
@@ -66,8 +67,8 @@ export const CvViewer: React.FC<CvViewerProps> = ({
       const { exportElementToPdf } = await import("@/utils/pdf");
       const safeName = data?.user.fullName || "cv";
       await exportElementToPdf(cvRef.current, `${safeName}-${currentLang}.pdf`);
-    } catch (error) {
-      console.error("Error exporting CV PDF:", error);
+    } catch (err) {
+      error("Error exporting CV PDF:", err);
     } finally {
       setDownloading(false);
     }
@@ -113,7 +114,7 @@ export const CvViewer: React.FC<CvViewerProps> = ({
           assetData?.softSkills.map(SoftSkill.deSerialize) || [],
           currentLang
         );
-        console.log("Fetched soft skills:", softSkills);
+        log("Fetched soft skills:", softSkills);
         const languagesForCv = await cvLanguageRelations.getAssetsForCv(
           cv.id,
           assetData?.languageSkills.map(LanguageSkill.deSerialize) || [],
@@ -134,8 +135,8 @@ export const CvViewer: React.FC<CvViewerProps> = ({
           softSkills,
           techSkills,
         });
-      } catch (error) {
-        console.error("Error fetching CV data:", error);
+      } catch (err) {
+        error("Error fetching CV data:", err);
       } finally {
         setLoading(false);
       }

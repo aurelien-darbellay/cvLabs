@@ -3,14 +3,6 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useCvs } from "@/hooks/useCvs";
 import { useAuth } from "@/hooks/useAuth";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { Education } from "@/domain/Education";
-import { Experience } from "@/domain/Experience";
-import { LanguageSkill } from "@/domain/LanguageSkill";
-import { Profession } from "@/domain/Profession";
-import { TechSkill } from "@/domain/TechSkill";
-import { SoftSkill } from "@/domain/SoftSkill";
-import { Summary } from "@/domain/Summary";
-
 import { supabase } from "@/lib/supabaseClient";
 import { AssetType } from "@/types/assets";
 import tableMap from "@/types/relationTables";
@@ -19,6 +11,7 @@ import useCvAssets from "./manage-cv-assets/useCvAssets";
 import { assetServiceRegistry } from "@/services/assets/serviceRegistry";
 import { PositionCvRelationService } from "@/services/base/CvRelationService";
 import normalizeValues from "@/utils/normalizeValues";
+import { error } from "@/utils/Log";
 
 export default function ManageCvAssetsPage() {
   const { cvId } = useParams<{ cvId: string }>();
@@ -95,8 +88,8 @@ export default function ManageCvAssetsPage() {
           payload["position"] = maxPosition + 1;
         }
         const normalizedPayload = normalizeValues(payload);
-        const { error } = await service.addAssetToCv(normalizedPayload);
-        if (error) throw error;
+        const { error: err } = await service.addAssetToCv(normalizedPayload);
+        if (err) throw err;
         setAssets((prev) =>
           prev.map((a) =>
             a.id === asset.id && a.type === asset.type
@@ -105,8 +98,8 @@ export default function ManageCvAssetsPage() {
           )
         );
       }
-    } catch (error) {
-      console.error("Error toggling asset in CV:", error);
+    } catch (err) {
+      error("Error toggling asset in CV:", err);
       alert("Failed to update CV. Please try again.");
     } finally {
       setUpdating(null);

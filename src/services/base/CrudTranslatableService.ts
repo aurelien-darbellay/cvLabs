@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/supabaseClient";
 import { CrudService } from "./CrudService";
 import { TranslatedFieldRow } from "@/domain/translations";
+import { error } from "@/utils/Log";
 
 export interface TranslatableRow {
   id: number | string;
@@ -45,22 +46,19 @@ export class CrudTranslatableService<
       lang_code: langCode,
     };
 
-    const { data, error } = await supabase
+    const { data, error: err } = await supabase
       .from(this.translationTableName)
       .insert(payload as any)
       .select("*")
       .single();
 
-    if (error) {
-      console.error(
-        `Error creating translation in ${this.translationTableName}:`,
-        {
-          message: error.message,
-          code: error.code,
-          details: error.details,
-        }
-      );
-      throw error;
+    if (err) {
+      error(`Error creating translation in ${this.translationTableName}:`, {
+        message: err.message,
+        code: err.code,
+        details: err.details,
+      });
+      throw err;
     }
     return data as TTranslatedRow;
   }
@@ -74,23 +72,20 @@ export class CrudTranslatableService<
     domainId: number | string,
     langCode: string
   ): Promise<TTranslatedRow | null> {
-    const { data, error } = await supabase
+    const { data, error: err } = await supabase
       .from(this.translationTableName)
       .select("*")
       .eq(this.domainIdField, domainId)
       .eq("lang_code", langCode)
       .single();
 
-    if (error && error.code !== "PGRST116") {
-      console.error(
-        `Error fetching translation from ${this.translationTableName}:`,
-        {
-          message: error.message,
-          code: error.code,
-          details: error.details,
-        }
-      );
-      throw error;
+    if (err && err.code !== "PGRST116") {
+      error(`Error fetching translation from ${this.translationTableName}:`, {
+        message: err.message,
+        code: err.code,
+        details: err.details,
+      });
+      throw err;
     }
     return (data as TTranslatedRow) || null;
   }
@@ -108,7 +103,7 @@ export class CrudTranslatableService<
       Omit<TTranslatedRow, "id" | "owner_id" | `${string}_id` | "lang_code">
     >
   ): Promise<TTranslatedRow> {
-    const { data, error } = await supabase
+    const { data, error: err } = await supabase
       .from(this.translationTableName)
       .update(updates as any)
       .eq(this.domainIdField, domainId)
@@ -116,16 +111,13 @@ export class CrudTranslatableService<
       .select("*")
       .single();
 
-    if (error) {
-      console.error(
-        `Error updating translation in ${this.translationTableName}:`,
-        {
-          message: error.message,
-          code: error.code,
-          details: error.details,
-        }
-      );
-      throw error;
+    if (err) {
+      error(`Error updating translation in ${this.translationTableName}:`, {
+        message: err.message,
+        code: err.code,
+        details: err.details,
+      });
+      throw err;
     }
     return data as TTranslatedRow;
   }
@@ -139,22 +131,19 @@ export class CrudTranslatableService<
     domainId: number | string,
     langCode: string
   ): Promise<void> {
-    const { error } = await supabase
+    const { error: err } = await supabase
       .from(this.translationTableName)
       .delete()
       .eq(this.domainIdField, domainId)
       .eq("lang_code", langCode);
 
-    if (error) {
-      console.error(
-        `Error deleting translation from ${this.translationTableName}:`,
-        {
-          message: error.message,
-          code: error.code,
-          details: error.details,
-        }
-      );
-      throw error;
+    if (err) {
+      error(`Error deleting translation from ${this.translationTableName}:`, {
+        message: err.message,
+        code: err.code,
+        details: err.details,
+      });
+      throw err;
     }
   }
 
@@ -163,21 +152,18 @@ export class CrudTranslatableService<
    * @param domainId The ID of the domain entity
    */
   async getTranslations(domainId: number | string): Promise<TTranslatedRow[]> {
-    const { data, error } = await supabase
+    const { data, error: err } = await supabase
       .from(this.translationTableName)
       .select("*")
       .eq(this.domainIdField, domainId);
 
-    if (error) {
-      console.error(
-        `Error fetching translations from ${this.translationTableName}:`,
-        {
-          message: error.message,
-          code: error.code,
-          details: error.details,
-        }
-      );
-      throw error;
+    if (err) {
+      error(`Error fetching translations from ${this.translationTableName}:`, {
+        message: err.message,
+        code: err.code,
+        details: err.details,
+      });
+      throw err;
     }
     return (data as TTranslatedRow[]) || [];
   }

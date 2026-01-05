@@ -8,6 +8,7 @@ import { deleteAsset } from "@/services/assets/deleteAsset";
 import { updateAssetsState } from "./updateAssetsState";
 import { getLangCode } from "@/components/dashboard/assetTable/formatters";
 import deleteAssetInState from "./deleteAssetInState";
+import { error, log } from "@/utils/Log";
 
 interface ManageAssetsState {
   assets?: any[];
@@ -42,7 +43,7 @@ export function useManageAssets() {
     translation?: any | null;
   }) => {
     if (assetType === null) {
-      console.error("Cannot save asset: unknown asset type");
+      error("Cannot save asset: unknown asset type");
       return;
     }
     try {
@@ -58,11 +59,11 @@ export function useManageAssets() {
         assetId,
         values: data.values,
       });
-      console.log("Asset saved", saved);
+      log("Asset saved", saved);
       setAssets((prev) => updateAssetsState(prev, saved, data));
       closeModal();
-    } catch (error) {
-      console.error("Error saving asset", error);
+    } catch (err) {
+      error("Error saving asset", err);
     }
   };
 
@@ -72,7 +73,7 @@ export function useManageAssets() {
     translation?: any | null;
   }) => {
     if (assetType === null) {
-      console.error("Cannot delete asset: unknown asset type");
+      error("Cannot delete asset: unknown asset type");
       return;
     }
 
@@ -80,7 +81,7 @@ export function useManageAssets() {
       if (data.mode === "base") {
         const id = data.asset?.id;
         if (id == null) {
-          console.error("Cannot delete asset without an id");
+          error("Cannot delete asset without an id");
           return;
         }
         await deleteAsset({ assetType, mode: "base", assetId: id });
@@ -96,11 +97,11 @@ export function useManageAssets() {
           null;
 
         if (!langCode) {
-          console.error("Cannot delete translation without a language code");
+          error("Cannot delete translation without a language code");
           return;
         }
         if (domainId == null) {
-          console.error("Cannot delete translation without a domain id");
+          error("Cannot delete translation without a domain id");
           return;
         }
 
@@ -120,8 +121,8 @@ export function useManageAssets() {
         );
       }
       closeModal();
-    } catch (error) {
-      console.error("Error deleting asset", error);
+    } catch (err) {
+      error("Error deleting asset", err);
     }
   };
 
