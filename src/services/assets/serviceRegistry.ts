@@ -64,7 +64,7 @@ export const assetServiceRegistry: Record<AssetType, AssetServiceEntry> = {
   },
   profession: {
     service: professionService,
-    translatable: false,
+    translatable: true,
     relationService: cvProfessionRelations,
     positionned: false,
   },
