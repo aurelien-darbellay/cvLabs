@@ -3,16 +3,16 @@ import {
   ProfessionInCv,
   type ProfessionInCvRow,
 } from "@/domain/elementsInCv/ProfessionInCv";
-import { Profession } from "@/domain/Profession";
+import { Profession, ProfessionRow } from "@/domain/Profession";
 import { ApiEndpoints } from "@/config/ApiEndpoints";
 import { ProfessionTranslatedFieldRow } from "@/domain/translations";
 
-export type ProfessionInsertDto = Omit<ProfessionInCvRow, "id" | "owner_id">;
+export type ProfessionInsertDto = Omit<ProfessionRow, "id" | "owner_id">;
 export type ProfessionUpdateDto = Partial<ProfessionInsertDto>;
 
 class ProfessionService extends CrudTranslatableService<
-  ProfessionInCv,
-  ProfessionInCvRow,
+  Profession,
+  ProfessionRow,
   ProfessionTranslatedFieldRow,
   ProfessionInsertDto,
   ProfessionUpdateDto
@@ -22,7 +22,7 @@ class ProfessionService extends CrudTranslatableService<
       "professions",
       "profession_id",
       "professions_translations",
-      ProfessionInCv.fromRow
+      Profession.fromRow
     );
   }
 
