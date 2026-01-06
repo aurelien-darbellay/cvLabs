@@ -6,24 +6,29 @@ const authService = new AuthService();
 
 interface UseAuthResult {
   user: User | null;
+  accessToken: string | null;
   loading: boolean;
 }
 
 /**
- * Subscribes to Supabase auth changes and returns the current user (if any).
+ * Subscribes to Supabase auth changes and returns
+ * the current user + access token (if any).
  */
 export function useAuth(): UseAuthResult {
   const [user, setUser] = useState<User | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
 
-    // Fetch initial user
+    // Fetch initial session (user + token)
     authService
-      .getUser()
-      .then((initialUser) => {
-        if (mounted) setUser(initialUser);
+      .getSession()
+      .then((session) => {
+        if (!mounted) return;
+        setUser(session?.user ?? null);
+        setAccessToken(session?.access_token ?? null);
       })
       .finally(() => {
         if (mounted) setLoading(false);
@@ -34,6 +39,7 @@ export function useAuth(): UseAuthResult {
       (_event: AuthChangeEvent, session: Session | null) => {
         if (!mounted) return;
         setUser(session?.user ?? null);
+        setAccessToken(session?.access_token ?? null);
       }
     );
 
@@ -43,5 +49,5 @@ export function useAuth(): UseAuthResult {
     };
   }, []);
 
-  return { user, loading };
+  return { user, accessToken, loading };
 }
