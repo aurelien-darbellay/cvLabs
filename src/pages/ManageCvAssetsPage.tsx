@@ -135,6 +135,14 @@ export default function ManageCvAssetsPage() {
     return acc;
   }, {} as Record<AssetType, AssetItem[]>);
 
+  for (let category in groupedAssets) {
+    groupedAssets[category as AssetType].sort((a, b) => {
+      if (a.isInCv && !b.isInCv) return -1;
+      else if (b.isInCv && !a.isInCv) return 1;
+      else return 0;
+    });
+  }
+
   const categoryLabels: Record<AssetType, string> = {
     education: "Education",
     experience: "Experience",
