@@ -5,7 +5,7 @@ import { Profession } from "@/domain/Profession";
 export function useProfessionList(userId: string | null | undefined) {
   const { data, loading, error } = useAsync<Profession[]>(async () => {
     if (!userId) return [];
-    return professionService.getAll(userId);
+    return professionService.list(userId);
   }, [userId]);
   return {
     professions: data ?? [],

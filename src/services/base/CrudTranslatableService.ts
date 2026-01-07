@@ -21,9 +21,33 @@ export class CrudTranslatableService<
     tableName: string,
     private readonly domainIdField: string,
     private readonly translationTableName: string,
+    private readonly exportFunction: string,
     mapRow: (row: TRow) => TDomain
   ) {
     super(tableName, mapRow);
+  }
+
+  async list(ownerId?: string | null): Promise<TDomain[]> {
+    if (!ownerId) {
+      throw new Error("Owner ID is required to fetch data");
+    }
+
+    const { data, error: err } = await supabase.functions.invoke(
+      `${this.exportFunction}?owner_id=${encodeURIComponent(ownerId)}`,
+      { method: "GET" }
+    );
+
+    if (err) {
+      error(`Error fetching data from ${this.exportFunction}:`, {
+        message: err.message,
+        code: err.code,
+        details: err.details,
+      });
+      throw err;
+    }
+
+    const rows = Array.isArray(data) ? data : [];
+    return rows.map(this.mapRow);
   }
 
   /**

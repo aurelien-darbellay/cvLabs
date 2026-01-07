@@ -5,7 +5,7 @@ import { Experience } from "@/domain/Experience";
 export function useExperienceList(userId: string | null | undefined) {
   const { data, loading, error } = useAsync<Experience[]>(async () => {
     if (!userId) return [];
-    return experienceService.getAll(userId);
+    return experienceService.list(userId);
   }, [userId]);
   return {
     experience: data ?? [],

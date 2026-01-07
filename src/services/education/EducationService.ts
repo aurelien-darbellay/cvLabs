@@ -1,6 +1,5 @@
 import { CrudTranslatableService } from "@/services/base/CrudTranslatableService";
 import { Education, type EducationRow } from "@/domain/Education";
-import { ApiEndpoints } from "@/config/ApiEndpoints";
 import { EducationTranslatedFieldRow } from "@/domain/translations";
 
 export type EducationInsertDto = Omit<
@@ -9,48 +8,16 @@ export type EducationInsertDto = Omit<
 >;
 export type EducationUpdateDto = Partial<EducationInsertDto>;
 
-class EducationService extends CrudTranslatableService<
+export const educationService = new CrudTranslatableService<
   Education,
   EducationRow,
   EducationTranslatedFieldRow,
   EducationInsertDto,
   EducationUpdateDto
-> {
-  constructor() {
-    super(
-      "education",
-      "education_id",
-      "education_translations",
-      Education.fromRow
-    );
-  }
-
-  async getAll(id: string | null): Promise<Education[]> {
-    if (!id) {
-      throw new Error("User ID is required to fetch education data");
-    }
-    const url = `${ApiEndpoints.EXPORT_EDUCATION}?owner_id=${id}`;
-    return fetch(url, {
-      headers: {
-        apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
-        authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          const responseText = response.text().then((text) => {
-            return text;
-          });
-          throw new Error(
-            `HTTP error! status: ${response.status}, content: ${responseText}`
-          );
-        }
-        return response.json();
-      })
-      .then((data) => {
-        return data.map(Education.fromRow);
-      });
-  }
-}
-
-export const educationService = new EducationService();
+>(
+  "education",
+  "education_id",
+  "education_translations",
+  "export-education",
+  Education.fromRow
+);

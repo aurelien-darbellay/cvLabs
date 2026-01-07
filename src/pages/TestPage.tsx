@@ -46,7 +46,7 @@ export default function TestPage() {
 
       // Test Experience
       try {
-        const experiences = await experienceService.getAll(TEST_USER_ID);
+        const experiences = await experienceService.list(TEST_USER_ID);
         const experiencesInCv = await cvExperienceRelations.getAssetsForCv(
           TEST_CV_ID,
           experiences,
@@ -67,7 +67,7 @@ export default function TestPage() {
 
       // Test Education
       try {
-        const education = await educationService.getAll(TEST_USER_ID);
+        const education = await educationService.list(TEST_USER_ID);
         const educationInCv = await cvEducationRelations.getAssetsForCv(
           TEST_CV_ID,
           education,
@@ -109,7 +109,7 @@ export default function TestPage() {
 
       // Test SoftSkill
       try {
-        const softSkills = await softSkillService.getAll(TEST_USER_ID);
+        const softSkills = await softSkillService.list(TEST_USER_ID);
         const softSkillsInCv = await cvSoftSkillRelations.getAssetsForCv(
           TEST_CV_ID,
           softSkills,
@@ -130,7 +130,7 @@ export default function TestPage() {
 
       // Test Summary
       try {
-        const summaries = await summaryService.getAll(TEST_USER_ID);
+        const summaries = await summaryService.list(TEST_USER_ID);
         const summariesInCv = await cvSummaryRelations.getAssetsForCv(
           TEST_CV_ID,
           summaries,
@@ -151,7 +151,7 @@ export default function TestPage() {
 
       // Test Profession
       try {
-        const professions = await professionService.getAll(TEST_USER_ID);
+        const professions = await professionService.list(TEST_USER_ID);
         const professionsInCv = await cvProfessionRelations.getAssetsForCv(
           TEST_CV_ID,
           professions,
@@ -189,7 +189,7 @@ export default function TestPage() {
 
       // Test LanguageSkill
       try {
-        const languageSkills = await languageSkillService.getAll(TEST_USER_ID);
+        const languageSkills = await languageSkillService.list(TEST_USER_ID);
         testResults.push({
           service: "LanguageSkill",
           status: "success",

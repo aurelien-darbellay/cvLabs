@@ -5,7 +5,7 @@ import type { LanguageSkill } from "@/domain/LanguageSkill";
 export function useLanguageSkills(ownerId: string | null | undefined) {
   const { data, loading, error } = useAsync<LanguageSkill[]>(async () => {
     if (!ownerId) return [];
-    return languageSkillService.getAll(ownerId);
+    return languageSkillService.list(ownerId);
   }, [ownerId]);
   return {
     languageSkills: data ?? [],

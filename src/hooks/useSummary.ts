@@ -5,7 +5,7 @@ import type { Summary } from "@/domain/Summary";
 export function useSummaries(userId: string | null | undefined) {
   const { data, loading, error } = useAsync<Summary[]>(async () => {
     if (!userId) return [];
-    return summaryService.getAll(userId);
+    return summaryService.list(userId);
   }, [userId]);
   return {
     summaries: data ?? [],

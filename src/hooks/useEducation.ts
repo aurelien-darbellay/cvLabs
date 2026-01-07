@@ -5,7 +5,7 @@ import { Education } from "@/domain/Education";
 export function useEducationList(userId: string | null | undefined) {
   const { data, loading, error } = useAsync<Education[]>(async () => {
     if (!userId) return [];
-    return educationService.getAll(userId);
+    return educationService.list(userId);
   }, [userId]);
 
   return {
