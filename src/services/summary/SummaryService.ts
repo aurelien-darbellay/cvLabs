@@ -1,14 +1,17 @@
 import { CrudTranslatableService } from "@/services/base/CrudTranslatableService";
-import { SummaryInCv, type SummaryInCvRow, Summary } from "@/domain/Summary";
+import { Summary, type SummaryRow } from "@/domain/Summary";
 import { ApiEndpoints } from "@/config/ApiEndpoints";
 import { SummaryTranslatedFieldRow } from "@/domain/translations";
 
-export type SummaryInsertDto = Omit<SummaryInCvRow, "id" | "owner_id">;
+export type SummaryInsertDto = Omit<
+  SummaryRow,
+  "id" | "summary_translations"
+>;
 export type SummaryUpdateDto = Partial<SummaryInsertDto>;
 
 class SummaryService extends CrudTranslatableService<
-  SummaryInCv,
-  SummaryInCvRow,
+  Summary,
+  SummaryRow,
   SummaryTranslatedFieldRow,
   SummaryInsertDto,
   SummaryUpdateDto
@@ -18,7 +21,7 @@ class SummaryService extends CrudTranslatableService<
       "summaries",
       "summary_id",
       "summaries_translations",
-      SummaryInCv.fromRow
+      Summary.fromRow
     );
   }
 

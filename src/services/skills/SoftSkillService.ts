@@ -1,13 +1,12 @@
 import { CrudTranslatableService } from "@/services/base/CrudTranslatableService";
-import { SoftSkill } from "@/domain/SoftSkill";
-import {
-  SoftSkillInCv,
-  type SoftSkillInCvRow,
-} from "@/domain/elementsInCv/SoftSkillInCv";
+import { SoftSkill, type SoftSkillRow } from "@/domain/SoftSkill";
 import { TranslatedFieldRow } from "@/domain/translations";
 import { ApiEndpoints } from "@/config/ApiEndpoints";
 
-export type SoftSkillInsertDto = Omit<SoftSkillInCvRow, "id">;
+export type SoftSkillInsertDto = Omit<
+  SoftSkillRow,
+  "id" | "owner_id" | "softskill_translations"
+>;
 export type SoftSkillUpdateDto = Partial<SoftSkillInsertDto>;
 
 // SoftSkill translations table row structure
@@ -18,8 +17,8 @@ interface SoftSkillTranslatedFieldRow extends TranslatedFieldRow {
 }
 
 class SoftSkillService extends CrudTranslatableService<
-  SoftSkillInCv,
-  SoftSkillInCvRow,
+  SoftSkill,
+  SoftSkillRow,
   SoftSkillTranslatedFieldRow,
   SoftSkillInsertDto,
   SoftSkillUpdateDto
@@ -29,7 +28,7 @@ class SoftSkillService extends CrudTranslatableService<
       "softskills",
       "softskill_id",
       "softskill_translations",
-      SoftSkillInCv.fromRow
+      SoftSkill.fromRow
     );
   }
 

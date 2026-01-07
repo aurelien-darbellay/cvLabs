@@ -1,21 +1,17 @@
 import { CrudTranslatableService } from "@/services/base/CrudTranslatableService";
-import {
-  ExperienceInCv,
-  type ExperienceInCvRow,
-} from "@/domain/elementsInCv/ExperienceInCv";
-import { Experience } from "@/domain/Experience";
+import { Experience, type ExperienceRow } from "@/domain/Experience";
 import { ApiEndpoints } from "@/config/ApiEndpoints";
 import { ExperienceTranslatedFieldRow } from "@/domain/translations";
 
 export type ExperienceInsertDto = Omit<
-  ExperienceInCvRow,
-  "id" | "owner_id" | "created_at"
+  ExperienceRow,
+  "id" | "experience_translations"
 >;
 export type ExperienceUpdateDto = Partial<ExperienceInsertDto>;
 
 class ExperienceService extends CrudTranslatableService<
-  ExperienceInCv,
-  ExperienceInCvRow,
+  Experience,
+  ExperienceRow,
   ExperienceTranslatedFieldRow,
   ExperienceInsertDto,
   ExperienceUpdateDto
@@ -25,7 +21,7 @@ class ExperienceService extends CrudTranslatableService<
       "experience",
       "experience_id",
       "experience_translations",
-      ExperienceInCv.fromRow
+      Experience.fromRow
     );
   }
 

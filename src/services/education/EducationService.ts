@@ -1,18 +1,17 @@
 import { CrudTranslatableService } from "@/services/base/CrudTranslatableService";
-import {
-  EducationInCv,
-  type EducationInCvRow,
-} from "@/domain/elementsInCv/EducationInCv";
-import { Education } from "@/domain/Education";
+import { Education, type EducationRow } from "@/domain/Education";
 import { ApiEndpoints } from "@/config/ApiEndpoints";
 import { EducationTranslatedFieldRow } from "@/domain/translations";
 
-export type EducationInsertDto = Omit<EducationInCvRow, "id" | "owner_id">;
+export type EducationInsertDto = Omit<
+  EducationRow,
+  "id" | "education_translations"
+>;
 export type EducationUpdateDto = Partial<EducationInsertDto>;
 
 class EducationService extends CrudTranslatableService<
-  EducationInCv,
-  EducationInCvRow,
+  Education,
+  EducationRow,
   EducationTranslatedFieldRow,
   EducationInsertDto,
   EducationUpdateDto
@@ -22,7 +21,7 @@ class EducationService extends CrudTranslatableService<
       "education",
       "education_id",
       "education_translations",
-      EducationInCv.fromRow
+      Education.fromRow
     );
   }
 
