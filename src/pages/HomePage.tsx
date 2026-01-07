@@ -18,7 +18,7 @@ export default function HomePage() {
   const { user: authenUser } = useAuth();
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const userId = authenUser?.id;
-  const { user } = useUser(userId);
+  const { user, refetchUser } = useUser(userId);
   const navigate = useNavigate();
 
   const { cvs, loading: loadingCvs, refetchCvs } = useCvs([userId]);
@@ -99,7 +99,10 @@ export default function HomePage() {
         <UserProfileModal
           user={user}
           isOpen={profileModalOpen}
-          onClose={() => setProfileModalOpen(false)}
+          onClose={() => {
+            setProfileModalOpen(false);
+            refetchUser();
+          }}
           onSuccess={handleProfileSuccess}
         />
 

@@ -6,11 +6,12 @@ export function useUser(userId: string | null | undefined) {
     data: user,
     loading,
     error,
+    refetch: refetchUser,
   } = useAsync(async () => {
     if (!userId) {
       return null;
     }
     return await userService.getById(userId);
   }, [userId]);
-  return { user: user || null, loading, error };
+  return { user: user || null, loading, error, refetchUser };
 }
