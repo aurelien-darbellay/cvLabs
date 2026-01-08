@@ -113,6 +113,7 @@ export default function HomePage() {
           onCvCreated={refetchCvs}
           onCvDeleted={refetchCvs}
           onViewCv={handleViewCv}
+          onCvUpdated={refetchCvs}
         />
 
         {/* Assets Grid */}

@@ -1,13 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Cv } from "@/domain/Cv";
 import { userService } from "@/services/user/UserService";
-import {
-  StandardLayout,
-  TwoColumnLayout,
-  IALayout,
-  CvData,
-  LayoutLabels,
-} from "./layouts";
+import { StandardLayout, TwoColumnLayout, IALayout, CvData } from "./layouts";
 import { SECTION_TITLES } from "./sectionTitles";
 import {
   cvEducationRelations,
@@ -65,7 +59,7 @@ export const CvViewer: React.FC<CvViewerProps> = ({
     try {
       setDownloading(true);
       const { exportElementToPdf } = await import("@/utils/pdf");
-      const safeName = data?.user.fullName || "cv";
+      const safeName = cv.title ?? data?.user.fullName ?? "cv";
       await exportElementToPdf(cvRef.current, `${safeName}-${currentLang}.pdf`);
     } catch (err) {
       error("Error exporting CV PDF:", err);

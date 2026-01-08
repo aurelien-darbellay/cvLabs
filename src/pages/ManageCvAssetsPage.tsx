@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useCvs } from "@/hooks/useCvs";
 import { useAuth } from "@/hooks/useAuth";

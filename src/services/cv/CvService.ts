@@ -5,7 +5,7 @@ import { error } from "@/utils/Log";
 
 export type CvInsertDto = Omit<
   CvRow,
-  "id" | "owner_id" | "created_at" | "updated_at"
+  "id" | "owner_id" | "user_id" | "created_at" | "updated_at"
 >;
 export type CvUpdateDto = Partial<CvInsertDto>;
 
