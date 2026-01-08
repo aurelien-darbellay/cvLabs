@@ -10,7 +10,7 @@ import {
   cvTechSkillRelations,
 } from "@/services/cv/CvRelationsService";
 
-import { error } from "@/utils/Log";
+import { error, log } from "@/utils/Log";
 
 export default function useCvAssets(
   cvId: string | undefined,
@@ -36,6 +36,22 @@ export default function useCvAssets(
   } = assetData;
   const [assets, setAssets] = useState<AssetItem[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const findAndPosition = (
+    item: { id: number },
+    list: any[],
+    domainIdKey: string
+  ): { isInCv: boolean; position: number } => {
+    let found = false;
+    let position = 0;
+    list.forEach((elem) => {
+      if (elem[domainIdKey] === item.id) {
+        found = true;
+        position = elem.position ?? position;
+      }
+    });
+    return { isInCv: found, position };
+  };
 
   useEffect(() => {
     if (!cvId || !userId) return;
@@ -65,21 +81,38 @@ export default function useCvAssets(
         ]);
 
         // Map assets to AssetItem with isInCv flag
-        const eduItems: AssetItem[] = education.map((edu: any) => ({
-          id: edu.id,
-          title: edu.institution,
-          subtitle: edu.translatedFields[0]?.title || "",
-          isInCv: eduInCv.some((rel) => rel.education_id === edu.id),
-          type: "education",
-        }));
+        const eduItems: AssetItem[] = education.map((edu: any) => {
+          const { isInCv, position } = findAndPosition(
+            edu,
+            eduInCv,
+            cvEducationRelations.domainIdField as string
+          );
+          return {
+            id: edu.id,
+            title: edu.institution,
+            subtitle: edu.translatedFields[0]?.title || "",
+            position,
+            isInCv,
+            type: "education",
+          };
+        });
 
-        const expItems: AssetItem[] = experience.map((exp: any) => ({
-          id: exp.id,
-          title: exp.company,
-          subtitle: exp.translatedFields[0]?.jobTitle || "",
-          isInCv: expInCv.some((rel) => rel.experience_id === exp.id),
-          type: "experience",
-        }));
+        const expItems: AssetItem[] = experience.map((exp: any) => {
+          log("Mapping experience item:", exp);
+          const { isInCv, position } = findAndPosition(
+            exp,
+            expInCv,
+            cvExperienceRelations.domainIdField as string
+          );
+          return {
+            id: exp.id,
+            title: exp.company,
+            subtitle: exp.translatedFields[0]?.jobTitle || "",
+            position,
+            isInCv,
+            type: "experience",
+          };
+        });
 
         const profItems: AssetItem[] = professions.map((prof: any) => ({
           id: prof.id,
@@ -89,21 +122,37 @@ export default function useCvAssets(
           type: "profession",
         }));
 
-        const techItems: AssetItem[] = techSkills.map((skill: any) => ({
-          id: skill.id,
-          title: skill.name,
-          subtitle: undefined,
-          isInCv: techInCv.some((rel) => rel.techskill_id === skill.id),
-          type: "techskills",
-        }));
+        const techItems: AssetItem[] = techSkills.map((skill: any) => {
+          const { isInCv, position } = findAndPosition(
+            skill,
+            techInCv,
+            cvTechSkillRelations.domainIdField as string
+          );
+          return {
+            id: skill.id,
+            title: skill.name,
+            subtitle: undefined,
+            position,
+            isInCv,
+            type: "techskills",
+          };
+        });
 
-        const softItems: AssetItem[] = softSkills.map((skill: any) => ({
-          id: skill.id,
-          title: skill.translatedFields[0]?.name || "Untitled",
-          subtitle: undefined,
-          isInCv: softInCv.some((rel) => rel.softskill_id === skill.id),
-          type: "softskills",
-        }));
+        const softItems: AssetItem[] = softSkills.map((skill: any) => {
+          const { isInCv, position } = findAndPosition(
+            skill,
+            softInCv,
+            cvSoftSkillRelations.domainIdField as string
+          );
+          return {
+            id: skill.id,
+            title: skill.translatedFields[0]?.name || "Untitled",
+            subtitle: undefined,
+            position,
+            isInCv,
+            type: "softskills",
+          };
+        });
 
         const sumItems: AssetItem[] = summaries.map((sum: any) => ({
           id: sum.id,
@@ -114,15 +163,23 @@ export default function useCvAssets(
           type: "summaries",
         }));
 
-        const langItems: AssetItem[] = languageSkills.map((lang: any) => ({
-          id: lang.id,
-          title: `${
-            lang.translatedFields[0]?.langSkillName || lang.identifier
-          } (${lang.levelCode})`,
-          subtitle: undefined,
-          isInCv: langInCv.some((rel) => rel.language_skill_id === lang.id),
-          type: "languageskills",
-        }));
+        const langItems: AssetItem[] = languageSkills.map((lang: any) => {
+          const { isInCv, position } = findAndPosition(
+            lang,
+            langInCv,
+            cvLanguageRelations.domainIdField as string
+          );
+          return {
+            id: lang.id,
+            title: `${
+              lang.translatedFields[0]?.langSkillName || lang.identifier
+            } (${lang.levelCode})`,
+            subtitle: undefined,
+            position,
+            isInCv,
+            type: "languageskills",
+          };
+        });
 
         setAssets([
           ...profItems,
@@ -152,6 +209,8 @@ export default function useCvAssets(
     summaries,
     languageSkills,
   ]);
+
+  log("Assets loaded:", assets);
 
   return { assets, setAssets, loading };
 }

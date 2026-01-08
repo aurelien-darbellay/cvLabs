@@ -12,6 +12,7 @@ import { assetServiceRegistry } from "@/services/assets/serviceRegistry";
 import { PositionCvRelationService } from "@/services/base/CvRelationService";
 import normalizeValues from "@/utils/normalizeValues";
 import { error } from "@/utils/Log";
+import { sortGroupedAsset } from "./manage-cv-assets/sortGroupedAsset";
 
 export default function ManageCvAssetsPage() {
   const { cvId } = useParams<{ cvId: string }>();
@@ -136,11 +137,7 @@ export default function ManageCvAssetsPage() {
   }, {} as Record<AssetType, AssetItem[]>);
 
   for (let category in groupedAssets) {
-    groupedAssets[category as AssetType].sort((a, b) => {
-      if (a.isInCv && !b.isInCv) return -1;
-      else if (b.isInCv && !a.isInCv) return 1;
-      else return 0;
-    });
+    groupedAssets[category as AssetType].sort(sortGroupedAsset);
   }
 
   const categoryLabels: Record<AssetType, string> = {

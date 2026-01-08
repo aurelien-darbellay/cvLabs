@@ -19,7 +19,7 @@ export class CvRelationService<
   T extends { id: string | number }
 > {
   protected tableName: string;
-  protected domainIdField: keyof R;
+  public domainIdField: keyof R;
   private readonly orderByPosition: boolean;
 
   constructor(
