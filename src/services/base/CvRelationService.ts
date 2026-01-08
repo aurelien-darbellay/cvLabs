@@ -1,6 +1,6 @@
 import { Asset } from "@/domain/Asset";
 import { supabase } from "@/lib/supabaseClient";
-import { log } from "@/utils/Log";
+
 type CvRelationOptions = {
   orderByPosition?: boolean;
 };
@@ -32,10 +32,6 @@ export class CvRelationService<
     this.orderByPosition = options.orderByPosition ?? true;
   }
 
-  /**
-   * Generic fetcher for cv_* relation rows by CV id.
-   * Filters visible rows and orders by position ascending.
-   */
   async getAssetsInCV(cvId: number): Promise<R[]> {
     const query = supabase
       .from(this.tableName)
@@ -46,12 +42,43 @@ export class CvRelationService<
     if (this.orderByPosition) {
       query.order("position", { ascending: true });
     }
-
     const { data, error } = await query;
-
     if (error) throw error;
-    log(`Fetched relations from ${this.tableName} for CV ${cvId}:`, data);
     return (data ?? []) as R[];
+  }
+
+  protected filterAssetsInCV(
+    assets: Asset<any>[],
+    relations: R[]
+  ): Asset<any>[] {
+    return assets.filter((asset) => {
+      return relations.some(
+        (relation) => relation[this.domainIdField] === asset.id
+      );
+    });
+  }
+
+  protected filterTranslationsInCV(
+    assets: Asset<any>[],
+    langCode: string
+  ): Asset<any>[] {
+    return assets.map((asset) => {
+      if (
+        asset &&
+        typeof asset === "object" &&
+        "translatedFields" in asset &&
+        Array.isArray((asset as any).translatedFields)
+      ) {
+        asset.translatedFields = (asset as any).translatedFields.filter(
+          (tf: any) => tf.langCode === langCode
+        );
+      }
+      return asset;
+    });
+  }
+
+  protected sortAssets(assets: Asset<any>[]): Asset<any>[] {
+    return assets;
   }
 
   async getAssetsForCv(
@@ -63,36 +90,11 @@ export class CvRelationService<
     if (assetsInCv.length === 0) {
       return [];
     }
-
-    // Filter assets by matching their id with the relation's domain id field
-    const filtered = assets.filter((asset) => {
-      return assetsInCv.some(
-        (relation) => relation[this.domainIdField] === asset.id
-      );
-    });
-
-    // If language specified, optionally filter translation fields
-    // (assumes assets may have translatedFields or similar structure)
+    let filtered = this.filterAssetsInCV(assets, assetsInCv);
     if (langCode) {
-      const twiceFiltered = filtered
-        .map((asset) => {
-          if (
-            asset &&
-            typeof asset === "object" &&
-            "translatedFields" in asset &&
-            Array.isArray((asset as any).translatedFields)
-          ) {
-            asset.translatedFields = (asset as any).translatedFields.filter(
-              (tf: any) => tf.langCode === langCode
-            );
-          }
-          return asset;
-        })
-        .map((asset) => (asset as any).prepForCv() as T);
-
-      return twiceFiltered;
+      filtered = this.filterTranslationsInCV(filtered, langCode);
     }
-
+    filtered = this.sortAssets(filtered);
     return filtered.map((asset) => (asset as any).prepForCv() as T);
   }
 
@@ -128,22 +130,3 @@ export class CvRelationService<
   }
 }
 
-export class PositionCvRelationService<
-  R extends AssetCVRelation,
-  T extends { id: string | number }
-> extends CvRelationService<R, T> {
-  constructor(tableName: string, domainIdField: keyof R) {
-    super(tableName, domainIdField, { orderByPosition: true });
-  }
-
-  async getLastPosition(cvIdNum: number): Promise<number> {
-    const { data, error } = await supabase
-      .from(this.tableName)
-      .select("position")
-      .eq("cv_id", cvIdNum)
-      .order("position", { ascending: false })
-      .limit(1);
-    if (error) throw error;
-    return data?.[0]?.position ?? 0;
-  }
-}

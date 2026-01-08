@@ -6,10 +6,8 @@ import { SoftSkillInCv } from "@/domain/elementsInCv/SoftSkillInCv";
 import { SummaryInCv } from "@/domain/Summary";
 import { TechSkill } from "@/domain/TechSkill";
 import type { AssetCVRelation } from "@/services/base/CvRelationService";
-import {
-  CvRelationService,
-  PositionCvRelationService,
-} from "@/services/base/CvRelationService";
+import { CvRelationService } from "@/services/base/CvRelationService";
+import { PositionCvRelationService } from "@/services/base/PositionCvRelationService";
 
 // CV relation row interfaces extending the shared AssetInCv
 export interface CvExperienceRow extends AssetCVRelation {

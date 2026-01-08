@@ -5,6 +5,7 @@ interface AssetItem {
   title: string;
   subtitle?: string;
   position?: number;
+  relationId?: number;
   isInCv: boolean;
   type: AssetType;
 }

@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
 import { useCvs } from "@/hooks/useCvs";
 import { useAuth } from "@/hooks/useAuth";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
@@ -9,10 +10,14 @@ import tableMap from "@/types/relationTables";
 import AssetItem from "@/pages/manage-cv-assets/AssetItem";
 import useCvAssets from "./manage-cv-assets/useCvAssets";
 import { assetServiceRegistry } from "@/services/assets/serviceRegistry";
-import { PositionCvRelationService } from "@/services/base/CvRelationService";
+import { PositionCvRelationService } from "@/services/base/PositionCvRelationService";
 import normalizeValues from "@/utils/normalizeValues";
-import { error } from "@/utils/Log";
+import { error, log } from "@/utils/Log";
 import { sortGroupedAsset } from "./manage-cv-assets/sortGroupedAsset";
+import { handleUpdatePositions } from "./manage-cv-assets/handleUpdatePositions";
+import { AssetCategoryList } from "./manage-cv-assets/AssetCategoryList";
+import { inferPositionFromArrayIndex } from "./manage-cv-assets/inferPositionFromArrayIndex";
+import { arrayMove } from "@dnd-kit/sortable";
 
 export default function ManageCvAssetsPage() {
   const { cvId } = useParams<{ cvId: string }>();
@@ -35,6 +40,9 @@ export default function ManageCvAssetsPage() {
   } = location.state;
 
   const [updating, setUpdating] = useState<number | null>(null);
+  const [groupedAssets, setGroupedAssets] = useState<
+    Record<AssetType, AssetItem[]>
+  >({} as Record<AssetType, AssetItem[]>);
   const { assets, setAssets, loading } = useCvAssets(cvId, userId, {
     education,
     experience,
@@ -45,6 +53,22 @@ export default function ManageCvAssetsPage() {
     professions,
   });
   const currentCv = cvs.find((cv) => cv.id === Number(cvId));
+
+  // Group assets by category
+  useEffect(() => {
+    const tempGroupedAssets = assets.reduce((acc, asset) => {
+      if (!acc[asset.type]) {
+        acc[asset.type] = [];
+      }
+      acc[asset.type].push(asset);
+      return acc;
+    }, {} as Record<AssetType, AssetItem[]>);
+
+    for (let category in tempGroupedAssets) {
+      tempGroupedAssets[category as AssetType].sort(sortGroupedAsset);
+    }
+    setGroupedAssets(tempGroupedAssets);
+  }, [assets]);
 
   const toggleAssetInCv = async (asset: AssetItem) => {
     if (!cvId || !userId) {
@@ -60,7 +84,6 @@ export default function ManageCvAssetsPage() {
       const cvIdNum = Number(cvId);
       const { table, field } = tableMap[asset.type];
       if (asset.isInCv) {
-        // Remove from CV
         const { error } = await supabase
           .from(table)
           .delete()
@@ -107,6 +130,71 @@ export default function ManageCvAssetsPage() {
     }
   };
 
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    try {
+      // Extract category and asset IDs from drag IDs (JSON format)
+      const activeData = JSON.parse(String(active.id));
+      const overData = JSON.parse(String(over.id));
+
+      const activeAssetId = activeData.id;
+      const overAssetId = overData.id;
+      const category = activeData.type as AssetType;
+
+      const activeItem = assets.find(
+        (a) => a.id === activeAssetId && a.type === category
+      );
+      const overItem = assets.find(
+        (a) => a.id === overAssetId && a.type === category
+      );
+
+      if (!activeItem || !overItem) {
+        error("Could not find dragged items", {
+          activeAssetId,
+          overAssetId,
+          category,
+        });
+        return;
+      }
+
+      const categoryAssets = assets
+        .filter((a) => a.type === category && a.isInCv)
+        .sort((a, b) => (a.position || 0) - (b.position || 0));
+
+      const activeIndex = categoryAssets.findIndex(
+        (a) => a.id === activeAssetId
+      );
+      const overIndex = categoryAssets.findIndex((a) => a.id === overAssetId);
+
+      if (activeIndex === -1 || overIndex === -1) {
+        error("Could not find indices for drag operation", {
+          activeIndex,
+          overIndex,
+        });
+        return;
+      }
+
+      // Reorder the array
+      log("Reordering assets:", categoryAssets);
+      const reordered = arrayMove(categoryAssets, activeIndex, overIndex);
+      log("Reordered assets:", reordered);
+      // Update state with new positions using shared helper
+      const finalAssets = inferPositionFromArrayIndex(
+        reordered,
+        category,
+        assets
+      );
+
+      setAssets(finalAssets);
+      // Persist to DB
+      await handleUpdatePositions(category, finalAssets);
+    } catch (err) {
+      error("Error during drag operation:", err);
+    }
+  };
+
   if (loadingCvs || loading) return <LoadingSpinner />;
 
   if (!currentCv) {
@@ -125,19 +213,6 @@ export default function ManageCvAssetsPage() {
         </div>
       </div>
     );
-  }
-
-  // Group assets by category
-  const groupedAssets = assets.reduce((acc, asset) => {
-    if (!acc[asset.type]) {
-      acc[asset.type] = [];
-    }
-    acc[asset.type].push(asset);
-    return acc;
-  }, {} as Record<AssetType, AssetItem[]>);
-
-  for (let category in groupedAssets) {
-    groupedAssets[category as AssetType].sort(sortGroupedAsset);
   }
 
   const categoryLabels: Record<AssetType, string> = {
@@ -178,58 +253,34 @@ export default function ManageCvAssetsPage() {
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="bg-white rounded-lg shadow p-6">
           <p className="text-sm text-gray-600 mb-6">
-            Toggle assets to include or exclude them from this CV
+            Drag to reorder assets in the CV. Click Add/Remove to include or
+            exclude assets.
           </p>
 
-          <div className="space-y-8">
-            {Object.entries(groupedAssets).map(([category, items]) => (
-              <div key={category}>
-                <h2 className="text-lg font-semibold text-gray-900 mb-3 border-b pb-2">
-                  {categoryLabels[category as AssetType]}
-                </h2>
-                <div className="space-y-2">
-                  {items.map((asset) => (
-                    <div
-                      key={`${asset.type}-${asset.id}`}
-                      className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50"
-                    >
-                      <div>
-                        <p className="font-medium text-gray-900">
-                          {asset.title}
-                        </p>
-                        {asset.subtitle && (
-                          <p className="text-sm text-gray-500">
-                            {asset.subtitle}
-                          </p>
-                        )}
-                      </div>
-                      <button
-                        onClick={() => toggleAssetInCv(asset)}
-                        disabled={updating === asset.id}
-                        className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                          asset.isInCv
-                            ? "bg-red-100 text-red-700 hover:bg-red-200"
-                            : "bg-green-100 text-green-700 hover:bg-green-200"
-                        } disabled:opacity-50 disabled:cursor-not-allowed`}
-                      >
-                        {updating === asset.id
-                          ? "..."
-                          : asset.isInCv
-                          ? "Remove"
-                          : "Add"}
-                      </button>
-                    </div>
-                  ))}
-                  {items.length === 0 && (
-                    <p className="text-sm text-gray-500 italic">
-                      No {categoryLabels[category as AssetType].toLowerCase()}{" "}
-                      available
-                    </p>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+          <DndContext
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <div className="space-y-8">
+              {Object.entries(groupedAssets).map(([category, items]) => {
+                const categoryType = category as AssetType;
+                const inCvAssets = items.filter((a) => a.isInCv);
+                const outOfCvAssets = items.filter((a) => !a.isInCv);
+
+                return (
+                  <AssetCategoryList
+                    key={category}
+                    category={categoryType}
+                    categoryLabel={categoryLabels[categoryType]}
+                    inCvAssets={inCvAssets}
+                    outOfCvAssets={outOfCvAssets}
+                    updating={updating}
+                    onToggle={toggleAssetInCv}
+                  />
+                );
+              })}
+            </div>
+          </DndContext>
         </div>
       </div>
     </div>

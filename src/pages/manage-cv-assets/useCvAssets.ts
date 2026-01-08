@@ -36,21 +36,30 @@ export default function useCvAssets(
   } = assetData;
   const [assets, setAssets] = useState<AssetItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [trigger, setTrigger] = useState(0);
+
+  const refreshAssets = () => setTrigger((prev) => prev + 1);
 
   const findAndPosition = (
     item: { id: number },
     list: any[],
     domainIdKey: string
-  ): { isInCv: boolean; position: number } => {
+  ): {
+    isInCv: boolean;
+    position: number | undefined;
+    relationId: number | undefined;
+  } => {
     let found = false;
-    let position = 0;
+    let position: number | undefined = undefined;
+    let relationId: number | undefined = undefined;
     list.forEach((elem) => {
       if (elem[domainIdKey] === item.id) {
         found = true;
         position = elem.position ?? position;
+        relationId = elem.id ?? relationId;
       }
     });
-    return { isInCv: found, position };
+    return { isInCv: found, position, relationId };
   };
 
   useEffect(() => {
@@ -82,7 +91,7 @@ export default function useCvAssets(
 
         // Map assets to AssetItem with isInCv flag
         const eduItems: AssetItem[] = education.map((edu: any) => {
-          const { isInCv, position } = findAndPosition(
+          const { isInCv, position, relationId } = findAndPosition(
             edu,
             eduInCv,
             cvEducationRelations.domainIdField as string
@@ -92,14 +101,14 @@ export default function useCvAssets(
             title: edu.institution,
             subtitle: edu.translatedFields[0]?.title || "",
             position,
+            relationId,
             isInCv,
             type: "education",
           };
         });
 
         const expItems: AssetItem[] = experience.map((exp: any) => {
-          log("Mapping experience item:", exp);
-          const { isInCv, position } = findAndPosition(
+          const { isInCv, position, relationId } = findAndPosition(
             exp,
             expInCv,
             cvExperienceRelations.domainIdField as string
@@ -109,6 +118,7 @@ export default function useCvAssets(
             title: exp.company,
             subtitle: exp.translatedFields[0]?.jobTitle || "",
             position,
+            relationId,
             isInCv,
             type: "experience",
           };
@@ -123,7 +133,7 @@ export default function useCvAssets(
         }));
 
         const techItems: AssetItem[] = techSkills.map((skill: any) => {
-          const { isInCv, position } = findAndPosition(
+          const { isInCv, position, relationId } = findAndPosition(
             skill,
             techInCv,
             cvTechSkillRelations.domainIdField as string
@@ -133,13 +143,14 @@ export default function useCvAssets(
             title: skill.name,
             subtitle: undefined,
             position,
+            relationId,
             isInCv,
             type: "techskills",
           };
         });
 
         const softItems: AssetItem[] = softSkills.map((skill: any) => {
-          const { isInCv, position } = findAndPosition(
+          const { isInCv, position, relationId } = findAndPosition(
             skill,
             softInCv,
             cvSoftSkillRelations.domainIdField as string
@@ -149,6 +160,7 @@ export default function useCvAssets(
             title: skill.translatedFields[0]?.name || "Untitled",
             subtitle: undefined,
             position,
+            relationId,
             isInCv,
             type: "softskills",
           };
@@ -164,7 +176,7 @@ export default function useCvAssets(
         }));
 
         const langItems: AssetItem[] = languageSkills.map((lang: any) => {
-          const { isInCv, position } = findAndPosition(
+          const { isInCv, position, relationId } = findAndPosition(
             lang,
             langInCv,
             cvLanguageRelations.domainIdField as string
@@ -176,6 +188,7 @@ export default function useCvAssets(
             } (${lang.levelCode})`,
             subtitle: undefined,
             position,
+            relationId,
             isInCv,
             type: "languageskills",
           };
@@ -208,9 +221,8 @@ export default function useCvAssets(
     softSkills,
     summaries,
     languageSkills,
+    trigger,
   ]);
 
-  log("Assets loaded:", assets);
-
-  return { assets, setAssets, loading };
+  return { assets, setAssets, loading, refreshAssets };
 }

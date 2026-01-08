@@ -108,7 +108,6 @@ export const CvViewer: React.FC<CvViewerProps> = ({
           assetData?.softSkills.map(SoftSkill.deSerialize) || [],
           currentLang
         );
-        log("Fetched soft skills:", softSkills);
         const languagesForCv = await cvLanguageRelations.getAssetsForCv(
           cv.id,
           assetData?.languageSkills.map(LanguageSkill.deSerialize) || [],
