@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { createPortal } from "react-dom";
 import { authService } from "@/services/auth";
 
 interface AuthModalProps {
@@ -57,7 +58,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     setIsRegistering(false);
   };
 
-  return (
+  const modal = (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[1001]"
       onClick={handleClose}
@@ -155,4 +156,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       </div>
     </div>
   );
+
+  return createPortal(modal, document.body);
 };
