@@ -2,11 +2,37 @@ import { AuthButton } from "@/components/auth/AuthButton";
 import "./LoginPage.css";
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center ">
+    <div className="login-page min-h-screen flex flex-col items-center justify-center ">
       <div>
-        <h1 className="mt-20 font-anton text-7xl font-bold text-black mb-4 tracking-tight">
-          CVs' Lab
-        </h1>
+        <svg
+          className="mt-10 mb-4"
+          width="480"
+          height="96"
+          viewBox="0 0 480 96"
+          role="img"
+          aria-label="CVsLab"
+        >
+          <defs>
+            <filter id="logoShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="4" stdDeviation="3" floodOpacity="0.35" />
+            </filter>
+          </defs>
+          <text
+            x="50%"
+            y="70%"
+            textAnchor="middle"
+            fill="#ffffff"
+            stroke="#000000"
+            strokeWidth="10"
+            paintOrder="stroke fill"
+            fontFamily="Anton, sans-serif"
+            fontSize="72"
+            letterSpacing="7"
+            filter="url(#logoShadow)"
+          >
+            CVsLab
+          </text>
+        </svg>
       </div>
       <div className="scene">
         <div className="cv">
