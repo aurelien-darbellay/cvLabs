@@ -1,0 +1,27 @@
+.scene {
+  width: 400px;
+  height: 400px;
+  perspective: 1200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cv {
+  width: 210px;
+  height: 300px;
+  background: linear-gradient(135deg, oklch(85% 0.02 80), oklch(65% 0.05 50));
+  border-radius: 12px;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.25);
+  transform-style: preserve-3d;
+  animation: rotate 10s infinite linear;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotateY(0deg) rotateX(8deg);
+  }
+  to {
+    transform: rotateY(360deg) rotateX(8deg);
+  }
+}
