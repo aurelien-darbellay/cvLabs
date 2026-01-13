@@ -13,8 +13,63 @@
   background: linear-gradient(135deg, oklch(85% 0.02 80), oklch(65% 0.05 50));
   border-radius: 12px;
   box-shadow: 0 40px 80px rgba(0, 0, 0, 0.25);
+  position: relative;
   transform-style: preserve-3d;
   animation: rotate 10s infinite linear;
+  --avatar-size: 56px;
+  --avatar-offset: 16px;
+  --avatar-border: rgba(0, 0, 0, 0.5);
+  --avatar-fill: rgba(255, 255, 255, 0.35);
+  --avatar-icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0%200%2064%2064' fill='none' stroke='%23000' stroke-opacity='0.6' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'><circle cx='32' cy='22' r='12'/><path d='M12%2056c4-10%2036-10%2040%200'/></svg>");
+}
+
+.cv .text-center {
+  backface-visibility: hidden;
+  transform: translateZ(1px);
+}
+
+.cv-avatar,
+.cv::before {
+  position: absolute;
+  top: var(--avatar-offset);
+  left: var(--avatar-offset);
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+  border-radius: 50%;
+  border: 2px solid var(--avatar-border);
+  background-color: var(--avatar-fill);
+  background-image: var(--avatar-icon);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 70% 70%;
+  backface-visibility: hidden;
+  pointer-events: none;
+}
+
+.cv-avatar {
+  transform: translateZ(1px);
+}
+
+.cv::before {
+  content: "";
+  transform: rotateY(180deg) translateZ(1px);
+}
+
+.cv::after {
+  content: "Create, manage, and export your professional CVs";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  color: #000;
+  font-size: 1.25rem;
+  font-family: "Anton", sans-serif;
+  backface-visibility: hidden;
+  transform: rotateY(180deg) translateZ(1px);
+  pointer-events: none;
 }
 
 @keyframes rotate {

@@ -10,6 +10,7 @@ export default function LoginPage() {
       </div>
       <div className="scene">
         <div className="cv">
+          <div className="cv-avatar" aria-hidden="true" />
           <div className="text-center flex flex-col justify-center items-center h-full p-6">
             <p className="text-xl text-black font-anton">
               Create, manage, and export your professional CVs
