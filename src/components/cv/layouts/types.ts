@@ -28,6 +28,7 @@ export interface LayoutLabels {
   languages: string;
   contact: string;
   profile: string;
+  clients: string;
 }
 
 export interface LayoutProps {

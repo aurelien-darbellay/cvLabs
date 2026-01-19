@@ -267,6 +267,16 @@ export const IALayout = React.forwardRef<HTMLDivElement, LayoutProps>(
                     {exp.description}
                   </p>
                 )}
+                {exp.clients && exp.clients.length > 0 && (
+                  <div className="mb-1">
+                    <span className="text-xs text-gray-600 font-medium">
+                      {labels.clients}:{" "}
+                    </span>
+                    <span className="text-xs text-gray-700">
+                      {exp.clients.join(", ")}
+                    </span>
+                  </div>
+                )}
                 <div className="flex flex-wrap gap-1">
                   {exp.technologies.map((tech, idx) => (
                     <span

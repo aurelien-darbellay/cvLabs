@@ -376,7 +376,7 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
                     )}
                     {exp.clients && exp.clients.length > 0 && (
                       <p className="text-sm text-slate-700">
-                        <span className="italic">Clients:</span>{" "}
+                        <span className="italic">{labels.clients}:</span>{" "}
                         {Array.isArray(exp.clients)
                           ? exp.clients.join(", ")
                           : exp.clients}

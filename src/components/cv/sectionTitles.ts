@@ -13,6 +13,7 @@ export const SECTION_TITLES: Record<string, LayoutLabels> = {
     languages: "Languages",
     contact: "Contact",
     profile: "Profile",
+    clients: "Clients",
   },
   es: {
     summary: "Resumen",
@@ -26,6 +27,7 @@ export const SECTION_TITLES: Record<string, LayoutLabels> = {
     languages: "Idiomas",
     contact: "Contacto",
     profile: "Perfil",
+    clients: "Clientes",
   },
   ca: {
     summary: "Resum",
@@ -39,6 +41,7 @@ export const SECTION_TITLES: Record<string, LayoutLabels> = {
     languages: "Idiomes",
     contact: "Contacte",
     profile: "Perfil",
+    clients: "Clients",
   },
   fr: {
     summary: "Résumé",
@@ -51,6 +54,7 @@ export const SECTION_TITLES: Record<string, LayoutLabels> = {
     standaloneSoft: "Compétences Comportementales",
     languages: "Langues",
     contact: "Contact",
+    clients: "Clients",
     profile: "Profil",
   },
 };
