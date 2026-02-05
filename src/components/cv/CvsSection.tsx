@@ -93,6 +93,10 @@ export function CvsSection({
     }
   };
 
+  const sortedCvs = [...cvs].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  );
+
   return (
     <section className="mb-8 bg-white rounded-lg shadow p-6">
       <div className="flex justify-between items-center mb-6">
@@ -112,7 +116,7 @@ export function CvsSection({
           onSubmit={handleCreateCv}
           className="mb-6 p-4 bg-blue-50 rounded-lg"
         >
-          <div className="flex gap-3">
+          <div className="flex flex-col md:flex-row gap-3">
             <input
               type="text"
               placeholder="CV Title (optional)"
@@ -120,47 +124,48 @@ export function CvsSection({
               onChange={(e) => setNewCvTitle(e.target.value)}
               className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <button
-              type="submit"
-              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 font-medium"
-            >
-              Create
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setCreatingNew(false);
-                setError(null);
-              }}
-              className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100 font-medium"
-            >
-              Cancel
-            </button>
+            <div className="flex gap-2">
+              <button
+                type="submit"
+                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 font-medium"
+              >
+                Create
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setCreatingNew(false);
+                  setError(null);
+                }}
+                className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100 font-medium"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
           {error && <p className="mt-2 text-red-600 text-sm">{error}</p>}
         </form>
       )}
 
-      {loading ? (
+      {loading && cvs.length === 0 ? (
         <p className="text-gray-500">Loading CVs...</p>
       ) : cvs.length === 0 ? (
         <p className="text-gray-500">No CVs yet. Create your first one!</p>
       ) : (
         <div className="space-y-3">
-          {cvs.map((cv) => (
+          {sortedCvs.map((cv) => (
             <div
               key={cv.id}
-              className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition"
+              className="flex flex-col md:flex-row gap-6 items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition"
             >
               <div className="flex-1">
                 {editingId === cv.id ? (
-                  <div className="flex items-center gap-2 max-w-4/7">
+                  <div className="flex flex-col md:flex-row items-start md:items-center gap-2 max-w-4/7">
                     <input
                       ref={titleInputRef}
                       type="text"
                       value={editingTitle}
                       onChange={(e) => setEditingTitle(e.target.value)}
-                      onBlur={() => saveCvTitle(cv.id, editingTitle)}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
                           e.preventDefault();
@@ -174,22 +179,24 @@ export function CvsSection({
                       className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       disabled={savingTitle}
                     />
-                    <button
-                      type="button"
-                      onClick={() => saveCvTitle(cv.id, editingTitle)}
-                      className="px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm"
-                      disabled={savingTitle}
-                    >
-                      Save
-                    </button>
-                    <button
-                      type="button"
-                      onClick={cancelEditingTitle}
-                      className="px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-100 text-sm"
-                      disabled={savingTitle}
-                    >
-                      Cancel
-                    </button>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => saveCvTitle(cv.id, editingTitle)}
+                        className="px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm"
+                        disabled={savingTitle}
+                      >
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        onClick={cancelEditingTitle}
+                        className="px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-100 text-sm"
+                        disabled={savingTitle}
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <button
