@@ -1,5 +1,6 @@
 import React from "react";
 import { LayoutProps } from "./types";
+import { RichText } from "../../ui/RichText";
 
 export const StandardLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
   ({ data, labels }, ref) => {
@@ -270,9 +271,10 @@ export const StandardLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
                     </p>
                   )}
                   {exp.description && (
-                    <p className="text-gray-700 mb-1 leading-tight text-xs">
-                      {exp.description}
-                    </p>
+                    <RichText
+                      content={exp.description}
+                      className="text-gray-700 mb-1 leading-tight text-xs"
+                    />
                   )}
                   <div className="flex flex-wrap gap-1">
                     {exp.technologies.map((tech, idx) => (

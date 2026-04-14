@@ -1,5 +1,6 @@
 import React from "react";
 import { LayoutProps } from "./types";
+import { RichText } from "../../ui/RichText";
 
 export const IALayout = React.forwardRef<HTMLDivElement, LayoutProps>(
   ({ data, labels }, ref) => {
@@ -263,9 +264,10 @@ export const IALayout = React.forwardRef<HTMLDivElement, LayoutProps>(
                   </p>
                 )}
                 {exp.description && (
-                  <p className="text-gray-700 leading-tight mb-1 text-xs">
-                    {exp.description}
-                  </p>
+                  <RichText
+                    content={exp.description}
+                    className="text-gray-700 leading-tight mb-1 text-xs"
+                  />
                 )}
                 {exp.clients && exp.clients.length > 0 && (
                   <div className="mb-1">

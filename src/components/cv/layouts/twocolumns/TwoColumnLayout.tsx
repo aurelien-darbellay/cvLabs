@@ -1,6 +1,7 @@
 import React from "react";
 import { LayoutProps } from "../types";
 import { LinkWithIcon } from "./LinkWithIcon";
+import { RichText } from "../../../ui/RichText";
 
 export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
   ({ data, labels }, ref) => {
@@ -370,9 +371,10 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
                       {exp.company}
                     </p>
                     {exp.description && (
-                      <p className="text-gray-700 leading-relaxed text-sm mt-1">
-                        {exp.description}
-                      </p>
+                      <RichText
+                        content={exp.description}
+                        className="text-gray-700 leading-relaxed text-sm mt-1"
+                      />
                     )}
                     {exp.clients && exp.clients.length > 0 && (
                       <p className="text-sm text-slate-700">
