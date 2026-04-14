@@ -6,7 +6,7 @@ export const IALayout = React.forwardRef<HTMLDivElement, LayoutProps>(
   ({ data, labels }, ref) => {
     return (
       <div
-        ref={ref}
+        ref={ref}   
         className="mx-auto px-8 py-10 bg-white shadow-sm ia-layout"
         style={{ width: "210mm", minHeight: "297mm" }}
       >
@@ -235,9 +235,10 @@ export const IALayout = React.forwardRef<HTMLDivElement, LayoutProps>(
         {/* Summary */}
         {data.summary && (
           <section className="mb-6">
-            <p className="text-lg text-gray-800 leading-relaxed font-serif italic border-l-4 border-gray-300 pl-6 py-2">
-              {data.summary.content}
-            </p>
+            <RichText
+              content={data.summary.content ?? ""}
+              className="text-lg text-gray-800 leading-relaxed font-serif italic border-l-4 border-gray-300 pl-6 py-2"
+            />
           </section>
         )}
 

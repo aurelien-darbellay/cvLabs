@@ -344,9 +344,10 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
             {/* Profile Summary */}
             {data.summary && (
               <section className="mb-6">
-                <p className="text-gray-800 leading-relaxed text-sm text-justify">
-                  {data.summary.content}
-                </p>
+                <RichText
+                  content={data.summary.content ?? ""}
+                  className="text-gray-800 leading-relaxed text-sm text-justify"
+                />
               </section>
             )}
 

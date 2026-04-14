@@ -239,9 +239,10 @@ export const StandardLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
               <h2 className="text-lg font-bold text-gray-900 mb-2 uppercase tracking-wide">
                 {labels.summary}
               </h2>
-              <p className="text-gray-700 leading-relaxed text-sm\">
-                {data.summary.content}
-              </p>
+              <RichText
+                content={data.summary.content}
+                className="text-gray-700 leading-relaxed text-sm"
+              />
             </section>
           )}
 
