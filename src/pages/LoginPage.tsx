@@ -1,7 +1,12 @@
 import { AuthButton } from "@/components/auth/AuthButton";
+import useTestDialogFromQuery  from "@/hooks/useTestDialogFromQuery";
 import "./LoginPage.css";
+import TestDialog from "@/testDialog/TestDialog";
 export default function LoginPage() {
+  const {open, closeDialog} = useTestDialogFromQuery();
   return (
+    <>  
+    <TestDialog open={open} onClose={closeDialog} />
     <div className="login-page min-h-screen flex flex-col items-center justify-center ">
       <div>
         <svg
@@ -46,5 +51,7 @@ export default function LoginPage() {
       </div>
       <AuthButton />
     </div>
+    </>
+    
   );
 }
