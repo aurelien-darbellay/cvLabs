@@ -234,7 +234,14 @@ export const IALayout = React.forwardRef<HTMLDivElement, LayoutProps>(
 
         {/* Summary */}
         {data.summary && (
-          <section className="mb-6">
+          <section
+            onClick={() => onItemClick?.("summaries", data.summary!.id)}
+            className={`mb-6 rounded ${
+              onItemClick
+                ? "cursor-pointer hover:ring-2 hover:ring-indigo-400/50 hover:ring-offset-1"
+                : ""
+            }`}
+          >
             <RichText
               content={data.summary.content ?? ""}
               className="text-lg text-gray-800 leading-relaxed font-serif italic border-l-4 border-gray-300 pl-6 py-2"

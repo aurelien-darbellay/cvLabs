@@ -235,12 +235,19 @@ export const StandardLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
 
           {/* Summary */}
           {data.summary && (
-            <section className="mb-4">
+            <section
+              onClick={() => onItemClick?.("summaries", data.summary!.id)}
+              className={`mb-4 rounded ${
+                onItemClick
+                  ? "cursor-pointer hover:ring-2 hover:ring-indigo-400/50 hover:ring-offset-1"
+                  : ""
+              }`}
+            >
               <h2 className="text-lg font-bold text-gray-900 mb-2 uppercase tracking-wide">
                 {labels.summary}
               </h2>
               <RichText
-                content={data.summary.content}
+                content={data.summary.content || ""}
                 className="text-gray-700 leading-relaxed text-sm"
               />
             </section>

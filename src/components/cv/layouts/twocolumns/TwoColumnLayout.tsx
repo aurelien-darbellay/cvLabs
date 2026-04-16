@@ -352,7 +352,14 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
           <div className="flex-1 p-5">
             {/* Profile Summary */}
             {data.summary && (
-              <section className="mb-6">
+              <section
+                onClick={() => onItemClick?.("summaries", data.summary!.id)}
+                className={`mb-6 rounded ${
+                  onItemClick
+                    ? "cursor-pointer hover:ring-2 hover:ring-indigo-400/50 hover:ring-offset-1"
+                    : ""
+                }`}
+              >
                 <RichText
                   content={data.summary.content ?? ""}
                   className="text-gray-800 leading-relaxed text-sm text-justify"

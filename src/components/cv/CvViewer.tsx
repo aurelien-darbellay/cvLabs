@@ -54,8 +54,8 @@ export const CvViewer: React.FC<CvViewerProps> = ({
   const [editModal, setEditModal] = useState<{
     assetType: AssetType;
     asset: any;
+    translation?: any | null;
   } | null>(null);
-  const [refreshKey, setRefreshKey] = useState(0);
   const cvRef = useRef<HTMLDivElement>(null);
   const { languages, loading: languagesLoading } = useLinguisticContext();
   const availableLangs = useMemo(
@@ -79,55 +79,190 @@ export const CvViewer: React.FC<CvViewerProps> = ({
     const assetList: any[] = assetData[key] ?? [];
     const asset = assetList.find((a: any) => a.id === itemId);
     if (!asset) return;
-    setEditModal({ assetType, asset });
+
+    // Find translation for current language from translatedFields
+    const translatedFields = asset.translatedFields ?? [];
+    const translation =
+      translatedFields.find(
+        (t: any) =>
+          t.lang_code === currentLang ||
+          t.langCode === currentLang ||
+          t.lang === currentLang,
+      ) || null;
+
+    setEditModal({ assetType, asset, translation });
   };
 
-  const handleModalSave = async (data: {
+  const handleModalSave = async (saveData: {
     mode: AssetEditMode;
     values: Record<string, any>;
     asset: any;
     translation?: any | null;
   }) => {
-    if (!editModal) return;
+    if (!editModal || !data) return;
     try {
       const assetId =
-        data.mode === "base"
-          ? (data.asset?.id ?? null)
-          : (data.translation?.id ?? null);
-      if (data.mode === "translation")
-        data.values.domainId = data.translation?.domainId;
+        saveData.mode === "base"
+          ? (saveData.asset?.id ?? null)
+          : (saveData.translation?.id ?? null);
+      if (saveData.mode === "translation")
+        saveData.values.domainId = saveData.translation?.domainId;
       await saveAsset({
         assetType: editModal.assetType,
-        mode: data.mode,
+        mode: saveData.mode,
         assetId,
-        values: data.values,
+        values: saveData.values,
       });
+
+      // Update local state with new values
+      if (saveData.mode === "translation") {
+        // Update the corresponding item in data with new translated field values
+        const updateData = { ...data };
+        const assetType = editModal.assetType;
+        const itemId = editModal.asset.id;
+
+        if (
+          assetType === "experience" &&
+          Array.isArray(updateData.experience)
+        ) {
+          const idx = updateData.experience.findIndex((e) => e.id === itemId);
+          if (idx >= 0) {
+            updateData.experience[idx] = {
+              ...updateData.experience[idx],
+              ...saveData.values,
+            };
+          }
+        } else if (
+          assetType === "education" &&
+          Array.isArray(updateData.education)
+        ) {
+          const idx = updateData.education.findIndex((e) => e.id === itemId);
+          if (idx >= 0) {
+            updateData.education[idx] = {
+              ...updateData.education[idx],
+              ...saveData.values,
+            };
+          }
+        } else if (
+          assetType === "softskills" &&
+          Array.isArray(updateData.softSkills)
+        ) {
+          const idx = updateData.softSkills.findIndex((e) => e.id === itemId);
+          if (idx >= 0) {
+            updateData.softSkills[idx] = {
+              ...updateData.softSkills[idx],
+              ...saveData.values,
+            };
+          }
+        } else if (
+          assetType === "languageskills" &&
+          Array.isArray(updateData.languages)
+        ) {
+          const idx = updateData.languages.findIndex((e) => e.id === itemId);
+          if (idx >= 0) {
+            updateData.languages[idx] = {
+              ...updateData.languages[idx],
+              ...saveData.values,
+            };
+          }
+        } else if (assetType === "summaries" && updateData.summary) {
+          updateData.summary = {
+            ...updateData.summary,
+            ...saveData.values,
+          };
+        }
+
+        setData(updateData);
+      }
+
       setEditModal(null);
-      setRefreshKey((k) => k + 1);
     } catch (err) {
       error("Error saving asset from CV viewer", err);
     }
   };
 
-  const handleModalDelete = async (data: {
+  const handleModalDelete = async (deleteData: {
     mode: AssetEditMode;
     asset: any;
     translation?: any | null;
   }) => {
-    if (!editModal) return;
+    if (!editModal || !data) return;
     try {
       const assetId =
-        data.mode === "base"
-          ? (data.asset?.id ?? null)
-          : (data.translation?.id ?? null);
+        deleteData.mode === "base"
+          ? (deleteData.asset?.id ?? null)
+          : (deleteData.translation?.id ?? null);
       await deleteAsset({
         assetType: editModal.assetType,
-        mode: data.mode,
+        mode: deleteData.mode,
         assetId,
-        translation: data.translation,
+        translation: deleteData.translation,
       });
+
+      // Update local state by removing the item or clearing its translation
+      if (deleteData.mode === "translation") {
+        const updateData = { ...data };
+        const assetType = editModal.assetType;
+        const itemId = editModal.asset.id;
+
+        if (
+          assetType === "experience" &&
+          Array.isArray(updateData.experience)
+        ) {
+          const idx = updateData.experience.findIndex((e) => e.id === itemId);
+          if (idx >= 0) {
+            // Clear translated fields for this language
+            updateData.experience[idx] = {
+              ...updateData.experience[idx],
+              jobTitle: undefined,
+              description: undefined,
+            };
+          }
+        } else if (
+          assetType === "education" &&
+          Array.isArray(updateData.education)
+        ) {
+          const idx = updateData.education.findIndex((e) => e.id === itemId);
+          if (idx >= 0) {
+            updateData.education[idx] = {
+              ...updateData.education[idx],
+              title: undefined,
+              description: undefined,
+            };
+          }
+        } else if (
+          assetType === "softskills" &&
+          Array.isArray(updateData.softSkills)
+        ) {
+          const idx = updateData.softSkills.findIndex((e) => e.id === itemId);
+          if (idx >= 0) {
+            updateData.softSkills[idx] = {
+              ...updateData.softSkills[idx],
+              key: undefined,
+            };
+          }
+        } else if (
+          assetType === "languageskills" &&
+          Array.isArray(updateData.languages)
+        ) {
+          const idx = updateData.languages.findIndex((e) => e.id === itemId);
+          if (idx >= 0) {
+            updateData.languages[idx] = {
+              ...updateData.languages[idx],
+              name: undefined,
+            };
+          }
+        } else if (assetType === "summaries" && updateData.summary) {
+          updateData.summary = {
+            ...updateData.summary,
+            content: undefined,
+          };
+        }
+
+        setData(updateData);
+      }
+
       setEditModal(null);
-      setRefreshKey((k) => k + 1);
     } catch (err) {
       error("Error deleting asset from CV viewer", err);
     }
@@ -214,7 +349,7 @@ export const CvViewer: React.FC<CvViewerProps> = ({
       }
     };
     fetchData();
-  }, [cv.userId, cv.id, currentLang, languages, assetData, refreshKey]);
+  }, [cv.userId, cv.id, currentLang, languages, assetData]);
 
   // Auto-adjust scale to fit A4 height
   useEffect(() => {
@@ -341,8 +476,8 @@ export const CvViewer: React.FC<CvViewerProps> = ({
           isOpen={true}
           assetType={editModal.assetType}
           asset={editModal.asset}
-          translation={null}
-          mode="base"
+          translation={editModal.translation}
+          mode="translation"
           onClose={() => setEditModal(null)}
           onSave={handleModalSave}
           onDelete={handleModalDelete}
