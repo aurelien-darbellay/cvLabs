@@ -3,7 +3,7 @@ import { LayoutProps } from "./types";
 import { RichText } from "../../ui/RichText";
 
 export const StandardLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
-  ({ data, labels }, ref) => {
+  ({ data, labels, onItemClick }, ref) => {
     return (
       <div ref={ref} className="min-h-screen bg-gray-100 py-6 standard-layout">
         <style>{`
@@ -255,7 +255,8 @@ export const StandardLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
               {data.experience.map((exp) => (
                 <div
                   key={exp.id}
-                  className="border-l-4 border-blue-500 pl-6 py-2"
+                  onClick={() => onItemClick?.("experience", exp.id)}
+                  className={`border-l-4 border-blue-500 pl-6 py-2 rounded ${onItemClick ? "cursor-pointer hover:ring-2 hover:ring-blue-400/50 hover:ring-offset-1" : ""}`}
                 >
                   <div className="flex justify-between items-start mb-1">
                     <h3 className="text-base font-semibold text-gray-900">
@@ -301,7 +302,8 @@ export const StandardLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
               {data.education.map((edu) => (
                 <div
                   key={edu.id}
-                  className="border-l-4 border-green-500 pl-4 py-0.5"
+                  onClick={() => onItemClick?.("education", edu.id)}
+                  className={`border-l-4 border-green-500 pl-4 py-0.5 rounded ${onItemClick ? "cursor-pointer hover:ring-2 hover:ring-green-400/50 hover:ring-offset-1" : ""}`}
                 >
                   <div className="flex justify-between items-start mb-0.5">
                     <h3 className="text-sm font-semibold text-gray-900">
@@ -338,7 +340,8 @@ export const StandardLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
                   {data.techSkills.map((s) => (
                     <span
                       key={s.id}
-                      className="px-3 py-1 bg-blue-50 text-blue-700 text-sm font-medium rounded"
+                      onClick={() => onItemClick?.("techskills", s.id)}
+                      className={`px-3 py-1 bg-blue-50 text-blue-700 text-sm font-medium rounded ${onItemClick ? "cursor-pointer hover:ring-2 hover:ring-blue-400/50" : ""}`}
                     >
                       {s.name}
                     </span>
@@ -353,7 +356,8 @@ export const StandardLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
                   {data.softSkills.map((s) => (
                     <span
                       key={s.id}
-                      className="px-3 py-1 bg-green-50 text-green-700 text-sm font-medium rounded"
+                      onClick={() => onItemClick?.("softskills", s.id)}
+                      className={`px-3 py-1 bg-green-50 text-green-700 text-sm font-medium rounded ${onItemClick ? "cursor-pointer hover:ring-2 hover:ring-green-400/50" : ""}`}
                     >
                       {s.key}
                     </span>
@@ -368,7 +372,8 @@ export const StandardLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
                   {data.languages.map((l) => (
                     <span
                       key={l.id}
-                      className="px-3 py-1 bg-purple-50 text-purple-700 text-sm font-medium rounded"
+                      onClick={() => onItemClick?.("languageskills", l.id)}
+                      className={`px-3 py-1 bg-purple-50 text-purple-700 text-sm font-medium rounded ${onItemClick ? "cursor-pointer hover:ring-2 hover:ring-purple-400/50" : ""}`}
                     >
                       {l.name}
                     </span>
@@ -380,7 +385,7 @@ export const StandardLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
         </div>
       </div>
     );
-  }
+  },
 );
 
 StandardLayout.displayName = "StandardLayout";

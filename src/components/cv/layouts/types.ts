@@ -5,6 +5,7 @@ import { SummaryInCv } from "@/domain/Summary";
 import { SoftSkillInCv } from "@/domain/elementsInCv/SoftSkillInCv";
 import { TechSkill } from "@/domain/TechSkill";
 import { LanguageSkillInCv } from "@/domain/elementsInCv/LanguageSkillInCv";
+import type { AssetType } from "@/types/assets";
 
 export interface CvData {
   user: User;
@@ -35,4 +36,5 @@ export interface LayoutProps {
   data: CvData;
   labels: LayoutLabels;
   ref: React.Ref<HTMLDivElement>;
+  onItemClick?: (assetType: AssetType, itemId: number) => void;
 }

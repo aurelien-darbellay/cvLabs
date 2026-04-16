@@ -23,6 +23,10 @@ import { TechSkill } from "@/domain/TechSkill";
 import { Summary } from "@/domain/Summary";
 import { LanguageSkill } from "@/domain/LanguageSkill";
 import { error, log } from "@/utils/Log";
+import { EditAssetModal } from "@/components/dashboard/EditAssetModal";
+import { saveAsset } from "@/services/assets/saveAsset";
+import { deleteAsset } from "@/services/assets/deleteAsset";
+import type { AssetType, AssetEditMode } from "@/types/assets";
 
 interface CvViewerProps {
   cv: Cv;
@@ -40,19 +44,94 @@ export const CvViewer: React.FC<CvViewerProps> = ({
   const [data, setData] = useState<CvData | null>(null);
   const [loading, setLoading] = useState(true);
   const [layout, setLayout] = useState<"standard" | "two-column" | "ia">(
-    "two-column"
+    "two-column",
   );
   const [currentLang, setCurrentLang] = useState("en");
   const [downloading, setDownloading] = useState(false);
   const [scaleFactor, setScaleFactor] = useState(0.6);
   const [showWarning, setShowWarning] = useState(false);
   const [singlePageMode, setSinglePageMode] = useState(true);
+  const [editModal, setEditModal] = useState<{
+    assetType: AssetType;
+    asset: any;
+  } | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
   const cvRef = useRef<HTMLDivElement>(null);
   const { languages, loading: languagesLoading } = useLinguisticContext();
   const availableLangs = useMemo(
     () => languages.map((lang) => lang.code),
-    [languages]
+    [languages],
   );
+
+  const ASSET_DATA_KEYS: Partial<Record<AssetType, string>> = {
+    experience: "experience",
+    education: "education",
+    softskills: "softSkills",
+    techskills: "techSkills",
+    languageskills: "languageSkills",
+    summaries: "summaries",
+  };
+
+  const handleItemClick = (assetType: AssetType, itemId: number) => {
+    if (!assetData) return;
+    const key = ASSET_DATA_KEYS[assetType];
+    if (!key) return;
+    const assetList: any[] = assetData[key] ?? [];
+    const asset = assetList.find((a: any) => a.id === itemId);
+    if (!asset) return;
+    setEditModal({ assetType, asset });
+  };
+
+  const handleModalSave = async (data: {
+    mode: AssetEditMode;
+    values: Record<string, any>;
+    asset: any;
+    translation?: any | null;
+  }) => {
+    if (!editModal) return;
+    try {
+      const assetId =
+        data.mode === "base"
+          ? (data.asset?.id ?? null)
+          : (data.translation?.id ?? null);
+      if (data.mode === "translation")
+        data.values.domainId = data.translation?.domainId;
+      await saveAsset({
+        assetType: editModal.assetType,
+        mode: data.mode,
+        assetId,
+        values: data.values,
+      });
+      setEditModal(null);
+      setRefreshKey((k) => k + 1);
+    } catch (err) {
+      error("Error saving asset from CV viewer", err);
+    }
+  };
+
+  const handleModalDelete = async (data: {
+    mode: AssetEditMode;
+    asset: any;
+    translation?: any | null;
+  }) => {
+    if (!editModal) return;
+    try {
+      const assetId =
+        data.mode === "base"
+          ? (data.asset?.id ?? null)
+          : (data.translation?.id ?? null);
+      await deleteAsset({
+        assetType: editModal.assetType,
+        mode: data.mode,
+        assetId,
+        translation: data.translation,
+      });
+      setEditModal(null);
+      setRefreshKey((k) => k + 1);
+    } catch (err) {
+      error("Error deleting asset from CV viewer", err);
+    }
+  };
 
   const handleDownloadPdf = async () => {
     if (!cvRef.current) return;
@@ -79,7 +158,7 @@ export const CvViewer: React.FC<CvViewerProps> = ({
           .getAssetsForCv(
             cv.id,
             assetData?.professions.map(Profession.deSerialize) || [],
-            currentLang
+            currentLang,
           )
           .then((profs) => profs[0]);
         if (profession) {
@@ -90,33 +169,33 @@ export const CvViewer: React.FC<CvViewerProps> = ({
           .getAssetsForCv(
             cv.id,
             assetData?.summaries.map(Summary.deSerialize) || [],
-            currentLang
+            currentLang,
           )
           .then((summaries) => summaries[0]);
         const experience = await cvExperienceRelations.getAssetsForCv(
           cv.id,
           assetData?.experience.map(Experience.deSerialize) || [],
-          currentLang
+          currentLang,
         );
         const education = await cvEducationRelations.getAssetsForCv(
           cv.id,
           assetData?.education.map(Education.deSerialize) || [],
-          currentLang
+          currentLang,
         );
         const softSkills = await cvSoftSkillRelations.getAssetsForCv(
           cv.id,
           assetData?.softSkills.map(SoftSkill.deSerialize) || [],
-          currentLang
+          currentLang,
         );
         const languagesForCv = await cvLanguageRelations.getAssetsForCv(
           cv.id,
           assetData?.languageSkills.map(LanguageSkill.deSerialize) || [],
-          currentLang
+          currentLang,
         );
 
         const techSkills = await cvTechSkillRelations.getAssetsForCv(
           cv.id,
-          assetData?.techSkills.map(TechSkill.deSerialize) || []
+          assetData?.techSkills.map(TechSkill.deSerialize) || [],
         );
 
         setData({
@@ -135,7 +214,7 @@ export const CvViewer: React.FC<CvViewerProps> = ({
       }
     };
     fetchData();
-  }, [cv.userId, cv.id, currentLang, languages, assetData]);
+  }, [cv.userId, cv.id, currentLang, languages, assetData, refreshKey]);
 
   // Auto-adjust scale to fit A4 height
   useEffect(() => {
@@ -152,7 +231,7 @@ export const CvViewer: React.FC<CvViewerProps> = ({
       const result = calculateOptimalScale(
         currentHeight,
         scaleFactor,
-        cvRef.current!
+        cvRef.current!,
       );
 
       setScaleFactor(result.scaleFactor);
@@ -170,75 +249,105 @@ export const CvViewer: React.FC<CvViewerProps> = ({
   const labels = SECTION_TITLES[currentLang] || SECTION_TITLES["en"];
 
   return (
-    <div className="bg-white min-h-screen">
-      <div className="sticky top-0 bg-white bg-opacity-95 shadow-md p-4 z-10 flex gap-4">
-        <button
-          onClick={onClose}
-          className="px-4 py-2 cursor-pointer bg-gray-200 hover:bg-gray-300 rounded"
-        >
-          Back
-        </button>
+    <>
+      <div className="bg-white min-h-screen">
+        <div className="sticky top-0 bg-white bg-opacity-95 shadow-md p-4 z-10 flex gap-4">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 cursor-pointer bg-gray-200 hover:bg-gray-300 rounded"
+          >
+            Back
+          </button>
 
-        <select
-          value={layout}
-          onChange={(e) => setLayout(e.target.value as any)}
-          className="p-2 border border-gray-300 rounded"
-        >
-          <option value="standard">Standard Layout</option>
-          <option value="two-column">Two Column Layout</option>
-          <option value="ia">Impact/Academic Layout</option>
-        </select>
+          <select
+            value={layout}
+            onChange={(e) => setLayout(e.target.value as any)}
+            className="p-2 border border-gray-300 rounded"
+          >
+            <option value="standard">Standard Layout</option>
+            <option value="two-column">Two Column Layout</option>
+            <option value="ia">Impact/Academic Layout</option>
+          </select>
 
-        <select
-          value={currentLang}
-          onChange={(e) => setCurrentLang(e.target.value)}
-          className="p-2 border border-gray-300 rounded"
-        >
-          {availableLangs.map((lang) => (
-            <option key={lang} value={lang}>
-              {lang.toUpperCase()}
-            </option>
-          ))}
-        </select>
+          <select
+            value={currentLang}
+            onChange={(e) => setCurrentLang(e.target.value)}
+            className="p-2 border border-gray-300 rounded"
+          >
+            {availableLangs.map((lang) => (
+              <option key={lang} value={lang}>
+                {lang.toUpperCase()}
+              </option>
+            ))}
+          </select>
 
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={singlePageMode}
-            onChange={(e) => setSinglePageMode(e.target.checked)}
-            className="cursor-pointer"
-          />
-          Single page fit
-        </label>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={singlePageMode}
+              onChange={(e) => setSinglePageMode(e.target.checked)}
+              className="cursor-pointer"
+            />
+            Single page fit
+          </label>
 
-        <button
-          onClick={handleDownloadPdf}
-          disabled={downloading}
-          className="px-4 py-2 cursor-pointer bg-blue-600 text-white hover:bg-blue-700 rounded disabled:opacity-60 disabled:cursor-not-allowed"
-        >
-          {downloading ? "Exporting..." : "Download PDF"}
-        </button>
-      </div>
+          <button
+            onClick={handleDownloadPdf}
+            disabled={downloading}
+            className="px-4 py-2 cursor-pointer bg-blue-600 text-white hover:bg-blue-700 rounded disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {downloading ? "Exporting..." : "Download PDF"}
+          </button>
+        </div>
 
-      <div className="min-h-screen bg-gray-100 p-10">
-        {showWarning && (
-          <div className="mb-4 p-3 bg-yellow-100 border border-yellow-400 text-yellow-800 rounded">
-            ⚠️ Content is too large to fit on one A4 page. Please reduce content
-            or adjust layout.
+        <div className="min-h-screen bg-gray-100 p-10">
+          {showWarning && (
+            <div className="mb-4 p-3 bg-yellow-100 border border-yellow-400 text-yellow-800 rounded">
+              ⚠️ Content is too large to fit on one A4 page. Please reduce
+              content or adjust layout.
+            </div>
+          )}
+          <div style={{ "--scale-factor": scaleFactor } as React.CSSProperties}>
+            {layout === "standard" && (
+              <StandardLayout
+                data={data}
+                labels={labels}
+                ref={cvRef}
+                onItemClick={downloading ? undefined : handleItemClick}
+              />
+            )}
+            {layout === "two-column" && (
+              <TwoColumnLayout
+                data={data}
+                labels={labels}
+                ref={cvRef}
+                onItemClick={downloading ? undefined : handleItemClick}
+              />
+            )}
+            {layout === "ia" && (
+              <IALayout
+                data={data}
+                labels={labels}
+                ref={cvRef}
+                onItemClick={downloading ? undefined : handleItemClick}
+              />
+            )}
           </div>
-        )}
-        <div style={{ "--scale-factor": scaleFactor } as React.CSSProperties}>
-          {layout === "standard" && (
-            <StandardLayout data={data} labels={labels} ref={cvRef} />
-          )}
-          {layout === "two-column" && (
-            <TwoColumnLayout data={data} labels={labels} ref={cvRef} />
-          )}
-          {layout === "ia" && (
-            <IALayout data={data} labels={labels} ref={cvRef} />
-          )}
         </div>
       </div>
-    </div>
+
+      {editModal && (
+        <EditAssetModal
+          isOpen={true}
+          assetType={editModal.assetType}
+          asset={editModal.asset}
+          translation={null}
+          mode="base"
+          onClose={() => setEditModal(null)}
+          onSave={handleModalSave}
+          onDelete={handleModalDelete}
+        />
+      )}
+    </>
   );
 };

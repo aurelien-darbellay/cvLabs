@@ -4,7 +4,7 @@ import { LinkWithIcon } from "./LinkWithIcon";
 import { RichText } from "../../../ui/RichText";
 
 export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
-  ({ data, labels }, ref) => {
+  ({ data, labels, onItemClick }, ref) => {
     return (
       <div
         ref={ref}
@@ -298,7 +298,8 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
                   <span
                     key={s.id}
                     data-badge="tech-skill"
-                    className="text-sm px-2.5 py-0.5 bg-slate-600 text-white rounded"
+                    onClick={() => onItemClick?.("techskills", s.id)}
+                    className={`text-sm px-2.5 py-0.5 bg-slate-600 text-white rounded ${onItemClick ? "cursor-pointer hover:ring-2 hover:ring-white/50" : ""}`}
                   >
                     {s.name}
                   </span>
@@ -313,7 +314,11 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
               </h3>
               <ul className="space-y-1.5 text-sm">
                 {data.softSkills.map((s) => (
-                  <li key={s.id} className="flex items-center gap-2">
+                  <li
+                    key={s.id}
+                    onClick={() => onItemClick?.("softskills", s.id)}
+                    className={`flex items-center gap-2 ${onItemClick ? "cursor-pointer hover:text-slate-100" : ""}`}
+                  >
                     <span className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
                     {s.key}
                   </li>
@@ -328,7 +333,11 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
               </h3>
               <ul className="space-y-1.5 text-sm">
                 {data.languages.map((l) => (
-                  <li key={l.id} className="flex items-center gap-2">
+                  <li
+                    key={l.id}
+                    onClick={() => onItemClick?.("languageskills", l.id)}
+                    className={`flex items-center gap-2 ${onItemClick ? "cursor-pointer hover:text-slate-100" : ""}`}
+                  >
                     <span className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
                     <span>
                       {l.name} {`(${l.level_name})`}
@@ -358,7 +367,11 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
               </h2>
               <div className="space-y-3">
                 {data.experience.map((exp) => (
-                  <div key={exp.id} className="pl-4">
+                  <div
+                    key={exp.id}
+                    onClick={() => onItemClick?.("experience", exp.id)}
+                    className={`pl-4 rounded ${onItemClick ? "cursor-pointer hover:ring-2 hover:ring-slate-400/50 hover:ring-offset-1" : ""}`}
+                  >
                     <div className="flex justify-between items-baseline">
                       <h3 className="text-lg font-extrabold text-slate-900 uppercase">
                         {exp.jobTitle || exp.company}
@@ -410,7 +423,11 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
               </h2>
               <div className="space-y-2">
                 {data.education.map((edu) => (
-                  <div key={edu.id} className="pl-4">
+                  <div
+                    key={edu.id}
+                    onClick={() => onItemClick?.("education", edu.id)}
+                    className={`pl-4 rounded ${onItemClick ? "cursor-pointer hover:ring-2 hover:ring-slate-400/50 hover:ring-offset-1" : ""}`}
+                  >
                     <div className="flex justify-between items-start">
                       <div>
                         <h3 className="text-base font-extrabold text-slate-900 uppercase">
@@ -437,7 +454,7 @@ export const TwoColumnLayout = React.forwardRef<HTMLDivElement, LayoutProps>(
         </div>
       </div>
     );
-  }
+  },
 );
 
 TwoColumnLayout.displayName = "TwoColumnLayout";

@@ -3,10 +3,10 @@ import { LayoutProps } from "./types";
 import { RichText } from "../../ui/RichText";
 
 export const IALayout = React.forwardRef<HTMLDivElement, LayoutProps>(
-  ({ data, labels }, ref) => {
+  ({ data, labels, onItemClick }, ref) => {
     return (
       <div
-        ref={ref}   
+        ref={ref}
         className="mx-auto px-8 py-10 bg-white shadow-sm ia-layout"
         style={{ width: "210mm", minHeight: "297mm" }}
       >
@@ -249,7 +249,11 @@ export const IALayout = React.forwardRef<HTMLDivElement, LayoutProps>(
           </h2>
           <div className="space-y-2">
             {data.experience.map((exp) => (
-              <div key={exp.id} className="group">
+              <div
+                key={exp.id}
+                onClick={() => onItemClick?.("experience", exp.id)}
+                className={`group rounded ${onItemClick ? "cursor-pointer hover:ring-2 hover:ring-gray-400/50 hover:ring-offset-1" : ""}`}
+              >
                 <div className="flex justify-between items-baseline mb-1">
                   <h3 className="text-sm font-serif font-semibold text-gray-900">
                     {exp.company}
@@ -302,7 +306,11 @@ export const IALayout = React.forwardRef<HTMLDivElement, LayoutProps>(
           </h2>
           <div className="space-y-1">
             {data.education.map((edu) => (
-              <div key={edu.id}>
+              <div
+                key={edu.id}
+                onClick={() => onItemClick?.("education", edu.id)}
+                className={`rounded ${onItemClick ? "cursor-pointer hover:ring-2 hover:ring-gray-400/50 hover:ring-offset-1" : ""}`}
+              >
                 <div className="flex justify-between items-baseline mb-0.5">
                   <h3 className="text-sm font-serif font-semibold text-gray-900">
                     {edu.institution}
@@ -339,7 +347,8 @@ export const IALayout = React.forwardRef<HTMLDivElement, LayoutProps>(
                 {data.techSkills.map((s) => (
                   <span
                     key={s.id}
-                    className="px-3 py-1 bg-gray-100 text-gray-800 text-sm font-mono rounded-sm border border-gray-200"
+                    onClick={() => onItemClick?.("techskills", s.id)}
+                    className={`px-3 py-1 bg-gray-100 text-gray-800 text-sm font-mono rounded-sm border border-gray-200 ${onItemClick ? "cursor-pointer hover:ring-2 hover:ring-gray-400/50" : ""}`}
                   >
                     {s.name}
                   </span>
@@ -372,7 +381,7 @@ export const IALayout = React.forwardRef<HTMLDivElement, LayoutProps>(
         </section>
       </div>
     );
-  }
+  },
 );
 
 IALayout.displayName = "IALayout";
